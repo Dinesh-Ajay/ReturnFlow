@@ -572,7 +572,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="text-xs font-medium text-slate-500">Total Assets</div>
-                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-total-assets">20,000</div>
+                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-total-assets">20,007</div>
                             <div class="text-xs font-semibold text-emerald-600 flex items-center gap-1 mt-1">
                                 <i class="fa-solid fa-arrow-up text-[10px]"></i> 2.5%
                             </div>
@@ -585,7 +585,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="text-xs font-medium text-slate-500">Active in Transit</div>
-                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-in-transit">3,420</div>
+                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-in-transit">3,600</div>
                             <div class="text-xs font-semibold text-emerald-600 flex items-center gap-1 mt-1">
                                 <i class="fa-solid fa-arrow-up text-[10px]"></i> 0.1%
                             </div>
@@ -598,7 +598,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="text-xs font-medium text-slate-500">Overdue Returns</div>
-                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-overdue-returns">1,240</div>
+                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-overdue-returns">1,306</div>
                             <div class="text-xs font-semibold text-red-600 flex items-center gap-1 mt-1">
                                 <i class="fa-solid fa-arrow-down text-[10px]"></i> 3.2%
                             </div>
@@ -611,7 +611,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="text-xs font-medium text-slate-500">Lost Assets</div>
-                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-lost-assets">86</div>
+                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-lost-assets">400</div>
                             <div class="text-xs font-semibold text-orange-600 flex items-center gap-1 mt-1">
                                 <i class="fa-solid fa-arrow-up text-[10px]"></i> 12.1%
                             </div>
@@ -637,7 +637,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="text-xs font-medium text-slate-500">Return Authorizations</div>
-                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-total-rmas">2,340</div>
+                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-total-rmas">12,410</div>
                             <div class="text-xs font-semibold text-emerald-600 flex items-center gap-1 mt-1">
                                 <i class="fa-solid fa-arrow-up text-[10px]"></i> 6.7%
                             </div>
@@ -650,7 +650,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="text-xs font-medium text-slate-500">In Repair</div>
-                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-in-repair">312</div>
+                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-in-repair">191</div>
                             <div class="text-xs font-semibold text-red-600 flex items-center gap-1 mt-1">
                                 <i class="fa-solid fa-arrow-down text-[10px]"></i> 4.1%
                             </div>
@@ -663,7 +663,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="text-xs font-medium text-slate-500">Open Anomalies</div>
-                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-open-anomalies">57</div>
+                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-open-anomalies">50</div>
                             <div class="text-xs font-semibold text-rose-600 flex items-center gap-1 mt-1">
                                 <i class="fa-solid fa-arrow-down text-[10px]"></i> 18.3%
                             </div>
@@ -693,34 +693,34 @@
                             <div class="relative w-48 h-48 flex items-center justify-center">
                                 <canvas id="statusDonutChart"></canvas>
                                 <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                    <span class="text-xl font-bold text-slate-900" id="donut-total">20,000</span>
+                                    <span class="text-xl font-bold text-slate-900" id="donut-total">20,007</span>
                                     <span class="text-[11px] text-slate-500">Total Assets</span>
                                 </div>
                             </div>
-                            <div class="w-full md:w-56 space-y-2 text-xs">
+                            <div id="statusDonutLegend" class="w-full md:w-56 space-y-2 text-xs">
                                 <div class="flex items-center justify-between py-1 border-b border-slate-100">
                                     <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span> At Location</span>
-                                    <span class="font-semibold text-slate-800">11,240 <span class="text-slate-400 font-normal">(56.2%)</span></span>
+                                    <span class="font-semibold text-slate-800"><span id="reading-count-available">12,216</span> <span id="reading-pct-available" class="text-slate-400 font-normal">(61.1%)</span></span>
                                 </div>
                                 <div class="flex items-center justify-between py-1 border-b border-slate-100">
                                     <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> In Transit</span>
-                                    <span class="font-semibold text-slate-800">3,420 <span class="text-slate-400 font-normal">(17.1%)</span></span>
+                                    <span class="font-semibold text-slate-800"><span id="reading-count-in-transit">3,600</span> <span id="reading-pct-in-transit" class="text-slate-400 font-normal">(18.0%)</span></span>
                                 </div>
                                 <div class="flex items-center justify-between py-1 border-b border-slate-100">
-                                    <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span> Under Inspection</span>
-                                    <span class="font-semibold text-slate-800">1,120 <span class="text-slate-400 font-normal">(5.6%)</span></span>
+                                    <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span> In Custody</span>
+                                    <span class="font-semibold text-slate-800"><span id="reading-count-in-custody">3,600</span> <span id="reading-pct-in-custody" class="text-slate-400 font-normal">(18.0%)</span></span>
                                 </div>
                                 <div class="flex items-center justify-between py-1 border-b border-slate-100">
                                     <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> In Repair</span>
-                                    <span class="font-semibold text-slate-800">312 <span class="text-slate-400 font-normal">(1.6%)</span></span>
+                                    <span class="font-semibold text-slate-800"><span id="reading-count-in-repair">191</span> <span id="reading-pct-in-repair" class="text-slate-400 font-normal">(1.0%)</span></span>
                                 </div>
                                 <div class="flex items-center justify-between py-1 border-b border-slate-100">
                                     <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Lost</span>
-                                    <span class="font-semibold text-slate-800">86 <span class="text-slate-400 font-normal">(0.4%)</span></span>
+                                    <span class="font-semibold text-slate-800"><span id="reading-count-lost">400</span> <span id="reading-pct-lost" class="text-slate-400 font-normal">(2.0%)</span></span>
                                 </div>
                                 <div class="flex items-center justify-between py-1">
                                     <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Other</span>
-                                    <span class="font-semibold text-slate-800">3,822 <span class="text-slate-400 font-normal">(19.1%)</span></span>
+                                    <span class="font-semibold text-slate-800"><span id="reading-count-other">0</span> <span id="reading-pct-other" class="text-slate-400 font-normal">(0.0%)</span></span>
                                 </div>
                             </div>
                         </div>
@@ -2812,9 +2812,7 @@
                 await fetchAssetsTable();
 
                 // Refresh dashboard metrics
-                if (currentStartDate && currentEndDate) {
-                    loadDashboardMetrics(currentStartDate, currentEndDate);
-                }
+                loadDashboardMetrics(currentStartDate || undefined, currentEndDate || undefined);
             } catch (err) {
                 showToast('error', 'Registration Failed', err.message);
             } finally {
@@ -2920,18 +2918,52 @@
                 setTxt('kpi-in-repair', (data.in_repair_count || 0).toLocaleString());
                 setTxt('kpi-open-anomalies', (data.open_anomalies || 0).toLocaleString());
 
-                // Update Donut Chart
-                if (donutChartInstance && data.status_distribution) {
+                // Update Donut Chart & Side Readings
+                if (data.status_distribution) {
                     const sd = data.status_distribution;
-                    donutChartInstance.data.datasets[0].data = [
-                        sd['AVAILABLE'] || 0,
-                        sd['IN_TRANSIT'] || 0,
-                        sd['IN_CUSTODY'] || 0,
-                        sd['UNDER_REPAIR'] || 0,
-                        sd['LOST'] || 0,
-                        sd['DAMAGED'] || 0
-                    ];
-                    donutChartInstance.update();
+                    const available = Number(sd['AVAILABLE']) || 0;
+                    const inTransit = Number(sd['IN_TRANSIT']) || 0;
+                    const inCustody = Number(sd['IN_CUSTODY']) || 0;
+                    const inRepair = Number(sd['UNDER_REPAIR']) || 0;
+                    const lost = Number(sd['LOST']) || 0;
+
+                    let other = 0;
+                    for (const [k, v] of Object.entries(sd)) {
+                        if (!['AVAILABLE', 'IN_TRANSIT', 'IN_CUSTODY', 'UNDER_REPAIR', 'LOST'].includes(k)) {
+                            other += Number(v) || 0;
+                        }
+                    }
+
+                    const chartData = [available, inTransit, inCustody, inRepair, lost, other];
+                    const total = chartData.reduce((a, b) => a + b, 0) || (data.total_assets || 1);
+
+                    // Update Center Total
+                    const donutTotalEl = document.getElementById('donut-total');
+                    if (donutTotalEl) {
+                        donutTotalEl.innerText = (data.total_assets || total).toLocaleString();
+                    }
+
+                    // Update Donut Chart
+                    if (donutChartInstance) {
+                        donutChartInstance.data.datasets[0].data = chartData;
+                        donutChartInstance.update();
+                    }
+
+                    // Update Readings dynamically to match chart slices with exact precision
+                    const updateReading = (countId, pctId, val) => {
+                        const countEl = document.getElementById(countId);
+                        const pctEl = document.getElementById(pctId);
+                        const pct = total > 0 ? ((val / total) * 100).toFixed(1) : '0.0';
+                        if (countEl) countEl.innerText = val.toLocaleString();
+                        if (pctEl) pctEl.innerText = `(${pct}%)`;
+                    };
+
+                    updateReading('reading-count-available', 'reading-pct-available', available);
+                    updateReading('reading-count-in-transit', 'reading-pct-in-transit', inTransit);
+                    updateReading('reading-count-in-custody', 'reading-pct-in-custody', inCustody);
+                    updateReading('reading-count-in-repair', 'reading-pct-in-repair', inRepair);
+                    updateReading('reading-count-lost', 'reading-pct-lost', lost);
+                    updateReading('reading-count-other', 'reading-pct-other', other);
                 }
 
                 // Update Line Chart
@@ -3023,9 +3055,9 @@
                 donutChartInstance = new Chart(donutCtx, {
                     type: 'doughnut',
                     data: {
-                        labels: ['At Location', 'In Transit', 'In Custody', 'In Repair', 'Lost', 'Damaged'],
+                        labels: ['At Location', 'In Transit', 'In Custody', 'In Repair', 'Lost', 'Other'],
                         datasets: [{
-                            data: [11240, 3420, 1120, 312, 86, 3822],
+                            data: [12216, 3600, 3600, 191, 400, 0],
                             backgroundColor: ['#2563EB', '#10B981', '#38BDF8', '#F59E0B', '#EF4444', '#94A3B8'],
                             borderWidth: 2,
                             borderColor: '#FFFFFF'
@@ -3035,7 +3067,20 @@
                         responsive: true,
                         maintainAspectRatio: false,
                         cutout: '72%',
-                        plugins: { legend: { display: false } }
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const val = context.parsed || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const pct = total > 0 ? ((val / total) * 100).toFixed(1) : '0.0';
+                                        return ` ${label}: ${val.toLocaleString()} (${pct}%)`;
+                                    }
+                                }
+                            }
+                        }
                     }
                 });
             }
