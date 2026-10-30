@@ -116,7 +116,7 @@ ReturnFlow/
 ### Step 1: Clone and Configure Environment
 
 ```bash
-git clone https://github.com/your-username/ReturnFlow.git
+git clone https://github.com/Dinesh-Ajay/ReturnFlow.git
 cd ReturnFlow
 
 # Install dependencies
