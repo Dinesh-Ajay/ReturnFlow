@@ -52,8 +52,20 @@ app.include_router(deposits.router)
 app.include_router(validation.router)
 app.include_router(analytics.router)
 
-@app.get("/")
+import os
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+# Mount static files directory if it exists
+static_dir = os.path.join(os.path.dirname(__file__), "static")
+if os.path.exists(static_dir):
+    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+@app.get("/", include_in_schema=False)
 def root():
+    index_path = os.path.join(static_dir, "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
     return {
         "message": "Welcome to ReturnFlow - Reusable Asset Return & Lifecycle Management API",
         "version": settings.APP_VERSION,

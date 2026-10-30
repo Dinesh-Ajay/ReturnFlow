@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-10-30 07:39:21 UTC",
-  "total_duration_seconds": 2.4245,
+  "timestamp": "2026-10-30 07:58:22 UTC",
+  "total_duration_seconds": 1.4846,
   "integrity_checks": {
     "name": "Referential & Structural Integrity Validation",
     "passed": true,
@@ -68,7 +68,7 @@
     "is_reconciled": true
   },
   "anomaly_detection": {
-    "detection_duration_seconds": 1.5279,
+    "detection_duration_seconds": 0.8352,
     "total_detected": 50,
     "detected_by_type": {
       "SIMULTANEOUS_LOCATIONS": 10,
@@ -99,92 +99,92 @@
       {
         "issue_type": "SIMULTANEOUS_LOCATIONS",
         "severity": "CRITICAL",
-        "asset_id": "ASSET-0001291",
-        "record_id": "CUST-ASSET-0001291-000007",
+        "asset_id": "ASSET-0001164",
+        "record_id": "CUST-ASSET-0001164-000007",
         "entity_name": "custody_events",
         "expected_decision": "FLAG_FOR_INVESTIGATION",
-        "description": "Asset ASSET-0001291 detected in conflicting locations (Location 29 vs Location 23) at timestamp 2026-08-02 08:30:00"
+        "description": "Asset ASSET-0001164 detected in conflicting locations (Location 7 vs Location 15) at timestamp 2026-09-22 08:30:00"
       },
       {
         "issue_type": "SIMULTANEOUS_LOCATIONS",
         "severity": "CRITICAL",
-        "asset_id": "ASSET-0003636",
-        "record_id": "CUST-ASSET-0003636-000004",
+        "asset_id": "ASSET-0002385",
+        "record_id": "CUST-ASSET-0002385-000007",
         "entity_name": "custody_events",
         "expected_decision": "FLAG_FOR_INVESTIGATION",
-        "description": "Asset ASSET-0003636 detected in conflicting locations (Location 24 vs Location 29) at timestamp 2026-10-19 08:30:00"
+        "description": "Asset ASSET-0002385 detected in conflicting locations (Location 29 vs Location 22) at timestamp 2026-09-03 08:30:00"
       },
       {
         "issue_type": "SIMULTANEOUS_LOCATIONS",
         "severity": "CRITICAL",
-        "asset_id": "ASSET-0004550",
-        "record_id": "CUST-ASSET-0004550-000007",
+        "asset_id": "ASSET-0003777",
+        "record_id": "CUST-ASSET-0003777-000004",
         "entity_name": "custody_events",
         "expected_decision": "FLAG_FOR_INVESTIGATION",
-        "description": "Asset ASSET-0004550 detected in conflicting locations (Location 2 vs Location 14) at timestamp 2026-09-19 08:30:00"
+        "description": "Asset ASSET-0003777 detected in conflicting locations (Location 7 vs Location 25) at timestamp 2026-10-18 08:30:00"
       },
       {
         "issue_type": "SIMULTANEOUS_LOCATIONS",
         "severity": "CRITICAL",
-        "asset_id": "ASSET-0012511",
-        "record_id": "CUST-ASSET-0012511-000007",
+        "asset_id": "ASSET-0009861",
+        "record_id": "CUST-ASSET-0009861-000007",
         "entity_name": "custody_events",
         "expected_decision": "FLAG_FOR_INVESTIGATION",
-        "description": "Asset ASSET-0012511 detected in conflicting locations (Location 19 vs Location 25) at timestamp 2026-07-29 08:30:00"
+        "description": "Asset ASSET-0009861 detected in conflicting locations (Location 26 vs Location 29) at timestamp 2026-09-11 08:30:00"
       },
       {
         "issue_type": "SIMULTANEOUS_LOCATIONS",
         "severity": "CRITICAL",
-        "asset_id": "ASSET-0012712",
-        "record_id": "CUST-ASSET-0012712-000007",
+        "asset_id": "ASSET-0013685",
+        "record_id": "CUST-ASSET-0013685-000006",
         "entity_name": "custody_events",
         "expected_decision": "FLAG_FOR_INVESTIGATION",
-        "description": "Asset ASSET-0012712 detected in conflicting locations (Location 19 vs Location 11) at timestamp 2026-09-10 08:30:00"
+        "description": "Asset ASSET-0013685 detected in conflicting locations (Location 8 vs Location 23) at timestamp 2026-08-23 08:30:00"
       },
       {
         "issue_type": "SIMULTANEOUS_LOCATIONS",
         "severity": "CRITICAL",
-        "asset_id": "ASSET-0012789",
-        "record_id": "CUST-ASSET-0012789-000007",
+        "asset_id": "ASSET-0017015",
+        "record_id": "CUST-ASSET-0017015-000005",
         "entity_name": "custody_events",
         "expected_decision": "FLAG_FOR_INVESTIGATION",
-        "description": "Asset ASSET-0012789 detected in conflicting locations (Location 20 vs Location 8) at timestamp 2026-08-07 08:30:00"
+        "description": "Asset ASSET-0017015 detected in conflicting locations (Location 9 vs Location 14) at timestamp 2026-09-30 08:30:00"
       },
       {
         "issue_type": "SIMULTANEOUS_LOCATIONS",
         "severity": "CRITICAL",
-        "asset_id": "ASSET-0012957",
-        "record_id": "CUST-ASSET-0012957-000007",
+        "asset_id": "ASSET-0017375",
+        "record_id": "CUST-ASSET-0017375-000006",
         "entity_name": "custody_events",
         "expected_decision": "FLAG_FOR_INVESTIGATION",
-        "description": "Asset ASSET-0012957 detected in conflicting locations (Location 8 vs Location 15) at timestamp 2026-08-25 08:30:00"
+        "description": "Asset ASSET-0017375 detected in conflicting locations (Location 19 vs Location 11) at timestamp 2026-07-04 08:30:00"
       },
       {
         "issue_type": "SIMULTANEOUS_LOCATIONS",
         "severity": "CRITICAL",
-        "asset_id": "ASSET-0015949",
-        "record_id": "CUST-ASSET-0015949-000007",
+        "asset_id": "ASSET-0018432",
+        "record_id": "CUST-ASSET-0018432-000007",
         "entity_name": "custody_events",
         "expected_decision": "FLAG_FOR_INVESTIGATION",
-        "description": "Asset ASSET-0015949 detected in conflicting locations (Location 5 vs Location 22) at timestamp 2026-09-11 08:30:00"
+        "description": "Asset ASSET-0018432 detected in conflicting locations (Location 29 vs Location 8) at timestamp 2026-09-25 08:30:00"
       },
       {
         "issue_type": "SIMULTANEOUS_LOCATIONS",
         "severity": "CRITICAL",
-        "asset_id": "ASSET-0017906",
-        "record_id": "CUST-ASSET-0017906-000007",
+        "asset_id": "ASSET-0019134",
+        "record_id": "CUST-ASSET-0019134-000006",
         "entity_name": "custody_events",
         "expected_decision": "FLAG_FOR_INVESTIGATION",
-        "description": "Asset ASSET-0017906 detected in conflicting locations (Location 6 vs Location 8) at timestamp 2026-08-05 08:30:00"
+        "description": "Asset ASSET-0019134 detected in conflicting locations (Location 17 vs Location 16) at timestamp 2026-08-16 08:30:00"
       },
       {
         "issue_type": "SIMULTANEOUS_LOCATIONS",
         "severity": "CRITICAL",
-        "asset_id": "ASSET-0019951",
-        "record_id": "CUST-ASSET-0019951-000007",
+        "asset_id": "ASSET-0019354",
+        "record_id": "CUST-ASSET-0019354-000006",
         "entity_name": "custody_events",
         "expected_decision": "FLAG_FOR_INVESTIGATION",
-        "description": "Asset ASSET-0019951 detected in conflicting locations (Location 8 vs Location 22) at timestamp 2026-09-23 08:30:00"
+        "description": "Asset ASSET-0019354 detected in conflicting locations (Location 8 vs Location 22) at timestamp 2026-08-25 08:30:00"
       }
     ]
   },

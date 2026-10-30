@@ -170,9 +170,40 @@ st.markdown("""
         color: #475569;
     }
 
-    /* Custom sidebar header */
-    [data-testid="stSidebarHeader"] {
+    /* Custom sidebar styling matching #0F172A */
+    [data-testid="stSidebar"] {
+        background-color: #0F172A;
+    }
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] span,
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] div {
+        color: #E2E8F0;
+    }
+    [data-testid="stSidebar"] [data-testid="stSidebarHeader"] {
         padding-bottom: 0rem;
+    }
+    /* Style Streamlit radio navigation items in sidebar */
+    [data-testid="stSidebar"] .stRadio > div {
+        gap: 0.35rem;
+    }
+    [data-testid="stSidebar"] .stRadio label {
+        color: #94A3B8 !important;
+        background-color: transparent;
+        padding: 0.5rem 0.8rem;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    [data-testid="stSidebar"] .stRadio label:hover {
+        background-color: #1E293B;
+        color: #FFFFFF !important;
+    }
+    [data-testid="stSidebar"] .stRadio [data-checked="true"] {
+        background-color: #1D4ED8 !important;
+        color: #FFFFFF !important;
+        border-radius: 8px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -192,11 +223,13 @@ if settings.GA_MEASUREMENT_ID:
 
 # Sidebar navigation
 st.sidebar.markdown("""
-<div style="display:flex; align-items:center; gap:0.6rem; padding: 0.5rem 0 1.5rem 0;">
-    <div style="background:#2563EB; color:white; width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.1rem;">RF</div>
+<div style="display:flex; align-items:center; gap:0.65rem; padding: 0.5rem 0 1.2rem 0; border-bottom: 1px solid #1E293B; margin-bottom: 0.8rem;">
+    <div style="background:#2563EB; color:white; width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.15rem; box-shadow:0 2px 6px rgba(37,99,235,0.4);">
+        📦
+    </div>
     <div>
-        <div style="font-weight:700; font-size:1.15rem; color:#0F172A; line-height:1.2;">ReturnFlow</div>
-        <div style="font-size:0.75rem; color:#64748B;">Enterprise Asset Ops</div>
+        <div style="font-weight:700; font-size:1.2rem; color:#FFFFFF; line-height:1.2;">ReturnFlow</div>
+        <div style="font-size:0.72rem; color:#94A3B8;">Enterprise Asset Ops</div>
     </div>
 </div>
 """, unsafe_allow_html=True)

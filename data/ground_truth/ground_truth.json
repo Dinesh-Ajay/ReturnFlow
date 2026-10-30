@@ -1,223 +1,223 @@
 [
   {
     "issue_id": "ANOM-000001",
-    "asset_id": "ASSET-0003636",
+    "asset_id": "ASSET-0009861",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0003636-000004",
+    "record_id": "CUST-ASSET-0009861-000007",
     "issue_type": "SIMULTANEOUS_LOCATIONS",
     "severity": "CRITICAL",
     "ground_truth_label": "ANOMALY_SIMULTANEOUS_LOCATIONS",
     "expected_decision": "FLAG_FOR_INVESTIGATION",
-    "explanation": "Asset ASSET-0003636 recorded in two distinct physical locations at identical timestamp 2026-10-19 08:30:00+00:00."
+    "explanation": "Asset ASSET-0009861 recorded in two distinct physical locations at identical timestamp 2026-09-11 08:30:00+00:00."
   },
   {
     "issue_id": "ANOM-000002",
-    "asset_id": "ASSET-0012712",
+    "asset_id": "ASSET-0017375",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0012712-000007",
+    "record_id": "CUST-ASSET-0017375-000006",
     "issue_type": "SIMULTANEOUS_LOCATIONS",
     "severity": "CRITICAL",
     "ground_truth_label": "ANOMALY_SIMULTANEOUS_LOCATIONS",
     "expected_decision": "FLAG_FOR_INVESTIGATION",
-    "explanation": "Asset ASSET-0012712 recorded in two distinct physical locations at identical timestamp 2026-09-10 08:30:00+00:00."
+    "explanation": "Asset ASSET-0017375 recorded in two distinct physical locations at identical timestamp 2026-07-04 08:30:00+00:00."
   },
   {
     "issue_id": "ANOM-000003",
-    "asset_id": "ASSET-0015949",
+    "asset_id": "ASSET-0002385",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0015949-000007",
+    "record_id": "CUST-ASSET-0002385-000007",
     "issue_type": "SIMULTANEOUS_LOCATIONS",
     "severity": "CRITICAL",
     "ground_truth_label": "ANOMALY_SIMULTANEOUS_LOCATIONS",
     "expected_decision": "FLAG_FOR_INVESTIGATION",
-    "explanation": "Asset ASSET-0015949 recorded in two distinct physical locations at identical timestamp 2026-09-11 08:30:00+00:00."
+    "explanation": "Asset ASSET-0002385 recorded in two distinct physical locations at identical timestamp 2026-09-03 08:30:00+00:00."
   },
   {
     "issue_id": "ANOM-000004",
-    "asset_id": "ASSET-0012789",
+    "asset_id": "ASSET-0018432",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0012789-000007",
+    "record_id": "CUST-ASSET-0018432-000007",
     "issue_type": "SIMULTANEOUS_LOCATIONS",
     "severity": "CRITICAL",
     "ground_truth_label": "ANOMALY_SIMULTANEOUS_LOCATIONS",
     "expected_decision": "FLAG_FOR_INVESTIGATION",
-    "explanation": "Asset ASSET-0012789 recorded in two distinct physical locations at identical timestamp 2026-08-07 08:30:00+00:00."
+    "explanation": "Asset ASSET-0018432 recorded in two distinct physical locations at identical timestamp 2026-09-25 08:30:00+00:00."
   },
   {
     "issue_id": "ANOM-000005",
-    "asset_id": "ASSET-0004550",
+    "asset_id": "ASSET-0017015",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0004550-000007",
+    "record_id": "CUST-ASSET-0017015-000005",
     "issue_type": "SIMULTANEOUS_LOCATIONS",
     "severity": "CRITICAL",
     "ground_truth_label": "ANOMALY_SIMULTANEOUS_LOCATIONS",
     "expected_decision": "FLAG_FOR_INVESTIGATION",
-    "explanation": "Asset ASSET-0004550 recorded in two distinct physical locations at identical timestamp 2026-09-19 08:30:00+00:00."
+    "explanation": "Asset ASSET-0017015 recorded in two distinct physical locations at identical timestamp 2026-09-30 08:30:00+00:00."
   },
   {
     "issue_id": "ANOM-000006",
-    "asset_id": "ASSET-0012511",
+    "asset_id": "ASSET-0003777",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0012511-000007",
+    "record_id": "CUST-ASSET-0003777-000004",
     "issue_type": "SIMULTANEOUS_LOCATIONS",
     "severity": "CRITICAL",
     "ground_truth_label": "ANOMALY_SIMULTANEOUS_LOCATIONS",
     "expected_decision": "FLAG_FOR_INVESTIGATION",
-    "explanation": "Asset ASSET-0012511 recorded in two distinct physical locations at identical timestamp 2026-07-29 08:30:00+00:00."
+    "explanation": "Asset ASSET-0003777 recorded in two distinct physical locations at identical timestamp 2026-10-18 08:30:00+00:00."
   },
   {
     "issue_id": "ANOM-000007",
-    "asset_id": "ASSET-0012957",
+    "asset_id": "ASSET-0001164",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0012957-000007",
+    "record_id": "CUST-ASSET-0001164-000007",
     "issue_type": "SIMULTANEOUS_LOCATIONS",
     "severity": "CRITICAL",
     "ground_truth_label": "ANOMALY_SIMULTANEOUS_LOCATIONS",
     "expected_decision": "FLAG_FOR_INVESTIGATION",
-    "explanation": "Asset ASSET-0012957 recorded in two distinct physical locations at identical timestamp 2026-08-25 08:30:00+00:00."
+    "explanation": "Asset ASSET-0001164 recorded in two distinct physical locations at identical timestamp 2026-09-22 08:30:00+00:00."
   },
   {
     "issue_id": "ANOM-000008",
-    "asset_id": "ASSET-0017906",
+    "asset_id": "ASSET-0013685",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0017906-000007",
+    "record_id": "CUST-ASSET-0013685-000006",
     "issue_type": "SIMULTANEOUS_LOCATIONS",
     "severity": "CRITICAL",
     "ground_truth_label": "ANOMALY_SIMULTANEOUS_LOCATIONS",
     "expected_decision": "FLAG_FOR_INVESTIGATION",
-    "explanation": "Asset ASSET-0017906 recorded in two distinct physical locations at identical timestamp 2026-08-05 08:30:00+00:00."
+    "explanation": "Asset ASSET-0013685 recorded in two distinct physical locations at identical timestamp 2026-08-23 08:30:00+00:00."
   },
   {
     "issue_id": "ANOM-000009",
-    "asset_id": "ASSET-0001291",
+    "asset_id": "ASSET-0019354",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0001291-000007",
+    "record_id": "CUST-ASSET-0019354-000006",
     "issue_type": "SIMULTANEOUS_LOCATIONS",
     "severity": "CRITICAL",
     "ground_truth_label": "ANOMALY_SIMULTANEOUS_LOCATIONS",
     "expected_decision": "FLAG_FOR_INVESTIGATION",
-    "explanation": "Asset ASSET-0001291 recorded in two distinct physical locations at identical timestamp 2026-08-02 08:30:00+00:00."
+    "explanation": "Asset ASSET-0019354 recorded in two distinct physical locations at identical timestamp 2026-08-25 08:30:00+00:00."
   },
   {
     "issue_id": "ANOM-000010",
-    "asset_id": "ASSET-0019951",
+    "asset_id": "ASSET-0019134",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0019951-000007",
+    "record_id": "CUST-ASSET-0019134-000006",
     "issue_type": "SIMULTANEOUS_LOCATIONS",
     "severity": "CRITICAL",
     "ground_truth_label": "ANOMALY_SIMULTANEOUS_LOCATIONS",
     "expected_decision": "FLAG_FOR_INVESTIGATION",
-    "explanation": "Asset ASSET-0019951 recorded in two distinct physical locations at identical timestamp 2026-09-23 08:30:00+00:00."
+    "explanation": "Asset ASSET-0019134 recorded in two distinct physical locations at identical timestamp 2026-08-16 08:30:00+00:00."
   },
   {
     "issue_id": "ANOM-000011",
-    "asset_id": "ASSET-0000014",
+    "asset_id": "ASSET-0005697",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0000014-000007",
+    "record_id": "CUST-ASSET-0005697-000005",
     "issue_type": "RETURN_BEFORE_DISPATCH",
     "severity": "CRITICAL",
     "ground_truth_label": "ANOMALY_RETURN_BEFORE_DISPATCH",
     "expected_decision": "INVALID_LIFECYCLE_TRANSITION",
-    "explanation": "Return event CUST-ASSET-0000014-000007 at 2026-08-09 08:30:00+00:00 precedes dispatch event CUST-ASSET-0000014-000001 at 2026-08-14 08:30:00+00:00."
+    "explanation": "Return event CUST-ASSET-0005697-000005 at 2026-09-08 08:30:00+00:00 precedes dispatch event CUST-ASSET-0005697-000001 at 2026-09-13 08:30:00+00:00."
   },
   {
     "issue_id": "ANOM-000012",
-    "asset_id": "ASSET-0000251",
+    "asset_id": "ASSET-0005367",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0000251-000005",
+    "record_id": "CUST-ASSET-0005367-000007",
     "issue_type": "RETURN_BEFORE_DISPATCH",
     "severity": "CRITICAL",
     "ground_truth_label": "ANOMALY_RETURN_BEFORE_DISPATCH",
     "expected_decision": "INVALID_LIFECYCLE_TRANSITION",
-    "explanation": "Return event CUST-ASSET-0000251-000005 at 2026-10-11 08:30:00+00:00 precedes dispatch event CUST-ASSET-0000251-000001 at 2026-10-16 08:30:00+00:00."
+    "explanation": "Return event CUST-ASSET-0005367-000007 at 2026-09-17 08:30:00+00:00 precedes dispatch event CUST-ASSET-0005367-000001 at 2026-09-22 08:30:00+00:00."
   },
   {
     "issue_id": "ANOM-000013",
-    "asset_id": "ASSET-0019738",
+    "asset_id": "ASSET-0018361",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0019738-000007",
+    "record_id": "CUST-ASSET-0018361-000007",
     "issue_type": "RETURN_BEFORE_DISPATCH",
     "severity": "CRITICAL",
     "ground_truth_label": "ANOMALY_RETURN_BEFORE_DISPATCH",
     "expected_decision": "INVALID_LIFECYCLE_TRANSITION",
-    "explanation": "Return event CUST-ASSET-0019738-000007 at 2026-08-18 08:30:00+00:00 precedes dispatch event CUST-ASSET-0019738-000001 at 2026-08-23 08:30:00+00:00."
+    "explanation": "Return event CUST-ASSET-0018361-000007 at 2026-08-04 08:30:00+00:00 precedes dispatch event CUST-ASSET-0018361-000001 at 2026-08-09 08:30:00+00:00."
   },
   {
     "issue_id": "ANOM-000014",
-    "asset_id": "ASSET-0018750",
+    "asset_id": "ASSET-0007804",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0018750-000007",
+    "record_id": "CUST-ASSET-0007804-000007",
     "issue_type": "RETURN_BEFORE_DISPATCH",
     "severity": "CRITICAL",
     "ground_truth_label": "ANOMALY_RETURN_BEFORE_DISPATCH",
     "expected_decision": "INVALID_LIFECYCLE_TRANSITION",
-    "explanation": "Return event CUST-ASSET-0018750-000007 at 2026-08-30 08:30:00+00:00 precedes dispatch event CUST-ASSET-0018750-000001 at 2026-09-04 08:30:00+00:00."
+    "explanation": "Return event CUST-ASSET-0007804-000007 at 2026-08-29 08:30:00+00:00 precedes dispatch event CUST-ASSET-0007804-000001 at 2026-09-03 08:30:00+00:00."
   },
   {
     "issue_id": "ANOM-000015",
-    "asset_id": "ASSET-0014033",
+    "asset_id": "ASSET-0000062",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0014033-000005",
+    "record_id": "CUST-ASSET-0000062-000007",
     "issue_type": "RETURN_BEFORE_DISPATCH",
     "severity": "CRITICAL",
     "ground_truth_label": "ANOMALY_RETURN_BEFORE_DISPATCH",
     "expected_decision": "INVALID_LIFECYCLE_TRANSITION",
-    "explanation": "Return event CUST-ASSET-0014033-000005 at 2026-09-30 08:30:00+00:00 precedes dispatch event CUST-ASSET-0014033-000001 at 2026-10-05 08:30:00+00:00."
+    "explanation": "Return event CUST-ASSET-0000062-000007 at 2026-09-10 08:30:00+00:00 precedes dispatch event CUST-ASSET-0000062-000001 at 2026-09-15 08:30:00+00:00."
   },
   {
     "issue_id": "ANOM-000016",
-    "asset_id": "ASSET-0008826",
+    "asset_id": "ASSET-0017338",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0008826-000007",
+    "record_id": "CUST-ASSET-0017338-000005",
     "issue_type": "RETURN_BEFORE_DISPATCH",
     "severity": "CRITICAL",
     "ground_truth_label": "ANOMALY_RETURN_BEFORE_DISPATCH",
     "expected_decision": "INVALID_LIFECYCLE_TRANSITION",
-    "explanation": "Return event CUST-ASSET-0008826-000007 at 2026-08-26 08:30:00+00:00 precedes dispatch event CUST-ASSET-0008826-000001 at 2026-08-31 08:30:00+00:00."
+    "explanation": "Return event CUST-ASSET-0017338-000005 at 2026-10-11 08:30:00+00:00 precedes dispatch event CUST-ASSET-0017338-000001 at 2026-10-16 08:30:00+00:00."
   },
   {
     "issue_id": "ANOM-000017",
-    "asset_id": "ASSET-0001755",
+    "asset_id": "ASSET-0006105",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0001755-000007",
+    "record_id": "CUST-ASSET-0006105-000007",
     "issue_type": "RETURN_BEFORE_DISPATCH",
     "severity": "CRITICAL",
     "ground_truth_label": "ANOMALY_RETURN_BEFORE_DISPATCH",
     "expected_decision": "INVALID_LIFECYCLE_TRANSITION",
-    "explanation": "Return event CUST-ASSET-0001755-000007 at 2026-08-05 08:30:00+00:00 precedes dispatch event CUST-ASSET-0001755-000001 at 2026-08-10 08:30:00+00:00."
+    "explanation": "Return event CUST-ASSET-0006105-000007 at 2026-09-11 08:30:00+00:00 precedes dispatch event CUST-ASSET-0006105-000001 at 2026-09-16 08:30:00+00:00."
   },
   {
     "issue_id": "ANOM-000018",
-    "asset_id": "ASSET-0011598",
+    "asset_id": "ASSET-0016370",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0011598-000007",
+    "record_id": "CUST-ASSET-0016370-000006",
     "issue_type": "RETURN_BEFORE_DISPATCH",
     "severity": "CRITICAL",
     "ground_truth_label": "ANOMALY_RETURN_BEFORE_DISPATCH",
     "expected_decision": "INVALID_LIFECYCLE_TRANSITION",
-    "explanation": "Return event CUST-ASSET-0011598-000007 at 2026-08-06 08:30:00+00:00 precedes dispatch event CUST-ASSET-0011598-000001 at 2026-08-11 08:30:00+00:00."
+    "explanation": "Return event CUST-ASSET-0016370-000006 at 2026-08-17 08:30:00+00:00 precedes dispatch event CUST-ASSET-0016370-000001 at 2026-08-22 08:30:00+00:00."
   },
   {
     "issue_id": "ANOM-000019",
-    "asset_id": "ASSET-0018732",
+    "asset_id": "ASSET-0009405",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0018732-000004",
+    "record_id": "CUST-ASSET-0009405-000004",
     "issue_type": "RETURN_BEFORE_DISPATCH",
     "severity": "CRITICAL",
     "ground_truth_label": "ANOMALY_RETURN_BEFORE_DISPATCH",
     "expected_decision": "INVALID_LIFECYCLE_TRANSITION",
-    "explanation": "Return event CUST-ASSET-0018732-000004 at 2026-10-13 08:30:00+00:00 precedes dispatch event CUST-ASSET-0018732-000001 at 2026-10-18 08:30:00+00:00."
+    "explanation": "Return event CUST-ASSET-0009405-000004 at 2026-10-13 08:30:00+00:00 precedes dispatch event CUST-ASSET-0009405-000001 at 2026-10-18 08:30:00+00:00."
   },
   {
     "issue_id": "ANOM-000020",
-    "asset_id": "ASSET-0007002",
+    "asset_id": "ASSET-0011293",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0007002-000007",
+    "record_id": "CUST-ASSET-0011293-000007",
     "issue_type": "RETURN_BEFORE_DISPATCH",
     "severity": "CRITICAL",
     "ground_truth_label": "ANOMALY_RETURN_BEFORE_DISPATCH",
     "expected_decision": "INVALID_LIFECYCLE_TRANSITION",
-    "explanation": "Return event CUST-ASSET-0007002-000007 at 2026-09-11 08:30:00+00:00 precedes dispatch event CUST-ASSET-0007002-000001 at 2026-09-16 08:30:00+00:00."
+    "explanation": "Return event CUST-ASSET-0011293-000007 at 2026-08-08 08:30:00+00:00 precedes dispatch event CUST-ASSET-0011293-000001 at 2026-08-13 08:30:00+00:00."
   },
   {
     "issue_id": "ANOM-000021",
@@ -331,222 +331,222 @@
   },
   {
     "issue_id": "ANOM-000031",
-    "asset_id": "ASSET-0010794",
+    "asset_id": "ASSET-0004701",
     "entity_name": "repairs",
     "record_id": "REP-2026-001339",
     "issue_type": "REPAIR_WITHOUT_INSPECTION",
     "severity": "HIGH",
     "ground_truth_label": "ANOMALY_REPAIR_WITHOUT_INSPECTION",
     "expected_decision": "REPAIR_WITHOUT_INSPECTION",
-    "explanation": "Repair REP-2026-001339 for asset ASSET-0010794 completed without linking to an originating inspection."
+    "explanation": "Repair REP-2026-001339 for asset ASSET-0004701 completed without linking to an originating inspection."
   },
   {
     "issue_id": "ANOM-000032",
-    "asset_id": "ASSET-0009898",
+    "asset_id": "ASSET-0010529",
     "entity_name": "repairs",
     "record_id": "REP-2026-001340",
     "issue_type": "REPAIR_WITHOUT_INSPECTION",
     "severity": "HIGH",
     "ground_truth_label": "ANOMALY_REPAIR_WITHOUT_INSPECTION",
     "expected_decision": "REPAIR_WITHOUT_INSPECTION",
-    "explanation": "Repair REP-2026-001340 for asset ASSET-0009898 completed without linking to an originating inspection."
+    "explanation": "Repair REP-2026-001340 for asset ASSET-0010529 completed without linking to an originating inspection."
   },
   {
     "issue_id": "ANOM-000033",
-    "asset_id": "ASSET-0018086",
+    "asset_id": "ASSET-0008788",
     "entity_name": "repairs",
     "record_id": "REP-2026-001341",
     "issue_type": "REPAIR_WITHOUT_INSPECTION",
     "severity": "HIGH",
     "ground_truth_label": "ANOMALY_REPAIR_WITHOUT_INSPECTION",
     "expected_decision": "REPAIR_WITHOUT_INSPECTION",
-    "explanation": "Repair REP-2026-001341 for asset ASSET-0018086 completed without linking to an originating inspection."
+    "explanation": "Repair REP-2026-001341 for asset ASSET-0008788 completed without linking to an originating inspection."
   },
   {
     "issue_id": "ANOM-000034",
-    "asset_id": "ASSET-0006828",
+    "asset_id": "ASSET-0001525",
     "entity_name": "repairs",
     "record_id": "REP-2026-001342",
     "issue_type": "REPAIR_WITHOUT_INSPECTION",
     "severity": "HIGH",
     "ground_truth_label": "ANOMALY_REPAIR_WITHOUT_INSPECTION",
     "expected_decision": "REPAIR_WITHOUT_INSPECTION",
-    "explanation": "Repair REP-2026-001342 for asset ASSET-0006828 completed without linking to an originating inspection."
+    "explanation": "Repair REP-2026-001342 for asset ASSET-0001525 completed without linking to an originating inspection."
   },
   {
     "issue_id": "ANOM-000035",
-    "asset_id": "ASSET-0014530",
+    "asset_id": "ASSET-0019974",
     "entity_name": "repairs",
     "record_id": "REP-2026-001343",
     "issue_type": "REPAIR_WITHOUT_INSPECTION",
     "severity": "HIGH",
     "ground_truth_label": "ANOMALY_REPAIR_WITHOUT_INSPECTION",
     "expected_decision": "REPAIR_WITHOUT_INSPECTION",
-    "explanation": "Repair REP-2026-001343 for asset ASSET-0014530 completed without linking to an originating inspection."
+    "explanation": "Repair REP-2026-001343 for asset ASSET-0019974 completed without linking to an originating inspection."
   },
   {
     "issue_id": "ANOM-000036",
-    "asset_id": "ASSET-0003251",
+    "asset_id": "ASSET-0011258",
     "entity_name": "repairs",
     "record_id": "REP-2026-001344",
     "issue_type": "REPAIR_WITHOUT_INSPECTION",
     "severity": "HIGH",
     "ground_truth_label": "ANOMALY_REPAIR_WITHOUT_INSPECTION",
     "expected_decision": "REPAIR_WITHOUT_INSPECTION",
-    "explanation": "Repair REP-2026-001344 for asset ASSET-0003251 completed without linking to an originating inspection."
+    "explanation": "Repair REP-2026-001344 for asset ASSET-0011258 completed without linking to an originating inspection."
   },
   {
     "issue_id": "ANOM-000037",
-    "asset_id": "ASSET-0003050",
+    "asset_id": "ASSET-0005510",
     "entity_name": "repairs",
     "record_id": "REP-2026-001345",
     "issue_type": "REPAIR_WITHOUT_INSPECTION",
     "severity": "HIGH",
     "ground_truth_label": "ANOMALY_REPAIR_WITHOUT_INSPECTION",
     "expected_decision": "REPAIR_WITHOUT_INSPECTION",
-    "explanation": "Repair REP-2026-001345 for asset ASSET-0003050 completed without linking to an originating inspection."
+    "explanation": "Repair REP-2026-001345 for asset ASSET-0005510 completed without linking to an originating inspection."
   },
   {
     "issue_id": "ANOM-000038",
-    "asset_id": "ASSET-0014438",
+    "asset_id": "ASSET-0017178",
     "entity_name": "repairs",
     "record_id": "REP-2026-001346",
     "issue_type": "REPAIR_WITHOUT_INSPECTION",
     "severity": "HIGH",
     "ground_truth_label": "ANOMALY_REPAIR_WITHOUT_INSPECTION",
     "expected_decision": "REPAIR_WITHOUT_INSPECTION",
-    "explanation": "Repair REP-2026-001346 for asset ASSET-0014438 completed without linking to an originating inspection."
+    "explanation": "Repair REP-2026-001346 for asset ASSET-0017178 completed without linking to an originating inspection."
   },
   {
     "issue_id": "ANOM-000039",
-    "asset_id": "ASSET-0000170",
+    "asset_id": "ASSET-0005426",
     "entity_name": "repairs",
     "record_id": "REP-2026-001347",
     "issue_type": "REPAIR_WITHOUT_INSPECTION",
     "severity": "HIGH",
     "ground_truth_label": "ANOMALY_REPAIR_WITHOUT_INSPECTION",
     "expected_decision": "REPAIR_WITHOUT_INSPECTION",
-    "explanation": "Repair REP-2026-001347 for asset ASSET-0000170 completed without linking to an originating inspection."
+    "explanation": "Repair REP-2026-001347 for asset ASSET-0005426 completed without linking to an originating inspection."
   },
   {
     "issue_id": "ANOM-000040",
-    "asset_id": "ASSET-0008096",
+    "asset_id": "ASSET-0000093",
     "entity_name": "repairs",
     "record_id": "REP-2026-001348",
     "issue_type": "REPAIR_WITHOUT_INSPECTION",
     "severity": "HIGH",
     "ground_truth_label": "ANOMALY_REPAIR_WITHOUT_INSPECTION",
     "expected_decision": "REPAIR_WITHOUT_INSPECTION",
-    "explanation": "Repair REP-2026-001348 for asset ASSET-0008096 completed without linking to an originating inspection."
+    "explanation": "Repair REP-2026-001348 for asset ASSET-0000093 completed without linking to an originating inspection."
   },
   {
     "issue_id": "ANOM-000041",
-    "asset_id": "ASSET-0006897",
+    "asset_id": "ASSET-0017344",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0006897-000007",
+    "record_id": "CUST-ASSET-0017344-000004",
     "issue_type": "MISSING_CUSTODY_ACTOR",
     "severity": "MEDIUM",
     "ground_truth_label": "ANOMALY_MISSING_CUSTODY_ACTOR",
     "expected_decision": "MISSING_CUSTODY_ACTOR",
-    "explanation": "Custody event CUST-ASSET-0006897-000007 recorded with null actor_owner_id."
+    "explanation": "Custody event CUST-ASSET-0017344-000004 recorded with null actor_owner_id."
   },
   {
     "issue_id": "ANOM-000042",
-    "asset_id": "ASSET-0006330",
+    "asset_id": "ASSET-0009604",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0006330-000005",
+    "record_id": "CUST-ASSET-0009604-000004",
     "issue_type": "MISSING_CUSTODY_ACTOR",
     "severity": "MEDIUM",
     "ground_truth_label": "ANOMALY_MISSING_CUSTODY_ACTOR",
     "expected_decision": "MISSING_CUSTODY_ACTOR",
-    "explanation": "Custody event CUST-ASSET-0006330-000005 recorded with null actor_owner_id."
+    "explanation": "Custody event CUST-ASSET-0009604-000004 recorded with null actor_owner_id."
   },
   {
     "issue_id": "ANOM-000043",
-    "asset_id": "ASSET-0016326",
+    "asset_id": "ASSET-0016641",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0016326-000005",
+    "record_id": "CUST-ASSET-0016641-000005",
     "issue_type": "MISSING_CUSTODY_ACTOR",
     "severity": "MEDIUM",
     "ground_truth_label": "ANOMALY_MISSING_CUSTODY_ACTOR",
     "expected_decision": "MISSING_CUSTODY_ACTOR",
-    "explanation": "Custody event CUST-ASSET-0016326-000005 recorded with null actor_owner_id."
+    "explanation": "Custody event CUST-ASSET-0016641-000005 recorded with null actor_owner_id."
   },
   {
     "issue_id": "ANOM-000044",
-    "asset_id": "ASSET-0012240",
+    "asset_id": "ASSET-0017215",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0012240-000006",
+    "record_id": "CUST-ASSET-0017215-000006",
     "issue_type": "MISSING_CUSTODY_ACTOR",
     "severity": "MEDIUM",
     "ground_truth_label": "ANOMALY_MISSING_CUSTODY_ACTOR",
     "expected_decision": "MISSING_CUSTODY_ACTOR",
-    "explanation": "Custody event CUST-ASSET-0012240-000006 recorded with null actor_owner_id."
+    "explanation": "Custody event CUST-ASSET-0017215-000006 recorded with null actor_owner_id."
   },
   {
     "issue_id": "ANOM-000045",
-    "asset_id": "ASSET-0012847",
+    "asset_id": "ASSET-0013053",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0012847-000005",
+    "record_id": "CUST-ASSET-0013053-000005",
     "issue_type": "MISSING_CUSTODY_ACTOR",
     "severity": "MEDIUM",
     "ground_truth_label": "ANOMALY_MISSING_CUSTODY_ACTOR",
     "expected_decision": "MISSING_CUSTODY_ACTOR",
-    "explanation": "Custody event CUST-ASSET-0012847-000005 recorded with null actor_owner_id."
+    "explanation": "Custody event CUST-ASSET-0013053-000005 recorded with null actor_owner_id."
   },
   {
     "issue_id": "ANOM-000046",
-    "asset_id": "ASSET-0007849",
+    "asset_id": "ASSET-0016393",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0007849-000005",
+    "record_id": "CUST-ASSET-0016393-000004",
     "issue_type": "MISSING_CUSTODY_ACTOR",
     "severity": "MEDIUM",
     "ground_truth_label": "ANOMALY_MISSING_CUSTODY_ACTOR",
     "expected_decision": "MISSING_CUSTODY_ACTOR",
-    "explanation": "Custody event CUST-ASSET-0007849-000005 recorded with null actor_owner_id."
+    "explanation": "Custody event CUST-ASSET-0016393-000004 recorded with null actor_owner_id."
   },
   {
     "issue_id": "ANOM-000047",
-    "asset_id": "ASSET-0001447",
+    "asset_id": "ASSET-0003890",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0001447-000007",
+    "record_id": "CUST-ASSET-0003890-000007",
     "issue_type": "MISSING_CUSTODY_ACTOR",
     "severity": "MEDIUM",
     "ground_truth_label": "ANOMALY_MISSING_CUSTODY_ACTOR",
     "expected_decision": "MISSING_CUSTODY_ACTOR",
-    "explanation": "Custody event CUST-ASSET-0001447-000007 recorded with null actor_owner_id."
+    "explanation": "Custody event CUST-ASSET-0003890-000007 recorded with null actor_owner_id."
   },
   {
     "issue_id": "ANOM-000048",
-    "asset_id": "ASSET-0009671",
+    "asset_id": "ASSET-0009281",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0009671-000005",
+    "record_id": "CUST-ASSET-0009281-000007",
     "issue_type": "MISSING_CUSTODY_ACTOR",
     "severity": "MEDIUM",
     "ground_truth_label": "ANOMALY_MISSING_CUSTODY_ACTOR",
     "expected_decision": "MISSING_CUSTODY_ACTOR",
-    "explanation": "Custody event CUST-ASSET-0009671-000005 recorded with null actor_owner_id."
+    "explanation": "Custody event CUST-ASSET-0009281-000007 recorded with null actor_owner_id."
   },
   {
     "issue_id": "ANOM-000049",
-    "asset_id": "ASSET-0008819",
+    "asset_id": "ASSET-0013254",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0008819-000007",
+    "record_id": "CUST-ASSET-0013254-000007",
     "issue_type": "MISSING_CUSTODY_ACTOR",
     "severity": "MEDIUM",
     "ground_truth_label": "ANOMALY_MISSING_CUSTODY_ACTOR",
     "expected_decision": "MISSING_CUSTODY_ACTOR",
-    "explanation": "Custody event CUST-ASSET-0008819-000007 recorded with null actor_owner_id."
+    "explanation": "Custody event CUST-ASSET-0013254-000007 recorded with null actor_owner_id."
   },
   {
     "issue_id": "ANOM-000050",
-    "asset_id": "ASSET-0009396",
+    "asset_id": "ASSET-0003474",
     "entity_name": "custody_events",
-    "record_id": "CUST-ASSET-0009396-000005",
+    "record_id": "CUST-ASSET-0003474-000007",
     "issue_type": "MISSING_CUSTODY_ACTOR",
     "severity": "MEDIUM",
     "ground_truth_label": "ANOMALY_MISSING_CUSTODY_ACTOR",
     "expected_decision": "MISSING_CUSTODY_ACTOR",
-    "explanation": "Custody event CUST-ASSET-0009396-000005 recorded with null actor_owner_id."
+    "explanation": "Custody event CUST-ASSET-0003474-000007 recorded with null actor_owner_id."
   }
 ]
