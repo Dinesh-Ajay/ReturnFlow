@@ -6,17 +6,39 @@ from app.utils.logging_config import setup_logging, logger
 from app.api.routes import (
     health, assets, asset_types, owners, locations,
     shipments, custody, returns, inspections, repairs,
-    deposits, validation, analytics
+    deposits, validation, analytics, auth, exports
 )
 
 setup_logging()
+
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    from app.database.session import engine, SessionLocal
+    from app.database.base import Base
+    from app.models.user import User, PasswordResetOTP
+    from app.services.auth_service import AuthService
+
+    # Ensure auth tables exist
+    Base.metadata.create_all(bind=engine, tables=[User.__table__, PasswordResetOTP.__table__])
+
+    # Bootstrap Operations Manager account
+    db = SessionLocal()
+    try:
+        AuthService.bootstrap_admin_user(db)
+    finally:
+        db.close()
+
+    yield
 
 app = FastAPI(
     title="ReturnFlow API",
     description="Reusable Asset Return & Lifecycle Management System - High-throughput REST API for asset tracking, custody traceability, and financial reconciliation.",
     version=settings.APP_VERSION,
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
+    lifespan=lifespan
 )
 
 # CORS middleware
@@ -38,6 +60,8 @@ async def global_exception_handler(request: Request, exc: Exception):
     )
 
 # Include API Routers
+app.include_router(auth.router)
+app.include_router(exports.router)
 app.include_router(health.router)
 app.include_router(assets.router)
 app.include_router(asset_types.router)

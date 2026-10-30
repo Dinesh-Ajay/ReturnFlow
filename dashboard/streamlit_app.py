@@ -271,9 +271,9 @@ st.markdown("""
     <div style="display:flex; align-items:center; gap:1rem;">
         <span style="cursor:pointer;" title="Notifications">🔔</span>
         <div class="user-pill">
-            <div class="avatar-circle">AK</div>
+            <div class="avatar-circle">DA</div>
             <div>
-                <div style="font-size:0.82rem; font-weight:600; line-height:1.1;">Ajay Kumar</div>
+                <div style="font-size:0.82rem; font-weight:600; line-height:1.1;">Dinesh Ajay</div>
                 <div style="font-size:0.7rem; color:#64748B;">Operations Manager</div>
             </div>
         </div>

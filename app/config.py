@@ -30,6 +30,23 @@ class Settings:
     AUTH_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 1 day
     
+    # Initial Operations Manager Account Bootstrap
+    INITIAL_ADMIN_EMAIL: str = os.getenv("INITIAL_ADMIN_EMAIL", "dineshajay874@gmail.com")
+    INITIAL_ADMIN_NAME: str = os.getenv("INITIAL_ADMIN_NAME", "Dinesh Ajay")
+    INITIAL_ADMIN_ROLE: str = os.getenv("INITIAL_ADMIN_ROLE", "Operations Manager")
+    INITIAL_ADMIN_PASSWORD: str = os.getenv("INITIAL_ADMIN_PASSWORD", "ReturnFlow@2026!")
+
+    # SMTP Configuration (Gmail TLS)
+    SMTP_SERVER: str = os.getenv("SMTP_SERVER", "smtp.gmail.com")
+    SMTP_PORT: int = int(os.getenv("SMTP_PORT", "587"))
+    SMTP_EMAIL: str = os.getenv("SMTP_EMAIL", "dineshajay874@gmail.com")
+    SMTP_APP_PASSWORD: str = os.getenv("SMTP_APP_PASSWORD", "")
+
+    # OTP Security Controls
+    OTP_EXPIRE_MINUTES: int = int(os.getenv("OTP_EXPIRE_MINUTES", "5"))
+    OTP_MAX_ATTEMPTS: int = int(os.getenv("OTP_MAX_ATTEMPTS", "3"))
+    OTP_RESEND_COOLDOWN_SECONDS: int = int(os.getenv("OTP_RESEND_COOLDOWN_SECONDS", "60"))
+
     # Google Analytics
     GA_MEASUREMENT_ID: Optional[str] = os.getenv("GA_MEASUREMENT_ID", "G-RETURNFLOW01")
     

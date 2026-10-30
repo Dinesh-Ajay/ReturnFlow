@@ -2,6 +2,8 @@ from typing import Generator, Optional
 from fastapi import Depends, HTTPException, Header, status
 from sqlalchemy.orm import Session
 from app.database.session import get_db
+from app.config import settings
+from app.services.auth_service import AuthService
 
 class CurrentUser:
     def __init__(self, user_id: str, email: str, role: str, name: str):
@@ -15,13 +17,25 @@ def get_current_user(
     x_user_role: Optional[str] = Header(None)
 ) -> CurrentUser:
     """
-    Better Auth session & role-based access dependency.
-    Supports roles: Admin, Operations Manager, Logistics Analyst, Warehouse Operator.
+    Session & role-based access dependency.
+    Supports JWT tokens from Authorization: Bearer <token>,
+    falling back to initial Operations Manager (Dinesh Ajay).
     """
-    role = x_user_role or "Operations Manager"
+    if authorization and authorization.startswith("Bearer "):
+        token = authorization.split(" ", 1)[1].strip()
+        payload = AuthService.decode_access_token(token)
+        if payload:
+            return CurrentUser(
+                user_id=str(payload.get("user_id", "usr_dinesh_ajay")),
+                email=str(payload.get("email", settings.INITIAL_ADMIN_EMAIL)),
+                role=str(payload.get("role", settings.INITIAL_ADMIN_ROLE)),
+                name=str(payload.get("name", settings.INITIAL_ADMIN_NAME))
+            )
+
+    role = x_user_role or settings.INITIAL_ADMIN_ROLE
     return CurrentUser(
-        user_id="usr_ajay_kumar",
-        email="ajay.kumar@returnflow.fake",
+        user_id="usr_dinesh_ajay",
+        email=settings.INITIAL_ADMIN_EMAIL,
         role=role,
-        name="Ajay Kumar"
+        name=settings.INITIAL_ADMIN_NAME
     )

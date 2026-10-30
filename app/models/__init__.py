@@ -12,6 +12,7 @@ from app.models.inspection import Inspection
 from app.models.repair import Repair
 from app.models.deposit_ledger import DepositLedger
 from app.models.anomaly_record import AnomalyRecord
+from app.models.user import User, PasswordResetOTP
 
 __all__ = [
     "Base",
@@ -27,5 +28,7 @@ __all__ = [
     "Inspection",
     "Repair",
     "DepositLedger",
-    "AnomalyRecord"
+    "AnomalyRecord",
+    "User",
+    "PasswordResetOTP"
 ]
