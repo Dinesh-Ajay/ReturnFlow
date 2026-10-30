@@ -9,33 +9,33 @@ def test_admin_bootstrap_and_login(api_client):
         user = AuthService.bootstrap_admin_user(db)
         user.password_hash = AuthService.hash_password(settings.INITIAL_ADMIN_PASSWORD)
         db.commit()
-        assert user.email == "dineshajay874@gmail.com"
-        assert user.full_name == "Dinesh Ajay"
+        assert user.email == settings.INITIAL_ADMIN_EMAIL
+        assert user.full_name == settings.INITIAL_ADMIN_NAME
         assert user.role == "Operations Manager"
     finally:
         db.close()
 
     # Test valid login
     res = api_client.post("/api/auth/login", json={
-        "email": "dineshajay874@gmail.com",
+        "email": settings.INITIAL_ADMIN_EMAIL,
         "password": settings.INITIAL_ADMIN_PASSWORD
     })
     assert res.status_code == 200
     data = res.json()
     assert "access_token" in data
-    assert data["user"]["email"] == "dineshajay874@gmail.com"
-    assert data["user"]["full_name"] == "Dinesh Ajay"
+    assert data["user"]["email"] == settings.INITIAL_ADMIN_EMAIL
+    assert data["user"]["full_name"] == settings.INITIAL_ADMIN_NAME
 
     token = data["access_token"]
 
     # Test /api/auth/me
     res_me = api_client.get("/api/auth/me", headers={"Authorization": f"Bearer {token}"})
     assert res_me.status_code == 200
-    assert res_me.json()["full_name"] == "Dinesh Ajay"
+    assert res_me.json()["full_name"] == settings.INITIAL_ADMIN_NAME
 
 def test_invalid_login_rejected(api_client):
     res = api_client.post("/api/auth/login", json={
-        "email": "dineshajay874@gmail.com",
+        "email": settings.INITIAL_ADMIN_EMAIL,
         "password": "WrongPassword123!"
     })
     assert res.status_code == 401
@@ -66,7 +66,7 @@ def test_password_recovery_workflow(api_client):
 
     # 1. Test invalid OTP
     res_inv = api_client.post("/api/auth/verify-otp", json={
-        "email": "dineshajay874@gmail.com",
+        "email": settings.INITIAL_ADMIN_EMAIL,
         "otp": "999999"
     })
     assert res_inv.status_code == 400
@@ -74,7 +74,7 @@ def test_password_recovery_workflow(api_client):
 
     # 2. Test valid OTP
     res_valid = api_client.post("/api/auth/verify-otp", json={
-        "email": "dineshajay874@gmail.com",
+        "email": settings.INITIAL_ADMIN_EMAIL,
         "otp": "123456"
     })
     assert res_valid.status_code == 200
@@ -83,7 +83,7 @@ def test_password_recovery_workflow(api_client):
 
     # 3. Test password reset
     res_reset = api_client.post("/api/auth/reset-password", json={
-        "email": "dineshajay874@gmail.com",
+        "email": settings.INITIAL_ADMIN_EMAIL,
         "reset_token": reset_token,
         "new_password": "NewSecretPassword2026!",
         "confirm_password": "NewSecretPassword2026!"
@@ -93,11 +93,22 @@ def test_password_recovery_workflow(api_client):
 
     # 4. Log in with new password
     res_new_login = api_client.post("/api/auth/login", json={
-        "email": "dineshajay874@gmail.com",
+        "email": settings.INITIAL_ADMIN_EMAIL,
         "password": "NewSecretPassword2026!"
     })
     assert res_new_login.status_code == 200
     assert "access_token" in res_new_login.json()
+
+    # 5. Restore default admin password so development database user is preserved
+    from app.models.user import User
+    db_restore = SessionLocal()
+    try:
+        user_restore = db_restore.query(User).filter(User.email == settings.INITIAL_ADMIN_EMAIL).first()
+        if user_restore:
+            user_restore.password_hash = AuthService.hash_password(settings.INITIAL_ADMIN_PASSWORD)
+            db_restore.commit()
+    finally:
+        db_restore.close()
 
 def test_export_assets_csv(api_client):
     res = api_client.get("/api/exports/assets?format=csv")

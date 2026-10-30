@@ -1,10 +1,27 @@
 import pytest
 import os
+from sqlalchemy.engine import make_url
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from fastapi.testclient import TestClient
 
 from app.config import settings
+
+# Test code includes API calls and explicit commits, so always bind the whole
+# application (not only the fixture session) to a separately named test DB.
+test_database = make_url(settings.TEST_DATABASE_URL)
+test_database_name = test_database.database or ""
+if not (test_database_name.endswith("_test") or "_test_" in test_database_name):
+    raise RuntimeError(
+        "Refusing to run tests: TEST_DATABASE_URL must point to a dedicated database "
+        "whose name ends in '_test' or contains '_test_'."
+    )
+settings.DATABASE_URL = settings.TEST_DATABASE_URL
+settings.GROUND_TRUTH_DIR = os.getenv("RETURN_FLOW_TEST_GROUND_TRUTH_DIR", settings.GROUND_TRUTH_DIR)
+if not settings.INITIAL_ADMIN_PASSWORD:
+    settings.INITIAL_ADMIN_PASSWORD = "ReturnFlow-Test-Only-Password-2026!"
+if not settings.AUTH_SECRET:
+    settings.AUTH_SECRET = "ReturnFlow-Test-Only-Auth-Secret-2026!"
 from app.database.base import Base
 from app.database.session import get_db
 from app.main import app
@@ -12,7 +29,7 @@ from app.main import app
 # Use existing MySQL connection or SQLite in-memory for fast testing
 @pytest.fixture(scope="session")
 def db_engine():
-    engine = create_engine(settings.DATABASE_URL, pool_pre_ping=True)
+    engine = create_engine(settings.TEST_DATABASE_URL, pool_pre_ping=True)
     return engine
 
 @pytest.fixture(scope="function")

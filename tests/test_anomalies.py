@@ -50,3 +50,26 @@ def test_ground_truth_independent_evaluation(db_session):
     assert metrics["recall_pct"] == 100.0
     assert metrics["false_positives"] == 0
     assert metrics["false_negatives"] == 0
+
+def test_evaluation_calculates_confusion_matrix_with_labelled_negatives():
+    truth = [
+        {"issue_type": "A", "record_id": "1", "expected_decision": "ANOMALY"},
+        {"issue_type": "A", "record_id": "2", "expected_decision": "ANOMALY"},
+        {"issue_type": "A", "record_id": "3", "expected_decision": "NORMAL"},
+        {"issue_type": "A", "record_id": "4", "expected_decision": "NORMAL"},
+    ]
+    detected = [
+        {"issue_type": "A", "record_id": "1", "asset_id": None},
+        {"issue_type": "A", "record_id": "3", "asset_id": None},
+        {"issue_type": "A", "record_id": "3", "asset_id": None},  # duplicate result is counted once
+    ]
+    metrics = AnomalyDetectionEngine.evaluate_against_ground_truth(detected, truth)
+    assert (metrics["true_positives"], metrics["false_positives"], metrics["false_negatives"], metrics["true_negatives"]) == (1, 1, 1, 1)
+    assert metrics["precision"] == metrics["recall"] == metrics["f1_score"] == 0.5
+    assert metrics["false_positive_rate"] == 0.5
+
+def test_evaluation_zero_denominators_are_safe():
+    metrics = AnomalyDetectionEngine.evaluate_against_ground_truth([], [])
+    assert metrics["precision"] == metrics["recall"] == metrics["f1_score"] == 0.0
+    assert metrics["true_negatives"] is None
+    assert metrics["false_positive_rate"] is None

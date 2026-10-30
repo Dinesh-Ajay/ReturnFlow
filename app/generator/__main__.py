@@ -2,8 +2,10 @@ import argparse
 import random
 import time
 import sys
+import hashlib
+import json
 from decimal import Decimal
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from sqlalchemy import text
 from app.config import settings
 from app.database.session import SessionLocal
@@ -21,7 +23,27 @@ from app.models import (
     ReturnAuthorizationAsset, Inspection, Repair, DepositLedger, AnomalyRecord
 )
 
-def run_generator(profile_name: str = "starter", seed: int = 20261022, load_db: bool = True):
+def logical_checksums(data, ground_truth):
+    """Hash generated business data while excluding database-managed timestamps."""
+    def normalize(value):
+        if isinstance(value, (date, datetime)):
+            return value.isoformat()
+        if isinstance(value, Decimal):
+            return str(value)
+        return value
+
+    checksums = {}
+    excluded = {"created_at", "updated_at"}
+    for name, rows in data.items():
+        logical_rows = [{key: normalize(value) for key, value in row.items() if key not in excluded} for row in rows]
+        payload = json.dumps(logical_rows, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+        checksums[name] = hashlib.sha256(payload.encode("utf-8")).hexdigest()
+    gt_payload = json.dumps(ground_truth, sort_keys=True, separators=(",", ":"), ensure_ascii=False, default=normalize)
+    checksums["ground_truth"] = hashlib.sha256(gt_payload.encode("utf-8")).hexdigest()
+    return checksums
+
+def run_generator(profile_name: str = "starter", seed: int = 20261022, load_db: bool = True,
+                  export: bool = True, replace_existing: bool = False):
     setup_logging()
     logger.info(f"Starting ReturnFlow Synthetic Data Generator with profile='{profile_name}', seed={seed}")
 
@@ -89,8 +111,10 @@ def run_generator(profile_name: str = "starter", seed: int = 20261022, load_db: 
     }
 
     # Step 4: Export CSVs, JSON ground truth, and SQL seed
-    logger.info("Exporting generated files to disk...")
-    Exporter.export_all(all_data, ground_truth)
+    logger.info("Exporting generated files to disk..." if export else "Skipping generated-file export for an in-memory run...")
+    if export:
+        Exporter.export_all(all_data, ground_truth)
+    checksums = logical_checksums(all_data, ground_truth)
 
     # Step 5: Database Insertion
     db_duration = 0.0
@@ -99,14 +123,27 @@ def run_generator(profile_name: str = "starter", seed: int = 20261022, load_db: 
         t0_db = time.perf_counter()
         db = SessionLocal()
         try:
-            # Clear existing data in reverse dependency order
-            db.execute(text("SET FOREIGN_KEY_CHECKS = 0;"))
-            for tbl in [
+            target_tables = [
                 "anomaly_records", "deposit_ledger", "repairs", "inspections",
                 "return_authorization_assets", "return_authorizations",
                 "custody_events", "shipment_assets", "shipments",
                 "reusable_assets", "locations", "owners", "asset_types"
-            ]:
+            ]
+            populated = {
+                table: int(db.execute(text(f"SELECT COUNT(*) FROM {table}")).scalar_one())
+                for table in target_tables
+            }
+            existing_rows = {table: count for table, count in populated.items() if count}
+            if existing_rows and not replace_existing:
+                raise RuntimeError(
+                    "Refusing to replace populated database tables. Use a dedicated empty database, "
+                    "or explicitly pass --replace-existing after backing up the target. "
+                    f"Populated tables: {existing_rows}"
+                )
+
+            # Clear existing data in reverse dependency order
+            db.execute(text("SET FOREIGN_KEY_CHECKS = 0;"))
+            for tbl in target_tables:
                 db.execute(text(f"TRUNCATE TABLE {tbl};"))
             db.execute(text("SET FOREIGN_KEY_CHECKS = 1;"))
             db.commit()
@@ -185,7 +222,9 @@ def run_generator(profile_name: str = "starter", seed: int = 20261022, load_db: 
         "gen_duration": gen_duration,
         "db_duration": db_duration,
         "counts": {k: len(v) for k, v in all_data.items()},
-        "ground_truth_count": len(ground_truth)
+        "ground_truth_count": len(ground_truth),
+        "ground_truth_records": ground_truth,
+        "checksums": checksums
     }
 
 if __name__ == "__main__":
@@ -193,6 +232,8 @@ if __name__ == "__main__":
     parser.add_argument("--profile", choices=["starter", "full"], default="starter", help="Dataset volume profile")
     parser.add_argument("--seed", type=int, default=settings.RANDOM_SEED, help="Deterministic random seed")
     parser.add_argument("--no-db", action="store_true", help="Skip database insertion")
+    parser.add_argument("--replace-existing", action="store_true", help="Explicitly truncate populated target tables before loading; use only for a disposable database")
     args = parser.parse_args()
 
-    run_generator(profile_name=args.profile, seed=args.seed, load_db=not args.no_db)
+    run_generator(profile_name=args.profile, seed=args.seed, load_db=not args.no_db,
+                  replace_existing=args.replace_existing)

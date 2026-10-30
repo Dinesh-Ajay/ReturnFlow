@@ -23,7 +23,7 @@ def trigger_validation(db: Session = Depends(get_db)):
     }
 
 @router.get("/api/validation/results")
-def get_validation_results():
+def get_validation_results(db: Session = Depends(get_db)):
     summary_path = os.path.join(settings.EXPORTS_DIR, "validation_summary.json")
     if not os.path.exists(summary_path):
         raise HTTPException(
@@ -31,7 +31,14 @@ def get_validation_results():
             detail="Validation summary not yet generated. Trigger POST /api/validation/run first."
         )
     with open(summary_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+        summary = json.load(f)
+    # Keep dashboard evaluation live; a previously generated JSON snapshot may
+    # predate the current data or the current metric fields.
+    metrics = AnomalyDetectionEngine.evaluate_detection_metrics(db)
+    summary.setdefault("anomaly_detection", {})["evaluation_metrics"] = metrics
+    summary["anomaly_detection"]["total_detected"] = metrics["total_detected"]
+    summary["anomaly_detection"]["detected_by_type"] = metrics["detected_by_type"]
+    return summary
 
 @router.get("/api/anomalies", response_model=List[AnomalyRecordResponse])
 def list_anomalies(

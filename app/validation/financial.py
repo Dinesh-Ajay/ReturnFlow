@@ -69,19 +69,37 @@ class FinancialValidator:
             GROUP BY transaction_type
         """)
         rows = db.execute(query).fetchall()
-        summary = {r[0]: {"amount": float(r[1] or 0), "count": int(r[2])} for r in rows}
+        raw_amounts = {r[0]: Decimal(str(r[1] or 0)) for r in rows}
+        summary = {r[0]: {"amount": float(raw_amounts[r[0]]), "count": int(r[2])} for r in rows}
 
-        collected = summary.get("DEPOSIT_CHARGE", {}).get("amount", 0.0)
-        refunded = abs(summary.get("DEPOSIT_REFUND", {}).get("amount", 0.0))
-        damage = summary.get("DAMAGE_CHARGE", {}).get("amount", 0.0)
+        # Ledger convention: charges are positive liabilities and refunds are
+        # negative entries. Keep the arithmetic in Decimal through calculation.
+        collected = raw_amounts.get("DEPOSIT_CHARGE", Decimal("0.00"))
+        refunded = abs(raw_amounts.get("DEPOSIT_REFUND", Decimal("0.00")))
+        damage = raw_amounts.get("DAMAGE_CHARGE", Decimal("0.00"))
+        loss = raw_amounts.get("LOSS_CHARGE", Decimal("0.00"))
+        adjustments = raw_amounts.get("ADJUSTMENT", Decimal("0.00"))
+        net_liability = collected - refunded - damage - loss + adjustments
 
-        is_reconciled = (collected - refunded - damage) >= 0.0
+        sign_issues = db.execute(text("""
+            SELECT COUNT(*) FROM deposit_ledger
+            WHERE (transaction_type = 'DEPOSIT_REFUND' AND transaction_amount >= 0)
+               OR (transaction_type IN ('DEPOSIT_CHARGE', 'DAMAGE_CHARGE', 'LOSS_CHARGE', 'REPAIR_CHARGE') AND transaction_amount < 0)
+               OR transaction_reference IS NULL OR TRIM(transaction_reference) = ''
+        """)).scalar_one()
+        duplicate_refunds = cls.detect_duplicate_refunds(db)
+
+        is_reconciled = net_liability >= 0
 
         return {
             "summary": summary,
-            "total_collected": collected,
-            "total_refunded": refunded,
-            "total_damage": damage,
-            "net_liability": collected - refunded - damage,
-            "is_reconciled": is_reconciled
+            "total_collected": float(collected),
+            "total_refunded": float(refunded),
+            "total_damage": float(damage),
+            "total_loss": float(loss),
+            "total_adjustments": float(adjustments),
+            "net_liability": float(net_liability),
+            "unreconciled_transactions": int(sign_issues),
+            "duplicate_refund_findings": len(duplicate_refunds),
+            "is_reconciled": is_reconciled and int(sign_issues) == 0
         }

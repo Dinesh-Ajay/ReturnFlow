@@ -105,7 +105,7 @@
                                 type="email" 
                                 id="loginEmail" 
                                 required 
-                                value="dineshajay874@gmail.com"
+                                value=""
                                 class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white"
                                 placeholder="name@company.com"
                             >
@@ -123,7 +123,7 @@
                                 type="password" 
                                 id="loginPassword" 
                                 required 
-                                value="ReturnFlow@2026!"
+                                value=""
                                 class="w-full pl-9 pr-9 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white"
                                 placeholder="••••••••"
                             >
@@ -148,8 +148,9 @@
                     </button>
                 </form>
 
-                <div class="pt-2 text-center text-[11px] text-slate-400 border-t border-slate-100">
-                    Operations Manager: <strong class="text-slate-600">Dinesh Ajay</strong>
+                <div class="pt-2 text-center text-[11px] text-slate-400 border-t border-slate-100 flex flex-col items-center gap-1">
+                    <div>Operations Manager: <strong class="text-slate-600">Dinesh Ajay</strong> (<span class="text-slate-500 font-mono text-[10px]">dineshajay874@gmail.com</span>)</div>
+                    <button type="button" onclick="fillAdminCredentials()" class="text-[11px] text-blue-600 hover:text-blue-800 font-semibold underline">Auto-fill credentials</button>
                 </div>
             </div>
 
@@ -171,7 +172,7 @@
                                 type="email" 
                                 id="forgotEmail" 
                                 required 
-                                value="dineshajay874@gmail.com"
+                                value=""
                                 class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white"
                                 placeholder="name@company.com"
                             >
@@ -489,7 +490,7 @@
                             DA
                         </div>
                         <div class="text-left hidden md:block">
-                            <div class="text-xs font-semibold text-slate-800 leading-tight" id="profileNameDisplay">Dinesh Ajay</div>
+                            <div class="text-xs font-semibold text-slate-800 leading-tight" id="profileNameDisplay">ReturnFlow Admin</div>
                             <div class="text-[11px] text-slate-500 leading-tight" id="profileRoleDisplay">Operations Manager</div>
                         </div>
                         <i class="fa-solid fa-chevron-down text-slate-400 text-xs ml-0.5"></i>
@@ -498,8 +499,8 @@
                     <!-- Dropdown Menu -->
                     <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-xl shadow-xl z-50 py-1 text-xs">
                         <div class="px-4 py-2.5 border-b border-slate-100">
-                            <div class="font-bold text-slate-800">Dinesh Ajay</div>
-                            <div class="text-[11px] text-slate-500 font-mono">dineshajay874@gmail.com</div>
+                            <div class="font-bold text-slate-800">ReturnFlow Admin</div>
+                            <div class="text-[11px] text-slate-500 font-mono">Configured administrator</div>
                             <div class="mt-1 inline-block bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-[10px] font-semibold">Operations Manager</div>
                         </div>
                         <button onclick="navigateView('settings')" class="w-full px-4 py-2 text-left text-slate-700 hover:bg-slate-50 flex items-center gap-2">
@@ -572,9 +573,9 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="text-xs font-medium text-slate-500">Total Assets</div>
-                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-total-assets">20,007</div>
+                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-total-assets">—</div>
                             <div class="text-xs font-semibold text-emerald-600 flex items-center gap-1 mt-1">
-                                <i class="fa-solid fa-arrow-up text-[10px]"></i> 2.5%
+                                Period change unavailable
                             </div>
                         </div>
                     </div>
@@ -585,9 +586,9 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="text-xs font-medium text-slate-500">Active in Transit</div>
-                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-in-transit">3,600</div>
+                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-in-transit">—</div>
                             <div class="text-xs font-semibold text-emerald-600 flex items-center gap-1 mt-1">
-                                <i class="fa-solid fa-arrow-up text-[10px]"></i> 0.1%
+                                Period change unavailable
                             </div>
                         </div>
                     </div>
@@ -598,9 +599,9 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="text-xs font-medium text-slate-500">Overdue Returns</div>
-                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-overdue-returns">1,306</div>
+                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-overdue-returns">—</div>
                             <div class="text-xs font-semibold text-red-600 flex items-center gap-1 mt-1">
-                                <i class="fa-solid fa-arrow-down text-[10px]"></i> 3.2%
+                                Period change unavailable
                             </div>
                         </div>
                     </div>
@@ -611,9 +612,9 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="text-xs font-medium text-slate-500">Lost Assets</div>
-                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-lost-assets">400</div>
+                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-lost-assets">—</div>
                             <div class="text-xs font-semibold text-orange-600 flex items-center gap-1 mt-1">
-                                <i class="fa-solid fa-arrow-up text-[10px]"></i> 12.1%
+                                Period change unavailable
                             </div>
                         </div>
                     </div>
@@ -624,9 +625,9 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="text-xs font-medium text-slate-500">Total Shipments</div>
-                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-total-shipments">10,000</div>
+                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-total-shipments">—</div>
                             <div class="text-xs font-semibold text-emerald-600 flex items-center gap-1 mt-1">
-                                <i class="fa-solid fa-arrow-up text-[10px]"></i> 5.3%
+                                Period change unavailable
                             </div>
                         </div>
                     </div>
@@ -637,9 +638,9 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="text-xs font-medium text-slate-500">Return Authorizations</div>
-                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-total-rmas">12,410</div>
+                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-total-rmas">—</div>
                             <div class="text-xs font-semibold text-emerald-600 flex items-center gap-1 mt-1">
-                                <i class="fa-solid fa-arrow-up text-[10px]"></i> 6.7%
+                                Period change unavailable
                             </div>
                         </div>
                     </div>
@@ -650,9 +651,9 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="text-xs font-medium text-slate-500">In Repair</div>
-                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-in-repair">191</div>
+                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-in-repair">—</div>
                             <div class="text-xs font-semibold text-red-600 flex items-center gap-1 mt-1">
-                                <i class="fa-solid fa-arrow-down text-[10px]"></i> 4.1%
+                                Period change unavailable
                             </div>
                         </div>
                     </div>
@@ -663,9 +664,9 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="text-xs font-medium text-slate-500">Open Anomalies</div>
-                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-open-anomalies">50</div>
+                            <div class="text-2xl font-bold text-slate-900 mt-0.5" id="kpi-open-anomalies">—</div>
                             <div class="text-xs font-semibold text-rose-600 flex items-center gap-1 mt-1">
-                                <i class="fa-solid fa-arrow-down text-[10px]"></i> 18.3%
+                                Period change unavailable
                             </div>
                         </div>
                     </div>
@@ -693,34 +694,34 @@
                             <div class="relative w-48 h-48 flex items-center justify-center">
                                 <canvas id="statusDonutChart"></canvas>
                                 <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                    <span class="text-xl font-bold text-slate-900" id="donut-total">20,007</span>
+                                    <span class="text-xl font-bold text-slate-900" id="donut-total">—</span>
                                     <span class="text-[11px] text-slate-500">Total Assets</span>
                                 </div>
                             </div>
                             <div id="statusDonutLegend" class="w-full md:w-56 space-y-2 text-xs">
                                 <div class="flex items-center justify-between py-1 border-b border-slate-100">
                                     <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span> At Location</span>
-                                    <span class="font-semibold text-slate-800"><span id="reading-count-available">12,216</span> <span id="reading-pct-available" class="text-slate-400 font-normal">(61.1%)</span></span>
+                                    <span class="font-semibold text-slate-800"><span id="reading-count-available">—</span> <span id="reading-pct-available" class="text-slate-400 font-normal">(—)</span></span>
                                 </div>
                                 <div class="flex items-center justify-between py-1 border-b border-slate-100">
                                     <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> In Transit</span>
-                                    <span class="font-semibold text-slate-800"><span id="reading-count-in-transit">3,600</span> <span id="reading-pct-in-transit" class="text-slate-400 font-normal">(18.0%)</span></span>
+                                    <span class="font-semibold text-slate-800"><span id="reading-count-in-transit">—</span> <span id="reading-pct-in-transit" class="text-slate-400 font-normal">(—)</span></span>
                                 </div>
                                 <div class="flex items-center justify-between py-1 border-b border-slate-100">
                                     <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span> In Custody</span>
-                                    <span class="font-semibold text-slate-800"><span id="reading-count-in-custody">3,600</span> <span id="reading-pct-in-custody" class="text-slate-400 font-normal">(18.0%)</span></span>
+                                    <span class="font-semibold text-slate-800"><span id="reading-count-in-custody">—</span> <span id="reading-pct-in-custody" class="text-slate-400 font-normal">(—)</span></span>
                                 </div>
                                 <div class="flex items-center justify-between py-1 border-b border-slate-100">
                                     <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> In Repair</span>
-                                    <span class="font-semibold text-slate-800"><span id="reading-count-in-repair">191</span> <span id="reading-pct-in-repair" class="text-slate-400 font-normal">(1.0%)</span></span>
+                                    <span class="font-semibold text-slate-800"><span id="reading-count-in-repair">—</span> <span id="reading-pct-in-repair" class="text-slate-400 font-normal">(—)</span></span>
                                 </div>
                                 <div class="flex items-center justify-between py-1 border-b border-slate-100">
                                     <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Lost</span>
-                                    <span class="font-semibold text-slate-800"><span id="reading-count-lost">400</span> <span id="reading-pct-lost" class="text-slate-400 font-normal">(2.0%)</span></span>
+                                    <span class="font-semibold text-slate-800"><span id="reading-count-lost">—</span> <span id="reading-pct-lost" class="text-slate-400 font-normal">(—)</span></span>
                                 </div>
                                 <div class="flex items-center justify-between py-1">
                                     <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Other</span>
-                                    <span class="font-semibold text-slate-800"><span id="reading-count-other">0</span> <span id="reading-pct-other" class="text-slate-400 font-normal">(0.0%)</span></span>
+                                    <span class="font-semibold text-slate-800"><span id="reading-count-other">—</span> <span id="reading-pct-other" class="text-slate-400 font-normal">(—)</span></span>
                                 </div>
                             </div>
                         </div>
@@ -807,7 +808,7 @@
 
                     <!-- Pagination Footer -->
                     <div class="px-5 py-3 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
-                        <div id="paginationInfo">Showing 1-10 of 20,000 assets</div>
+                        <div id="paginationInfo">Waiting for database records</div>
                         <div class="flex items-center gap-1.5" id="paginationControls"></div>
                         <div class="flex items-center gap-2">
                             <select id="pageSizeSelect" onchange="changePageSize(this.value)" class="py-1 px-2 border border-slate-200 rounded text-xs bg-white text-slate-700">
@@ -847,7 +848,7 @@
                             <div class="text-xs text-slate-500 mt-1 flex flex-wrap gap-2">
                                 <span>Type: <strong class="text-slate-700" id="detailType">Container</strong></span>
                                 <span>•</span>
-                                <span>Owner: <strong class="text-slate-700" id="detailOwner">FreshMart</strong></span>
+                                <span>Owner: <strong class="text-slate-700" id="detailOwner">—</strong></span>
                                 <span>•</span>
                                 <span>Current Location: <strong class="text-slate-700" id="detailLocation">Los Angeles DC</strong></span>
                             </div>
@@ -857,12 +858,12 @@
                     <div class="flex items-center gap-6">
                         <div class="text-right">
                             <div class="text-[11px] font-medium text-slate-400">Days Outstanding</div>
-                            <div class="text-2xl font-bold text-red-600" id="detailDaysOutstanding">28</div>
+                            <div class="text-2xl font-bold text-red-600" id="detailDaysOutstanding">—</div>
                         </div>
                         <div class="h-8 w-[1px] bg-slate-200"></div>
                         <div class="text-right">
                             <div class="text-[11px] font-medium text-slate-400">Last Event</div>
-                            <div class="text-lg font-bold text-slate-800" id="detailLastEvent">2026-09-25</div>
+                            <div class="text-lg font-bold text-slate-800" id="detailLastEvent">—</div>
                         </div>
                     </div>
                 </div>
@@ -888,7 +889,7 @@
                                     </div>
                                     <div class="flex justify-between py-1 border-b border-slate-100">
                                         <span class="text-slate-500">Owner</span>
-                                        <span class="font-semibold text-slate-800" id="infoOwner">FreshMart</span>
+                                        <span class="font-semibold text-slate-800" id="infoOwner">—</span>
                                     </div>
                                     <div class="flex justify-between py-1 border-b border-slate-100">
                                         <span class="text-slate-500">Current Location</span>
@@ -896,11 +897,11 @@
                                     </div>
                                     <div class="flex justify-between py-1 border-b border-slate-100">
                                         <span class="text-slate-500">Purchase Date</span>
-                                        <span class="font-medium text-slate-700" id="infoPurchaseDate">2024-01-15</span>
+                                        <span class="font-medium text-slate-700" id="infoPurchaseDate">—</span>
                                     </div>
                                     <div class="flex justify-between py-1">
                                         <span class="text-slate-500">Deposit Amount</span>
-                                        <span class="font-semibold text-blue-600" id="infoDeposit">$45.00</span>
+                                        <span class="font-semibold text-blue-600" id="infoDeposit">—</span>
                                     </div>
                                 </div>
                                 <div class="w-40 h-40 flex-shrink-0 bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col items-center justify-center text-center shadow-inner">
@@ -1133,23 +1134,23 @@
                 <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
                     <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
                         <div class="text-xs text-slate-500 font-semibold uppercase">Total Deposits Held</div>
-                        <div class="text-2xl font-bold text-blue-600 mt-1" id="fin-held">$3,909,680.00</div>
-                        <div class="text-[11px] text-slate-400 mt-1">20,000 active assets</div>
+                        <div class="text-2xl font-bold text-blue-600 mt-1" id="fin-held">—</div>
+                        <div class="text-[11px] text-slate-400 mt-1" id="fin-held-note">From ledger deposit charges</div>
                     </div>
                     <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
                         <div class="text-xs text-slate-500 font-semibold uppercase">Total Refunded</div>
-                        <div class="text-2xl font-bold text-emerald-600 mt-1" id="fin-refunded">$2,333,839.25</div>
+                        <div class="text-2xl font-bold text-emerald-600 mt-1" id="fin-refunded">—</div>
                         <div class="text-[11px] text-emerald-600 mt-1">12,410 returns cleared</div>
                     </div>
                     <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
                         <div class="text-xs text-slate-500 font-semibold uppercase">Damage / Loss Deductions</div>
-                        <div class="text-2xl font-bold text-amber-600 mt-1" id="fin-damage">$168,856.75</div>
+                        <div class="text-2xl font-bold text-amber-600 mt-1" id="fin-damage">—</div>
                         <div class="text-[11px] text-amber-600 mt-1">Inspected damages forfeited</div>
                     </div>
                     <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
                         <div class="text-xs text-slate-500 font-semibold uppercase">Net Liability Balance</div>
-                        <div class="text-2xl font-bold text-slate-900 mt-1" id="fin-liability">$1,484,874.00</div>
-                        <div class="text-[11px] text-emerald-600 mt-1">✓ Reconciled &amp; In Balance</div>
+                        <div class="text-2xl font-bold text-slate-900 mt-1" id="fin-liability">—</div>
+                        <div class="text-[11px] text-emerald-600 mt-1" id="fin-status">Awaiting reconciliation</div>
                     </div>
                 </div>
 
@@ -1195,23 +1196,23 @@
                 <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
                     <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
                         <div class="text-xs text-slate-500">Total Injected / Real Anomalies</div>
-                        <div class="text-2xl font-bold text-slate-900 mt-1" id="anomaly-total-count">50</div>
-                        <div class="text-[11px] text-slate-400 mt-1">Ground Truth Verified</div>
+                        <div class="text-2xl font-bold text-slate-900 mt-1" id="anomaly-total-count">—</div>
+                        <div class="text-[11px] text-slate-400 mt-1">Detected records</div>
                     </div>
                     <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
                         <div class="text-xs text-slate-500">Detection Precision</div>
-                        <div class="text-2xl font-bold text-emerald-600 mt-1" id="anomPrecision">100.0%</div>
-                        <div class="text-[11px] text-emerald-600 mt-1">Zero False Positives</div>
+                        <div class="text-2xl font-bold text-emerald-600 mt-1" id="anomPrecision">—</div>
+                        <div class="text-[11px] text-emerald-600 mt-1">TP / (TP + FP)</div>
                     </div>
                     <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
                         <div class="text-xs text-slate-500">Detection Recall</div>
-                        <div class="text-2xl font-bold text-emerald-600 mt-1" id="anomRecall">100.0%</div>
-                        <div class="text-[11px] text-emerald-600 mt-1">Zero Missed Anomalies</div>
+                        <div class="text-2xl font-bold text-emerald-600 mt-1" id="anomRecall">—</div>
+                        <div class="text-[11px] text-emerald-600 mt-1">TP / (TP + FN)</div>
                     </div>
                     <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                        <div class="text-xs text-slate-500">Scan Throughput</div>
-                        <div class="text-2xl font-bold text-blue-600 mt-1">~67,000 evt/s</div>
-                        <div class="text-[11px] text-blue-600 mt-1">Vectorized Pandas Engine</div>
+                        <div class="text-xs text-slate-500">Detection F1 Score</div>
+                        <div class="text-2xl font-bold text-blue-600 mt-1" id="anomF1">—</div>
+                        <div class="text-[11px] text-blue-600 mt-1" id="anomEvaluationNote">Awaiting labelled evaluation</div>
                     </div>
                 </div>
 
@@ -1220,27 +1221,27 @@
                     <div class="bg-white p-3.5 rounded-xl border border-slate-200 text-xs">
                         <div class="font-bold text-slate-800">1. Simultaneous Custody</div>
                         <div class="text-slate-500 text-[11px] mt-1">Conflicting locations &lt; 2h</div>
-                        <div class="mt-2 text-rose-600 font-semibold">10 Detected (100%)</div>
+                        <div class="mt-2 text-rose-600 font-semibold" id="scenarioSimultaneous">Awaiting audit</div>
                     </div>
                     <div class="bg-white p-3.5 rounded-xl border border-slate-200 text-xs">
                         <div class="font-bold text-slate-800">2. Return Before Dispatch</div>
                         <div class="text-slate-500 text-[11px] mt-1">Inverted event timestamps</div>
-                        <div class="mt-2 text-rose-600 font-semibold">10 Detected (100%)</div>
+                        <div class="mt-2 text-rose-600 font-semibold" id="scenarioReturn">Awaiting audit</div>
                     </div>
                     <div class="bg-white p-3.5 rounded-xl border border-slate-200 text-xs">
                         <div class="font-bold text-slate-800">3. Duplicate Refund</div>
                         <div class="text-slate-500 text-[11px] mt-1">Multiple refunds for single deposit</div>
-                        <div class="mt-2 text-rose-600 font-semibold">10 Detected (100%)</div>
+                        <div class="mt-2 text-rose-600 font-semibold" id="scenarioRefund">Awaiting audit</div>
                     </div>
                     <div class="bg-white p-3.5 rounded-xl border border-slate-200 text-xs">
                         <div class="font-bold text-slate-800">4. Repair Without Inspection</div>
                         <div class="text-slate-500 text-[11px] mt-1">Unauthorized repair ticket</div>
-                        <div class="mt-2 text-rose-600 font-semibold">10 Detected (100%)</div>
+                        <div class="mt-2 text-rose-600 font-semibold" id="scenarioRepair">Awaiting audit</div>
                     </div>
                     <div class="bg-white p-3.5 rounded-xl border border-slate-200 text-xs">
                         <div class="font-bold text-slate-800">5. Missing Custody Actor</div>
                         <div class="text-slate-500 text-[11px] mt-1">Custodian chain integrity void</div>
-                        <div class="mt-2 text-rose-600 font-semibold">10 Detected (100%)</div>
+                        <div class="mt-2 text-rose-600 font-semibold" id="scenarioActor">Awaiting audit</div>
                     </div>
                 </div>
 
@@ -1277,22 +1278,22 @@
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
                         <div class="text-xs text-slate-500 font-semibold uppercase">Return Rate</div>
-                        <div class="text-3xl font-bold text-blue-600 mt-2">87.4%</div>
+                        <div class="text-3xl font-bold text-blue-600 mt-2" id="analytics-return-rate">—</div>
                         <p class="text-xs text-slate-400 mt-1">Assets returned within contract SLA</p>
                     </div>
                     <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
                         <div class="text-xs text-slate-500 font-semibold uppercase">Average Dwell Time</div>
-                        <div class="text-3xl font-bold text-slate-800 mt-2">14.2 Days</div>
-                        <p class="text-xs text-slate-400 mt-1">Mean duration between dispatch and return</p>
+                        <div class="text-3xl font-bold text-slate-800 mt-2" id="analytics-outstanding-age">—</div>
+                        <p class="text-xs text-slate-400 mt-1">Mean age of currently outstanding assets</p>
                     </div>
                     <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
                         <div class="text-xs text-slate-500 font-semibold uppercase">Damage Rate</div>
-                        <div class="text-3xl font-bold text-amber-600 mt-2">1.8%</div>
+                        <div class="text-3xl font-bold text-amber-600 mt-2" id="analytics-damage-rate">—</div>
                         <p class="text-xs text-slate-400 mt-1">Units requiring refurbishment</p>
                     </div>
                     <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
                         <div class="text-xs text-slate-500 font-semibold uppercase">Loss Rate</div>
-                        <div class="text-3xl font-bold text-rose-600 mt-2">0.4%</div>
+                        <div class="text-3xl font-bold text-rose-600 mt-2" id="analytics-loss-rate">—</div>
                         <p class="text-xs text-slate-400 mt-1">Unreturned after threshold (60d)</p>
                     </div>
                 </div>
@@ -1313,7 +1314,7 @@
                                 <i class="fa-solid fa-boxes-stacked"></i>
                             </div>
                             <h3 class="font-bold text-sm text-slate-800">Asset Inventory Report</h3>
-                            <p class="text-xs text-slate-500 mt-1">Complete portfolio registry of all 20,000 reusable assets, current locations, custodians, and SLA standing.</p>
+                            <p class="text-xs text-slate-500 mt-1">Portfolio registry of reusable assets, current locations, custodians, and SLA standing.</p>
                         </div>
                         <div class="mt-4 pt-4 border-t border-slate-100 flex items-center gap-2">
                             <button onclick="downloadDirect('/api/exports/assets?format=csv')" class="flex-1 py-2 bg-slate-50 border border-slate-200 rounded text-xs font-semibold text-slate-700 hover:bg-slate-100 flex items-center justify-center gap-1.5">
@@ -1354,7 +1355,7 @@
                                 <i class="fa-solid fa-triangle-exclamation"></i>
                             </div>
                             <h3 class="font-bold text-sm text-slate-800">Anomaly Audit Report</h3>
-                            <p class="text-xs text-slate-500 mt-1">Complete log of all 50 detected operational invariants, precision evaluation, and recommended mitigations.</p>
+                            <p class="text-xs text-slate-500 mt-1">Detected operational invariants, labelled evaluation metrics, and recommended mitigations.</p>
                         </div>
                         <div class="mt-4 pt-4 border-t border-slate-100 flex items-center gap-2">
                             <button onclick="downloadDirect('/api/exports/anomalies?format=csv')" class="flex-1 py-2 bg-slate-50 border border-slate-200 rounded text-xs font-semibold text-slate-700 hover:bg-slate-100 flex items-center justify-center gap-1.5">
@@ -1473,7 +1474,7 @@
                     </div>
                     <div class="flex justify-between items-center py-2 border-b border-slate-100">
                         <span class="font-semibold text-slate-700">Operations Manager</span>
-                        <span class="font-semibold text-blue-600">Dinesh Ajay &lt;dineshajay874@gmail.com&gt;</span>
+                        <span class="font-semibold text-blue-600">Configured by INITIAL_ADMIN_EMAIL</span>
                     </div>
                     <div class="flex justify-between items-center py-2 border-b border-slate-100">
                         <span class="font-semibold text-slate-700">SMTP Notification Relay</span>
@@ -1622,7 +1623,7 @@
         // State
         let currentPage = 1;
         let pageSize = 10;
-        let totalAssets = 20000;
+        let totalAssets = 0;
         let searchDebounceTimer = null;
         let currentAssetId = "ASSET-000003";
         let activeOtpEmail = "";
@@ -1724,6 +1725,15 @@
             }
         });
 
+        function fillAdminCredentials() {
+            const emailInput = document.getElementById('loginEmail');
+            const passInput = document.getElementById('loginPassword');
+            if (emailInput) emailInput.value = 'dineshajay874@gmail.com';
+            if (passInput) passInput.value = 'ReturnFlow@2026!';
+            const alertBox = document.getElementById('loginAlertBox');
+            if (alertBox) alertBox.classList.add('hidden');
+        }
+
         // Authentication State & Views
         function checkAuthStatus() {
             const token = localStorage.getItem('returnflow_token');
@@ -1735,10 +1745,18 @@
                 if (userStr) {
                     try {
                         const u = JSON.parse(userStr);
-                        document.getElementById('profileNameDisplay').innerText = u.full_name || 'Dinesh Ajay';
+                        document.getElementById('profileNameDisplay').innerText = u.full_name || 'ReturnFlow Admin';
                         document.getElementById('profileRoleDisplay').innerText = u.role || 'Operations Manager';
                     } catch(e) {}
                 }
+                // Silently verify session validity with backend
+                fetch('/api/auth/me', { headers: { 'Authorization': `Bearer ${token}` } })
+                    .then(res => {
+                        if (!res.ok && res.status === 401) {
+                            handleLogout();
+                        }
+                    })
+                    .catch(() => {});
             }
         }
 
@@ -1793,6 +1811,8 @@
                 document.getElementById('profileRoleDisplay').innerText = data.user.role;
 
                 showToast('success', 'Authentication Successful', `Welcome back, ${data.user.full_name}!`);
+                loadDashboardMetrics();
+                fetchAssetsTable();
             } catch (err) {
                 alertBox.className = 'p-3 rounded-lg text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200 block';
                 alertBox.innerText = err.message;
@@ -1833,7 +1853,22 @@
                 document.getElementById('otpTargetEmail').innerText = email;
                 switchAuthView('otp');
                 startOtpTimer();
-                showToast('success', 'Security Code Sent', `Verification OTP sent to ${email}`);
+                showToast('success', 'Security Code Sent', data.message || `Verification OTP sent to ${email}`);
+
+                // If Dev OTP is present in message, display and pre-fill for seamless recovery
+                const devOtpMatch = data.message && data.message.match(/\b\d{6}\b/);
+                const otpAlert = document.getElementById('otpAlertBox');
+                if (devOtpMatch) {
+                    const code = devOtpMatch[0];
+                    const otpInput = document.getElementById('otpCodeInput');
+                    if (otpInput) otpInput.value = code;
+                    if (otpAlert) {
+                        otpAlert.className = 'p-3 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 block';
+                        otpAlert.innerHTML = `<i class="fa-solid fa-key mr-1.5"></i> Verification Code: <strong class="font-mono text-sm tracking-wider text-emerald-900">${code}</strong> (pre-filled for recovery)`;
+                    }
+                } else if (otpAlert) {
+                    otpAlert.classList.add('hidden');
+                }
             } catch (err) {
                 alertBox.className = 'p-3 rounded-lg text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200 block';
                 alertBox.innerText = err.message;
@@ -1871,7 +1906,19 @@
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.detail);
                 startOtpTimer();
-                showToast('success', 'Code Resent', 'New verification code emailed successfully.');
+                showToast('success', 'Code Resent', data.message || 'New verification code dispatched successfully.');
+
+                const devOtpMatch = data.message && data.message.match(/\b\d{6}\b/);
+                const otpAlert = document.getElementById('otpAlertBox');
+                if (devOtpMatch) {
+                    const code = devOtpMatch[0];
+                    const otpInput = document.getElementById('otpCodeInput');
+                    if (otpInput) otpInput.value = code;
+                    if (otpAlert) {
+                        otpAlert.className = 'p-3 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 block';
+                        otpAlert.innerHTML = `<i class="fa-solid fa-key mr-1.5"></i> Verification Code: <strong class="font-mono text-sm tracking-wider text-emerald-900">${code}</strong> (pre-filled for recovery)`;
+                    }
+                }
             } catch (err) {
                 showToast('error', 'Resend Failed', err.message);
             }
@@ -2039,7 +2086,9 @@
                 document.body.appendChild(a);
                 a.click();
                 a.remove();
-                window.URL.revokeObjectURL(blobUrl);
+                // Keep the object URL alive long enough for the browser to
+                // hand the response to its download manager.
+                window.setTimeout(() => window.URL.revokeObjectURL(blobUrl), 1000);
                 showToast('success', 'Download Complete', `${filename} downloaded successfully.`);
             } catch(err) {
                 showToast('error', 'Download Error', 'Network error or download was interrupted.');
@@ -2085,7 +2134,8 @@
                 renderAssetsRows(data.items);
                 renderPagination(data.total_count, data.page, data.page_size);
             } catch (err) {
-                renderMockAssetsFallback();
+                document.getElementById('assetsTableBody').innerHTML = '<tr><td colspan="8" class="text-center py-6 text-rose-500">Could not load asset records from the database.</td></tr>';
+                document.getElementById('paginationInfo').innerText = 'Database records unavailable';
             }
         }
 
@@ -2110,11 +2160,11 @@
                                 ${item.asset_id}
                             </button>
                         </td>
-                        <td class="py-3 px-4 text-slate-700 font-medium">${item.type_name || item.type_code || 'Pallet'}</td>
+                        <td class="py-3 px-4 text-slate-700 font-medium">${item.type_name || item.type_code || '—'}</td>
                         <td class="py-3 px-4">${statusHtml}</td>
                         <td class="py-3 px-4 text-slate-600">${item.current_location_name || '-'}</td>
-                        <td class="py-3 px-4 text-slate-600">${item.owner_name || 'Acme Corp'}</td>
-                        <td class="py-3 px-4 text-slate-500 font-mono text-[11px]">${item.last_event_at ? item.last_event_at.split('T')[0] : '2026-10-20'}</td>
+                        <td class="py-3 px-4 text-slate-600">${item.owner_name || '—'}</td>
+                        <td class="py-3 px-4 text-slate-500 font-mono text-[11px]">${item.last_event_at ? item.last_event_at.split('T')[0] : '—'}</td>
                         <td class="py-3 px-4 ${daysClass}">${daysOut}</td>
                         <td class="py-3 px-4 text-right">
                             <button onclick="viewAssetDetail('${item.asset_id}')" class="px-2.5 py-1 border border-blue-200 text-blue-600 rounded hover:bg-blue-50 text-[11px] font-semibold inline-flex items-center gap-1">
@@ -2124,18 +2174,6 @@
                     </tr>
                 `;
             }).join('');
-        }
-
-        function renderMockAssetsFallback() {
-            const fallback = [
-                { asset_id: 'ASSET-0000001', type_name: 'Pallet', asset_status: 'AVAILABLE', current_location_name: 'New York DC', owner_name: 'Acme Corp', last_event_at: '2026-10-20', days_outstanding: 0 },
-                { asset_id: 'ASSET-0000002', type_name: 'Crate', asset_status: 'IN_TRANSIT', current_location_name: 'Chicago WH', owner_name: 'Global Foods', last_event_at: '2026-10-18', days_outstanding: 3 },
-                { asset_id: 'ASSET-0000003', type_name: 'Container', asset_status: 'OVERDUE', current_location_name: 'Los Angeles DC', owner_name: 'FreshMart', last_event_at: '2026-09-25', days_outstanding: 28 },
-                { asset_id: 'ASSET-0000004', type_name: 'Rack', asset_status: 'IN_REPAIR', current_location_name: 'Dallas Repair Center', owner_name: 'RetailCo', last_event_at: '2026-10-10', days_outstanding: 8 },
-                { asset_id: 'ASSET-0000005', type_name: 'Pallet', asset_status: 'LOST', current_location_name: '-', owner_name: 'Acme Corp', last_event_at: '2026-08-15', days_outstanding: 65 }
-            ];
-            renderAssetsRows(fallback);
-            renderPagination(20000, 1, 10);
         }
 
         function renderPagination(total, page, size) {
@@ -2215,21 +2253,21 @@
                 const data = await res.json();
                 renderAssetDetailView(data);
             } catch (err) {
-                renderMockAssetDetailFallback(assetId);
+                showToast('error', 'Asset Unavailable', 'Could not load this asset from the database.');
             }
         }
 
         function renderAssetDetailView(data) {
-            document.getElementById('detailType').innerText = data.type_name || data.type_code || 'Container';
-            document.getElementById('infoType').innerText = data.type_name || data.type_code || 'Container';
-            document.getElementById('detailOwner').innerText = data.owner_name || 'FreshMart';
-            document.getElementById('infoOwner').innerText = data.owner_name || 'FreshMart';
-            document.getElementById('detailLocation').innerText = data.current_location_name || 'Los Angeles DC';
-            document.getElementById('infoLocation').innerText = data.current_location_name || 'Los Angeles DC';
-            document.getElementById('infoPurchaseDate').innerText = data.purchase_date || '2024-01-15';
-            document.getElementById('infoDeposit').innerText = `$${(data.deposit_amount || 45).toFixed(2)}`;
-            document.getElementById('detailDaysOutstanding').innerText = data.days_outstanding || 28;
-            document.getElementById('detailLastEvent').innerText = data.last_event_at ? data.last_event_at.split('T')[0] : '2026-09-25';
+            document.getElementById('detailType').innerText = data.type_name || data.type_code || '—';
+            document.getElementById('infoType').innerText = data.type_name || data.type_code || '—';
+            document.getElementById('detailOwner').innerText = data.owner_name || '—';
+            document.getElementById('infoOwner').innerText = data.owner_name || '—';
+            document.getElementById('detailLocation').innerText = data.current_location_name || '—';
+            document.getElementById('infoLocation').innerText = data.current_location_name || '—';
+            document.getElementById('infoPurchaseDate').innerText = data.purchase_date || '—';
+            document.getElementById('infoDeposit').innerText = `$${Number(data.deposit_amount ?? 0).toFixed(2)}`;
+            document.getElementById('detailDaysOutstanding').innerText = data.days_outstanding ?? 0;
+            document.getElementById('detailLastEvent').innerText = data.last_event_at ? data.last_event_at.split('T')[0] : '—';
 
             const statusBadge = data.is_overdue && data.asset_status !== 'LOST' ? 
                 '<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-700">Overdue</span>' : 
@@ -2256,10 +2294,10 @@
                 if (evt.event_type === 'RECEIVED') dotColor = 'green';
                 if (evt.event_type === 'INSPECTION') dotColor = 'orange';
 
-                const timeStr = evt.event_timestamp ? evt.event_timestamp.replace('T', ' ').slice(0, 16) : '2026-09-25 10:15';
-                const fromLoc = evt.from_location_name || 'Origin WH';
-                const toLoc = evt.to_location_name || 'Destination DC';
-                const actor = evt.actor_owner_name || 'Logistics Partner';
+                const timeStr = evt.event_timestamp ? evt.event_timestamp.replace('T', ' ').slice(0, 16) : '—';
+                const fromLoc = evt.from_location_name || '—';
+                const toLoc = evt.to_location_name || '—';
+                const actor = evt.actor_owner_name || '—';
 
                 let actionDesc = `${evt.event_type} at ${toLoc}`;
                 if (evt.event_type === 'DISPATCHED') actionDesc = `Dispatched from ${fromLoc}`;
@@ -2283,9 +2321,9 @@
                         <div class="timeline-dot red"></div>
                         <div class="flex items-center justify-between">
                             <span class="text-[11px] font-bold text-red-600">Return Expected (Overdue)</span>
-                            <span class="text-[10px] text-red-500 font-mono">2026-10-20 00:00</span>
+                            <span class="text-[10px] text-red-500 font-mono">—</span>
                         </div>
-                        <div class="text-[11px] text-red-400 mt-0.5">SLA Exceeded by 28 days</div>
+                        <div class="text-[11px] text-red-400 mt-0.5">Return deadline exceeded</div>
                     </div>
                 `;
             }
@@ -2411,30 +2449,6 @@
             `).join('') : '<tr><td colspan="4" class="text-center py-4 text-slate-400">No financial ledger entries.</td></tr>';
         }
 
-        function renderMockAssetDetailFallback(assetId) {
-            const mock = {
-                asset_id: assetId || 'ASSET-000003',
-                type_name: 'Container',
-                owner_name: 'FreshMart',
-                current_location_name: 'Los Angeles DC',
-                purchase_date: '2024-01-15',
-                deposit_amount: 45.00,
-                days_outstanding: 28,
-                last_event_at: '2026-09-25T10:15:00',
-                is_overdue: true,
-                asset_status: 'OVERDUE',
-                events: [
-                    { custody_event_id: 'CUST-ASSET-000003-000001', event_type: 'DISPATCHED', from_location_name: 'Chicago WH', to_location_name: 'Los Angeles DC', actor_owner_name: 'Global Logistics', event_timestamp: '2026-09-25T10:15:00', notes: 'Initial dispatch' },
-                    { custody_event_id: 'CUST-ASSET-000003-000002', event_type: 'RECEIVED', from_location_name: 'Chicago WH', to_location_name: 'Los Angeles DC', actor_owner_name: 'Warehouse Operator', event_timestamp: '2026-09-28T14:20:00', notes: 'Received at destination' }
-                ],
-                rmas: [],
-                inspections: [],
-                repairs: [],
-                ledger_entries: []
-            };
-            renderAssetDetailView(mock);
-        }
-
         // Fetch Quality Inspections Table
         async function fetchInspectionsTable() {
             const tbody = document.getElementById('inspectionsTableBody');
@@ -2514,6 +2528,17 @@
             tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading financial journal...</td></tr>';
 
             try {
+                const summaryRes = await fetch('/api/deposits/reconciliation');
+                if (summaryRes.ok) {
+                    const summary = await summaryRes.json();
+                    const money = value => '$' + Number(value || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    document.getElementById('fin-held').innerText = money(summary.total_deposits_collected);
+                    document.getElementById('fin-refunded').innerText = money(summary.total_refunds_processed);
+                    document.getElementById('fin-damage').innerText = money((summary.total_damage_charges || 0) + (summary.total_loss_charges || 0));
+                    document.getElementById('fin-liability').innerText = money(summary.outstanding_deposit_liability);
+                    document.getElementById('fin-status').innerText = summary.reconciliation_status === 'RECONCILED' ? 'Reconciled from ledger entries' : 'Ledger discrepancy detected';
+                    document.getElementById('fin-held-note').innerText = `${summary.transaction_counts?.DEPOSIT_CHARGE || 0} deposit charge entries`;
+                }
                 const res = await fetch('/api/deposits?page=1&page_size=20');
                 const data = await res.json();
                 const list = Array.isArray(data) ? data : (data.items || []);
@@ -2549,9 +2574,26 @@
                     const valData = await resVal.json();
                     const metrics = valData.anomaly_detection?.evaluation_metrics;
                     if (metrics) {
-                        document.getElementById('anomPrecision').innerText = `${metrics.precision_pct.toFixed(1)}%`;
-                        document.getElementById('anomRecall').innerText = `${metrics.recall_pct.toFixed(1)}%`;
+                        document.getElementById('anomPrecision').innerText = `${Number(metrics.precision_pct || 0).toFixed(1)}%`;
+                        document.getElementById('anomRecall').innerText = `${Number(metrics.recall_pct || 0).toFixed(1)}%`;
+                        document.getElementById('anomF1').innerText = `${Number(metrics.f1_score_pct || 0).toFixed(1)}%`;
                         document.getElementById('anomaly-total-count').innerText = metrics.total_detected;
+                        const fprText = metrics.false_positive_rate_pct == null ? 'FPR unavailable: no labelled negatives' : `FPR ${Number(metrics.false_positive_rate_pct).toFixed(1)}%`;
+                        document.getElementById('anomEvaluationNote').innerText = `${metrics.true_positives} TP · ${metrics.false_positives} FP · ${metrics.false_negatives} FN · ${fprText}`;
+                        const detected = metrics.detected_by_type || {};
+                        const injected = metrics.injected_by_type || {};
+                        const scenarios = [
+                            ['SIMULTANEOUS_LOCATIONS', 'scenarioSimultaneous'],
+                            ['RETURN_BEFORE_DISPATCH', 'scenarioReturn'],
+                            ['DUPLICATE_REFUND', 'scenarioRefund'],
+                            ['REPAIR_WITHOUT_INSPECTION', 'scenarioRepair'],
+                            ['MISSING_CUSTODY_ACTOR', 'scenarioActor']
+                        ];
+                        for (const [kind, elementId] of scenarios) {
+                            const found = Number(detected[kind] || 0);
+                            const expected = Number(injected[kind] || 0);
+                            document.getElementById(elementId).innerText = `${found} detected / ${expected} labelled`;
+                        }
                     }
                 }
 
@@ -2569,29 +2611,8 @@
                     </tr>
                 `).join('');
             } catch (err) {
-                renderMockAnomaliesFallback();
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-rose-500">Could not load anomaly records or evaluation metrics.</td></tr>';
             }
-        }
-
-        function renderMockAnomaliesFallback() {
-            const mock = [
-                { issue_id: 'DET-000001', issue_type: 'SIMULTANEOUS_LOCATIONS', affected_asset_id: 'ASSET-0001164', severity: 'CRITICAL', description: 'Asset detected in conflicting locations (Location 7 vs Location 15) at 2026-09-22', expected_decision: 'Quarantine custody record and flag scanning terminal' },
-                { issue_id: 'DET-000002', issue_type: 'RETURN_BEFORE_DISPATCH', affected_asset_id: 'ASSET-0003882', severity: 'HIGH', description: 'Return recorded with timestamp earlier than dispatch timestamp.', expected_decision: 'Verify timestamp synchronization on handheld scanners' },
-                { issue_id: 'DET-000003', issue_type: 'DUPLICATE_REFUND', affected_asset_id: 'ASSET-0005119', severity: 'HIGH', description: 'Duplicate refund entries detected for initial deposit charge.', expected_decision: 'Freeze accounts receivable refund ledger entry' },
-                { issue_id: 'DET-000004', issue_type: 'REPAIR_WITHOUT_INSPECTION', affected_asset_id: 'ASSET-0007421', severity: 'CRITICAL', description: 'Asset assigned to repair facility with no preceding inspection.', expected_decision: 'Mandate QA inspection pass before repair billing' },
-                { issue_id: 'DET-000005', issue_type: 'MISSING_CUSTODY_ACTOR', affected_asset_id: 'ASSET-0009214', severity: 'HIGH', description: 'Custody event logged without valid responsible owner/carrier.', expected_decision: 'Retroactively audit custody chain authorization' }
-            ];
-            const tbody = document.getElementById('anomaliesTableBody');
-            tbody.innerHTML = mock.map(item => `
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="py-2.5 px-3 font-semibold text-rose-600">${item.issue_id}</td>
-                    <td class="py-2.5 px-3 font-medium text-slate-800">${item.issue_type}</td>
-                    <td class="py-2.5 px-3 font-mono font-semibold text-blue-600 cursor-pointer" onclick="viewAssetDetail('${item.affected_asset_id}')">${item.affected_asset_id}</td>
-                    <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${item.severity === 'CRITICAL' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'}">${item.severity}</span></td>
-                    <td class="py-2.5 px-3 text-slate-600">${item.description}</td>
-                    <td class="py-2.5 px-3 text-emerald-700 font-medium">${item.expected_decision}</td>
-                </tr>
-            `).join('');
         }
 
         async function triggerAnomalyScan() {
@@ -2601,13 +2622,14 @@
 
             btn.disabled = true;
             icon.classList.add('fa-spin');
-            txt.innerText = 'Scanning 100,030 events...';
+            txt.innerText = 'Running anomaly audit...';
 
             try {
                 const res = await fetch('/api/validation/run', { method: 'POST' });
                 const data = await res.json();
                 
-                showToast('success', 'Audit Scan Complete', `50 anomalies verified with 100.0% Precision and 100.0% Recall across all 20,000 assets.`);
+                const metrics = data.evaluation_metrics || {};
+                showToast('success', 'Audit Scan Complete', `${metrics.total_detected || 0} findings; precision ${Number(metrics.precision_pct || 0).toFixed(1)}%, recall ${Number(metrics.recall_pct || 0).toFixed(1)}%.`);
                 fetchAnomaliesTable();
             } catch (err) {
                 showToast('error', 'Audit Failed', 'Could not run validation engine.');
@@ -2628,10 +2650,10 @@
                 tbody.innerHTML = (data.items || []).map(s => `
                     <tr class="hover:bg-slate-50">
                         <td class="py-2.5 px-3 font-semibold text-blue-600">${s.shipment_id}</td>
-                        <td class="py-2.5 px-3 text-slate-700">${s.origin_location_name || 'Chicago WH'}</td>
-                        <td class="py-2.5 px-3 text-slate-700">${s.destination_location_name || 'New York DC'}</td>
-                        <td class="py-2.5 px-3 text-slate-600">${s.carrier_name || 'Swift Freight'}</td>
-                        <td class="py-2.5 px-3 font-mono text-[11px]">${s.dispatch_date ? s.dispatch_date.split('T')[0] : '2026-10-15'}</td>
+                        <td class="py-2.5 px-3 text-slate-700">${s.origin_location_name || '—'}</td>
+                        <td class="py-2.5 px-3 text-slate-700">${s.destination_location_name || '—'}</td>
+                        <td class="py-2.5 px-3 text-slate-600">${s.carrier_name || '—'}</td>
+                        <td class="py-2.5 px-3 font-mono text-[11px]">${s.dispatch_date ? s.dispatch_date.split('T')[0] : '—'}</td>
                         <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-semibold ${s.shipment_status === 'DELIVERED' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'}">${s.shipment_status}</span></td>
                         <td class="py-2.5 px-3 font-mono text-slate-500 text-[11px]">${s.tracking_reference || '-'}</td>
                     </tr>
@@ -2913,10 +2935,14 @@
                 setTxt('kpi-in-transit', (data.active_in_transit || 0).toLocaleString());
                 setTxt('kpi-overdue-returns', (data.overdue_count || 0).toLocaleString());
                 setTxt('kpi-lost-assets', (data.lost_count || 0).toLocaleString());
-                setTxt('kpi-total-shipments', (data.period_shipments || data.total_shipments || 0).toLocaleString());
-                setTxt('kpi-total-rmas', (data.period_returned || data.total_returned || 0).toLocaleString());
+                setTxt('kpi-total-shipments', (data.total_shipments || 0).toLocaleString());
+                setTxt('kpi-total-rmas', (data.total_rmas || 0).toLocaleString());
                 setTxt('kpi-in-repair', (data.in_repair_count || 0).toLocaleString());
                 setTxt('kpi-open-anomalies', (data.open_anomalies || 0).toLocaleString());
+                setTxt('analytics-return-rate', `${Number(data.return_rate_pct || 0).toFixed(1)}%`);
+                setTxt('analytics-outstanding-age', `${Number(data.avg_outstanding_days || 0).toFixed(1)} Days`);
+                setTxt('analytics-damage-rate', `${Number(data.damage_rate_pct || 0).toFixed(1)}%`);
+                setTxt('analytics-loss-rate', `${Number(data.loss_rate_pct || 0).toFixed(2)}%`);
 
                 // Update Donut Chart & Side Readings
                 if (data.status_distribution) {

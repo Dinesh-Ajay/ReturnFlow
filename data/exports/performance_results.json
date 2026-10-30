@@ -1,0 +1,73 @@
+{
+  "measured_at": "2026-10-30T16:46:00.963741+00:00",
+  "environment": {
+    "python": "3.13.9",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "database_server_version": "9.1.0",
+    "database_dialect": "MySQL"
+  },
+  "dataset_counts_in_database": {
+    "reusable_assets": 20009,
+    "shipments": 10000,
+    "custody_events": 100039,
+    "deposit_ledger": 34148
+  },
+  "generation": {
+    "profile": "full",
+    "seed": 20261022,
+    "generated_counts": {
+      "asset_types": 8,
+      "owners": 40,
+      "locations": 30,
+      "assets": 20000,
+      "shipments": 10000,
+      "shipment_assets": 20000,
+      "custody_events": 100030,
+      "return_authorizations": 12400,
+      "rma_assets": 12400,
+      "inspections": 12400,
+      "repairs": 1348,
+      "deposit_ledger": 34148
+    },
+    "elapsed_seconds": 0.8848159999979543,
+    "custody_events_per_generation_second": 113051.75
+  },
+  "database_operation_method": "One warm-up, then 3 perf_counter measurements; median reported.",
+  "database_operations": {
+    "database_validation": {
+      "repeats": 3,
+      "median_seconds": 1.945499,
+      "min_seconds": 1.917488,
+      "max_seconds": 1.960468
+    },
+    "custody_history": {
+      "repeats": 3,
+      "median_seconds": 0.000983,
+      "min_seconds": 0.00096,
+      "max_seconds": 0.001246
+    },
+    "asset_search": {
+      "repeats": 3,
+      "median_seconds": 0.229619,
+      "min_seconds": 0.229496,
+      "max_seconds": 0.234518
+    },
+    "anomaly_detection_and_evaluation": {
+      "repeats": 3,
+      "median_seconds": 0.645872,
+      "min_seconds": 0.644851,
+      "max_seconds": 0.651494
+    },
+    "analytics_overview": {
+      "repeats": 3,
+      "median_seconds": 0.336787,
+      "min_seconds": 0.323764,
+      "max_seconds": 0.33846
+    }
+  },
+  "database_insertion": {
+    "status": "NOT MEASURED",
+    "reason": "The existing generator truncates operational tables before insertion; no isolated disposable benchmark database is configured."
+  },
+  "query_plan_review": "Use EXPLAIN ANALYZE on the target MySQL version for production query plans; this report records execution timings only."
+}

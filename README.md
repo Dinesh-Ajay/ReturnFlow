@@ -16,8 +16,8 @@ Built for the **AI Forward Deployed Engineer** technical recruitment assessment,
 3. **Deterministic Scale Synthetic Generator:**
    Fixed-seed generation (`20261022`) supporting both a developer starter profile (200 assets, 1,000 events) and a full-scale benchmark profile (20,000 assets, 10,000 shipments, 100,030 custody events) executing in ~1.2 seconds.
 4. **Independent Anomaly Detection Engine:**
-   Detects 5 mandatory anomaly scenarios (simultaneous locations, return before dispatch, duplicate refunds, repair without inspection, missing actors) independently from ground-truth labels, measuring 100.0% precision and 100.0% recall with 0 false positives.
-5. **Signed Double-Entry Financial Reconciliation:**
+   Detects the five required anomaly scenarios from operational records and evaluates findings against a separate positive-label ground-truth file. Current synthetic evaluation is 50 TP, 0 FP, and 0 FN; no labelled-negative population exists, so TN and false-positive rate are unavailable.
+5. **Signed Deposit Ledger Reconciliation:**
    Security deposits tracked as liabilities (`DEPOSIT_CHARGE`), refundable only up to the eligible balance upon good return, deducting assessed damage fees.
 6. **Enterprise SaaS Dashboard & REST API:**
    Modern light-theme dashboard matching enterprise Figma design with dark navy navigation, vertical custody timeline steppers, Plotly charts, and full Swagger API documentation.
@@ -128,13 +128,15 @@ pip install -r requirements.txt
 Create `.env` based on `.env.example`:
 
 ```ini
-DATABASE_URL=mysql+pymysql://root:root@localhost:3306/returnflow_db?charset=utf8mb4
-TEST_DATABASE_URL=mysql+pymysql://root:root@localhost:3306/returnflow_db?charset=utf8mb4
+DATABASE_URL=mysql+pymysql://<user>:<password>@localhost:3306/returnflow_db?charset=utf8mb4
+TEST_DATABASE_URL=mysql+pymysql://<user>:<password>@localhost:3306/returnflow_test_db?charset=utf8mb4
 RANDOM_SEED=20261022
 REFERENCE_DATE=2026-10-22
 DATA_PROFILE=full
 BATCH_SIZE=1000
 ENVIRONMENT=development
+AUTH_SECRET=<random secret of at least 32 characters>
+INITIAL_ADMIN_PASSWORD=<strong initial password>
 GA_MEASUREMENT_ID=G-RETURNFLOW01
 API_HOST=127.0.0.1
 API_PORT=8000
@@ -156,11 +158,21 @@ python -m alembic upgrade head
 ### Generate Synthetic Datasets
 
 ```bash
-# Generate starter developer dataset (200 assets, 100 shipments, 1000 events)
-python -m app.generator --profile starter
+# Generate a starter dataset and export files without touching the database
+python -m app.generator --profile starter --no-db
 
-# Generate full enterprise scale dataset (20,000 assets, 10,000 shipments, 100,000 events)
-python -m app.generator --profile full
+# Generate a full dataset and export files without touching the database
+python -m app.generator --profile full --seed 20261022 --no-db
+```
+
+The database-loading generator refuses to replace populated tables by default. Use an empty database for normal loads. `--replace-existing` explicitly enables table truncation and should be used only with a disposable database after taking a backup.
+
+### Verify counts, reproducibility, and performance
+
+```bash
+python -m app.validation.counts
+python -m app.validation.reproducibility --profile full --seed 20261022
+python -m app.validation.benchmark
 ```
 
 ### Run Independent Data Validation & Anomaly Detection
@@ -195,7 +207,7 @@ Opens the enterprise operational dashboard at `http://localhost:8501`.
 python -m pytest -v
 ```
 
-Executes all 22 automated test suites verifying generation, lifecycle state machine, custody traceability, financial reconciliation, anomaly detection, REST API endpoints, and seed reproducibility.
+The test suite requires a dedicated test database with a full-profile dataset. Set both `DATABASE_URL` and `TEST_DATABASE_URL` to a separately named database ending in `_test` (or containing `_test_`); tests refuse to run against an ordinary database name. The existing test suite performs writes and commits.
 
 ---
 
@@ -273,30 +285,6 @@ curl -X POST "http://127.0.0.1:8000/api/validation/run"
 
 ---
 
-## 7. Requirement-to-Implementation Traceability Checklist
+## 7. Audit and verification
 
-| Requirement from Specification | Implementation File(s) / Table(s) / Route(s) | Verification Evidence | Assessment Status |
-| :--- | :--- | :--- | :--- |
-| **Relational DB Design (10 Entities + Bridge)** | `app/models/`, `database/schema.sql` | 13 tables verified in MySQL `returnflow_db` | **IMPLEMENTED AND VERIFIED** |
-| **Foreign Keys & Constraints** | `app/models/`, `app/validation/integrity.py` | Foreign key checks passed (0 violations) | **IMPLEMENTED AND VERIFIED** |
-| **Alembic Migrations** | `alembic.ini`, `database/migrations/` | Initial schema revision stamped & applied | **IMPLEMENTED AND VERIFIED** |
-| **Deterministic ID Generation** | `app/utils/id_generator.py` | Tested in `tests/test_generator.py` | **IMPLEMENTED AND VERIFIED** |
-| **Fixed Seed Reproducibility (20261022)** | `app/generator/config.py`, `tests/test_reproducibility.py` | Tested in `tests/test_reproducibility.py` | **IMPLEMENTED AND VERIFIED** |
-| **Starter Profile (200 Assets, 1000 Events)** | `app/generator/__main__.py` | Generated in 0.009s, loaded in 1.38s | **IMPLEMENTED AND VERIFIED** |
-| **Full Profile (20k Assets, 100k Events)** | `app/generator/__main__.py` | Generated in 1.19s, loaded in 47.0s | **IMPLEMENTED AND VERIFIED** |
-| **Asset Lifecycle State Transitions** | `app/services/lifecycle_service.py` | Tested in `tests/test_lifecycle.py` | **IMPLEMENTED AND VERIFIED** |
-| **Outstanding Age & Lost Calculation** | `app/services/lifecycle_service.py` | Tested in `tests/test_lifecycle.py` | **IMPLEMENTED AND VERIFIED** |
-| **Custody Traceability & Event Immutability** | `app/services/custody_service.py` | Tested in `tests/test_custody.py` | **IMPLEMENTED AND VERIFIED** |
-| **Materialized Projection Self-Healing** | `CustodyService.rebuild_asset_projection_from_events`| Tested in `tests/test_custody.py` | **IMPLEMENTED AND VERIFIED** |
-| **5 Mandatory Anomaly Scenarios** | `app/generator/anomaly_injector.py` | Tested in `tests/test_anomalies.py` | **IMPLEMENTED AND VERIFIED** |
-| **Independent Ground Truth Generation** | `data/ground_truth/ground_truth.json`, `.csv` | Verified in `data/ground_truth/` | **IMPLEMENTED AND VERIFIED** |
-| **Independent Validation Engine** | `app/validation/` | Verified via `python -m app.validation` | **IMPLEMENTED AND VERIFIED** |
-| **Anomaly Precision & Recall Metrics** | `app/validation/anomaly_detection.py` | Measured 100.0% Precision, 100.0% Recall | **IMPLEMENTED AND VERIFIED** |
-| **Signed Double-Entry Financial Ledger** | `app/services/deposit_service.py` | Tested in `tests/test_financial.py` | **IMPLEMENTED AND VERIFIED** |
-| **Duplicate Refund Detection** | `FinancialValidator.detect_duplicate_refunds` | Verified in `test_anomalies.py` | **IMPLEMENTED AND VERIFIED** |
-| **Deposit Balance Over-Refund Prevention** | `DepositService.record_deposit_refund` | Tested in `tests/test_financial.py` | **IMPLEMENTED AND VERIFIED** |
-| **FastAPI REST API (APIRouter, Swagger)** | `app/main.py`, `app/api/routes/` | Tested 22 tests in `tests/test_api.py` | **IMPLEMENTED AND VERIFIED** |
-| **Interactive Streamlit Operational UI** | `dashboard/streamlit_app.py` | Multi-tab UI matching design reference | **IMPLEMENTED AND VERIFIED** |
-| **CSV, JSON, and SQL Seed Data Exports** | `app/generator/exporter.py` | Generated in `data/generated/`, `exports/` | **IMPLEMENTED AND VERIFIED** |
-| **Technical Documentation Suite** | `docs/` (8 markdown documents) | All 8 required documents completed | **IMPLEMENTED AND VERIFIED** |
-| **AI Transparency & Prompt History Log** | `prompts/ai_prompt_history.md` | Complete prompt audit log created | **IMPLEMENTED AND VERIFIED** |
+The detailed requirement-by-requirement evidence, actual database counts, results, blockers, and known limitations are maintained in [FINAL_REQUIREMENTS_AUDIT.md](FINAL_REQUIREMENTS_AUDIT.md). Measured reports are in `docs/` and machine-readable run outputs are in `data/exports/`.

@@ -1,61 +1,43 @@
-# ReturnFlow Reproducibility & Determinism Report
+# Reproducibility Report
 
-This report documents the verification of deterministic data generation in **ReturnFlow** using the fixed random seed `20261022`.
+Verification executed on 2026-10-30 with Python 3.13.9, full profile, and seed **20261022**.
 
----
+## Commands
 
-## 1. Reproducibility Configuration
-
-- **Fixed Random Seed:** `20261022`
-- **Reference Evaluation Date:** `2026-10-22`
-- **ID Generator Strategy:** Deterministic state machine counters with zero-padded formatting.
-- **Python Pseudo-Random Number Generator:** `random.Random(seed)` initialized once per generation cycle and passed explicitly to all generators.
-
----
-
-## 2. Multi-Run Comparison Verification
-
-The generation pipeline was executed in two independent passes with identical seed configuration. The resulting datasets were compared across row counts, primary key sequences, and ground-truth anomaly labels.
-
-### Row Count Comparison
-
-| Entity Table | Run 1 Record Count | Run 2 Record Count | Match Status |
-| :--- | :--- | :--- | :--- |
-| `asset_types` | 8 | 8 | **IDENTICAL** |
-| `owners` | 40 | 40 | **IDENTICAL** |
-| `locations` | 30 | 30 | **IDENTICAL** |
-| `reusable_assets` | 20,000 | 20,000 | **IDENTICAL** |
-| `shipments` | 10,000 | 10,000 | **IDENTICAL** |
-| `shipment_assets` | 20,000 | 20,000 | **IDENTICAL** |
-| `custody_events` | 100,030 | 100,030 | **IDENTICAL** |
-| `return_authorizations` | 12,400 | 12,400 | **IDENTICAL** |
-| `return_authorization_assets`| 12,400 | 12,400 | **IDENTICAL** |
-| `inspections` | 12,400 | 12,400 | **IDENTICAL** |
-| `repairs` | 1,348 | 1,348 | **IDENTICAL** |
-| `deposit_ledger` | 34,148 | 34,148 | **IDENTICAL** |
-| `anomaly_records` | 50 | 50 | **IDENTICAL** |
-
----
-
-## 3. Structural & Primary Key Invariance
-
-1. **Asset IDs:**
-   - Both runs produced the exact sequence `ASSET-0000001` through `ASSET-0020000`.
-   - Serial numbers mapped identically: `ASSET-0000001` -> `SN-PALLET-0000001`, `ASSET-0000002` -> `SN-CONTAINER-0000002`, etc.
-2. **Shipment IDs:**
-   - Exact sequence `SHP-2026-000001` through `SHP-2026-010000`.
-3. **Custody Event IDs:**
-   - Deterministic per-asset sequence: `CUST-ASSET-0000001-000001`, `CUST-ASSET-0000001-000002`, etc.
-4. **Ground-Truth Labels:**
-   - All 50 injected anomaly instances mapped to identical `issue_id` values (`ANOM-000001` through `ANOM-000050`), affecting identical target records and asset IDs.
-
----
-
-## 4. Automated Reproducibility Test
-
-Automated verification is incorporated into the pytest suite in `tests/test_reproducibility.py`.
-Execution command:
-```bash
-python -m pytest tests/test_reproducibility.py -v
+```powershell
+python -m app.validation.reproducibility --profile full --seed 20261022
 ```
-Result: **PASSED (100% Assertion Match)**.
+
+This runs two in-memory generation passes. It does not connect to or clear the database and does not overwrite generated CSVs. Counts and SHA-256 digests are saved in `data/exports/reproducibility_results.json`.
+
+To generate one full dataset and export it to the configured destinations:
+
+```powershell
+python -m app.generator --profile full --seed 20261022 --no-db
+```
+
+To load data into MySQL, first configure `DATABASE_URL` to a dedicated empty database. The loader refuses populated target tables by default. `--replace-existing` explicitly enables truncation for a disposable database after backup; do not point that command at data that needs to be preserved.
+
+## Result
+
+Both full in-memory passes produced identical counts and checksums: **reproducible = true**. Each produced 8 asset types, 40 owners, 30 locations, 20,000 assets, 10,000 shipments, 20,000 shipment-asset links, 100,030 custody events, 12,400 return authorizations, 12,400 RMA-asset links, 12,400 inspections, 1,348 repairs, 34,148 ledger entries, and 50 ground-truth anomaly labels.
+
+Logical row serialization uses sorted JSON keys and excludes `created_at` / `updated_at` database-managed metadata. Dates and timestamps are normalized to ISO strings; `Decimal` values are serialized as decimal strings. The generator sorts the unique asset IDs before applying the seeded shuffle in anomaly injection, preventing process hash randomization from changing scenario targets.
+
+| Entity | SHA-256 (both passes) |
+| --- | --- |
+| Asset types | `21f41215a0bba72be4b48ac6c11eb5ad534e195483e904afde6b6eb165bdb77f` |
+| Owners | `4b983ee18c0b0c589237ef0c86b346d0a2a4d685cb7bff30b65811cf411ab76a` |
+| Locations | `ea9d7e07634c181f44e146e6332e768864313ebab502217af91f629af4ba26d4` |
+| Assets | `5599d56af4a0b43dfcf7423fec5eb17dd493223d9bda8968609eeeab489d47c6` |
+| Shipments | `27c1ea4a608de65780ef875eb853bb672226d86eb72ee57fb3a752e6553b91d9` |
+| Shipment-asset links | `f1503e5ba3ed015b06ba9614ad9f890f464ce7706a5e691f4e084c1c28d1e295` |
+| Custody events | `a4e8ee27d97c8bdab3466f90930300edb516c300b194d18931d22211c6a2558e` |
+| Return authorizations | `f1c987ea6e4106b3765d6ab4fbe6c7bdd922d911198590fcb1c7dba8ec231e47` |
+| RMA-asset links | `3ef7f1cf3dba03812b7b6432bc75d5c073d1e1f316303bf1743b9fdea1c805b6` |
+| Inspections | `7bd104365a8f72e751b4de580a13fbfc26422fdf260d99131686a7fbef82d5e3` |
+| Repairs | `8260f53e2ba64a99925c3dc03bbab7e6b1c0969242fc543b05a36f7334799b57` |
+| Deposit ledger | `f92c8f356ffd8d5d2f469c8dab9523b2ebcee00fa9b2c6061cc581f2a551faf6` |
+| Ground truth | `e18215a4039078ad584e5667bd3d339ad8376c524d862f44efb5c3e1d5407bf7` |
+
+This verification proves repeatability for the current full-profile generator and configuration. It does not prove that a prior database loaded by an older generator revision has identical logical rows.

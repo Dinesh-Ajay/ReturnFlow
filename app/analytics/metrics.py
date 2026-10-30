@@ -10,6 +10,7 @@ from app.models.custody_event import CustodyEvent
 from app.models.inspection import Inspection
 from app.models.repair import Repair
 from app.models.deposit_ledger import DepositLedger
+from app.models.return_authorization import ReturnAuthorization
 from app.services.lifecycle_service import LifecycleService
 from app.services.deposit_service import DepositService
 
@@ -132,6 +133,7 @@ class AnalyticsService:
         loss_rate = (lost / total_assets * 100.0) if total_assets > 0 else 0.0
 
         total_inspections = db.query(Inspection).count()
+        total_rmas = db.query(ReturnAuthorization).count()
         damage_count = db.query(Inspection).filter(Inspection.condition_status.in_(["DAMAGED", "CRITICAL"])).count()
         damage_rate = (damage_count / total_inspections * 100.0) if total_inspections > 0 else 0.0
 
@@ -158,6 +160,7 @@ class AnalyticsService:
             "min_dataset_date": str(dataset_min),
             "total_assets": total_assets,
             "total_shipments": total_shipments,
+            "total_rmas": total_rmas,
             "period_shipments": period_shipments,
             "total_custody_events": total_events,
             "active_in_transit": in_transit,

@@ -1,5 +1,16 @@
 # AI Transparency and Prompt History
 
+## Audit Update — 2026-10-30
+
+- **AI tool:** OpenAI Codex (this audit session).
+- **Tasks assisted:** Repository inspection; review of data generation, validation, exports, evaluation, financial reconciliation, testing, and documentation; targeted fixes to integrity checks, reproducibility, download routes, dashboard metric placeholders, financial accounting, and test database safeguards.
+- **Generated or accelerated:** Read-only database count/integrity/anomaly/financial checks; in-memory full-profile reproducibility runs; a read-only benchmark; direct checks of CSV/JSON/PDF response bodies; and a dedicated MySQL test database seeded separately from the working database.
+- **Reviewed or modified:** Existing Python services and API routes, SQLAlchemy models, UI download/metric code, test configuration, README, and report documents. No existing module was replaced wholesale. The prior working-tree change in `data/exports/validation_summary.json` was preserved and not overwritten.
+- **Verification actually performed:** Full profile reproducibility comparison passed with equal row counts and SHA-256 digests. Read-only checks found 0 PK/FK/orphan/unique violations in 222,882 mapped rows. Full pytest ran against the isolated `returnflow_audit_test_20261030` database after matching its ground-truth labels; the final run result is recorded in `FINAL_REQUIREMENTS_AUDIT.md`. All export functions were called against actual database rows; CSV/JSON content was parsed and PDF response structure was checked. No real browser session or PDF reader was available.
+- **Limits:** Database insertion was not benchmarked repeatedly. The development database was not truncated or reseeded. No claim of manual verification is made here.
+
+Earlier entries in this file are historical project notes and were not independently revalidated in this audit. Their reported tool actions and timings should be treated as author-provided history, not results from this audit.
+
 As required by Section 25 of the ReturnFlow technical assessment guidelines, this document provides an honest, auditable, and comprehensive record of all interactions with AI tools during the development of this project.
 
 ---

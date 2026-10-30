@@ -27,6 +27,58 @@ class ExportService:
     def _get_timestamp_str() -> str:
         return datetime.now().strftime("%Y%m%d_%H%M%S")
 
+    @classmethod
+    def export_records_json(cls, records: List[Any], report_name: str) -> str:
+        """Export ORM rows using their actual mapped columns."""
+        def clean(value: Any) -> Any:
+            if hasattr(value, "isoformat"):
+                return value.isoformat()
+            if hasattr(value, "as_tuple"):  # Decimal
+                return str(value)
+            return value
+
+        rows = [{column.name: clean(getattr(row, column.name))
+                 for column in row.__table__.columns} for row in records]
+        return json.dumps({"report": report_name, "generated_at": datetime.now(timezone.utc).isoformat(),
+                           "record_count": len(rows), "records": rows}, indent=2)
+
+    @classmethod
+    def export_records_csv(cls, records: List[Any]) -> io.StringIO:
+        output = io.StringIO()
+        columns = list(records[0].__table__.columns) if records else []
+        writer = csv.writer(output)
+        writer.writerow([column.name for column in columns])
+        for row in records:
+            writer.writerow([_get_val(row, column.name) for column in columns])
+        output.seek(0)
+        return output
+
+    @classmethod
+    def export_records_pdf(cls, records: List[Any], report_name: str) -> io.BytesIO:
+        buffer = io.BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=landscape(letter))
+        styles = getSampleStyleSheet()
+        columns = list(records[0].__table__.columns) if records else []
+        selected = columns[:8]
+        table_data = [[column.name for column in selected]]
+        table_data.extend([[str(_get_val(row, column.name, ""))[:48] for column in selected]
+                           for row in records[:500]])
+        if not selected:
+            table_data = [["No records"]]
+        table = Table(table_data, repeatRows=1)
+        table.setStyle(TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#2563EB")),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            ("GRID", (0, 0), (-1, -1), 0.35, colors.HexColor("#CBD5E1")),
+            ("FONTSIZE", (0, 0), (-1, -1), 7),
+            ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")]),
+        ]))
+        doc.build([Paragraph(report_name, styles["Title"]),
+                   Paragraph(f"Generated {datetime.now(timezone.utc).isoformat()} | {len(records)} records (up to 500 shown)", styles["Normal"]),
+                   Spacer(1, 12), table])
+        buffer.seek(0)
+        return buffer
+
     # ==================== ASSETS EXPORTS ====================
 
     @classmethod
@@ -407,6 +459,7 @@ class ExportService:
         )
 
         elements = []
+        m = metrics or {}
 
         # 1. REPORT HEADER
         gen_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -417,7 +470,7 @@ class ExportService:
             f"<b>Report Generated:</b> {gen_time} UTC &nbsp;|&nbsp; "
             f"<b>Dataset Seed:</b> {seed_val} &nbsp;|&nbsp; "
             f"<b>Reporting Scope / Reference Date:</b> {ref_date_val} &nbsp;|&nbsp; "
-            f"<b>Audit Status:</b> VERIFIED",
+            f"<b>Audit Status:</b> {'EVALUATED' if m else 'NOT EVALUATED'}",
             meta_style
         ))
         elements.append(Spacer(1, 10))
@@ -426,32 +479,47 @@ class ExportService:
         elements.append(Paragraph("<b>1. Detection Performance & Invariant Evaluation Scorecard</b>", section_style))
         elements.append(Spacer(1, 4))
 
-        m = metrics or {}
-        tot_inj = m.get("total_injected", 10)
+        tot_inj = m.get("total_injected", 0)
         tot_det = m.get("total_detected", len(anomalies))
-        tp = m.get("true_positives", min(tot_inj, tot_det))
+        tp = m.get("true_positives", 0)
         fp = m.get("false_positives", 0)
         fn = m.get("false_negatives", 0)
-        precision = m.get("precision_pct", 100.0)
-        recall = m.get("recall_pct", 100.0)
+        precision = m.get("precision_pct")
+        recall = m.get("recall_pct")
+        tn = m.get("true_negatives")
+        fpr = m.get("false_positive_rate_pct")
+        f1 = m.get("f1_score_pct")
+        detected_by_type = m.get("detected_by_type", {})
+        injected_by_type = m.get("injected_by_type", {})
+
+        def scenario_row(code, kind, title, rule):
+            expected = int(injected_by_type.get(kind, 0))
+            found = int(detected_by_type.get(kind, 0))
+            rate = f"{found / expected * 100:.1f}%" if expected else "Unavailable"
+            return [code, title, f"{found} / {expected}", rate, rule]
 
         summary_data = [
             ["Metric", "Value", "Metric", "Value", "Audit Status", "Result"],
             [
                 "Total Injected Invariants", f"{tot_inj}",
                 "True Positives (TP)", f"{tp}",
-                "Detection Precision", f"{precision:.1f}%"
+                "Detection Precision", f"{precision:.1f}%" if precision is not None else "Unavailable"
             ],
             [
                 "Total Detected Invariants", f"{tot_det}",
                 "False Positives (FP)", f"{fp}",
-                "Detection Recall", f"{recall:.1f}%"
+                "Detection Recall", f"{recall:.1f}%" if recall is not None else "Unavailable"
             ],
             [
                 "Verified Ground Truth", f"{tp}/{tot_inj}",
                 "False Negatives (FN)", f"{fn}",
-                "Invariant Compliance", "PASSED (100% Invariant Enforcement)"
-            ]
+                "Invariant Compliance", "Evaluation available" if m else "Not evaluated"
+            ],
+            [
+                "Labelled Negatives", str(tn) if tn is not None else "Unavailable",
+                "False Positive Rate", f"{fpr:.1f}%" if fpr is not None else "Unavailable",
+                "F1 Score", f"{f1:.1f}%" if f1 is not None else "Unavailable"
+            ],
         ]
         sum_table = Table(summary_data, colWidths=[130, 90, 120, 90, 140, 160])
         sum_table.setStyle(TableStyle([
@@ -475,41 +543,11 @@ class ExportService:
 
         scenarios_data = [
             ["Scenario Code", "Category Name", "Detected", "Rate", "Policy Enforcement Rule"],
-            [
-                "SIMULTANEOUS_CUSTODY",
-                "Simultaneous Custody",
-                "2 / 2",
-                "100.0%",
-                "Asset cannot be concurrently active in two locations without a transit event."
-            ],
-            [
-                "RETURN_BEFORE_DISPATCH",
-                "Return Before Dispatch",
-                "2 / 2",
-                "100.0%",
-                "Return timestamp and RMA creation cannot precede shipment dispatch timestamp."
-            ],
-            [
-                "DUPLICATE_REFUND",
-                "Duplicate Refund",
-                "2 / 2",
-                "100.0%",
-                "Multiple deposit refunds on the same asset lease cycle are blocked & flagged."
-            ],
-            [
-                "REPAIR_WITHOUT_INSPECTION",
-                "Repair Without Inspection",
-                "2 / 2",
-                "100.0%",
-                "Maintenance orders require a logged prior quality triage inspection."
-            ],
-            [
-                "MISSING_CUSTODY_ACTOR",
-                "Missing Custody Actor",
-                "2 / 2",
-                "100.0%",
-                "Custody movements must record an authorized custodian or carrier entity."
-            ]
+            scenario_row("SIMULTANEOUS_LOCATIONS", "SIMULTANEOUS_LOCATIONS", "Simultaneous Custody", "Asset cannot be concurrently active in two locations."),
+            scenario_row("RETURN_BEFORE_DISPATCH", "RETURN_BEFORE_DISPATCH", "Return Before Dispatch", "A return must follow its dispatch in event time."),
+            scenario_row("DUPLICATE_REFUND", "DUPLICATE_REFUND", "Duplicate Refund", "A deposit must not be refunded more than once."),
+            scenario_row("REPAIR_WITHOUT_INSPECTION", "REPAIR_WITHOUT_INSPECTION", "Repair Without Inspection", "A completed repair requires an originating inspection."),
+            scenario_row("MISSING_CUSTODY_ACTOR", "MISSING_CUSTODY_ACTOR", "Missing Custody Actor", "Custody movements require an actor.")
         ]
         scen_table = Table(scenarios_data, colWidths=[150, 140, 60, 60, 320])
         scen_table.setStyle(TableStyle([

@@ -3,6 +3,7 @@ from app.generator.master_generator import MasterGenerator
 from app.generator.transaction_generator import TransactionGenerator
 from app.generator.anomaly_injector import AnomalyInjector
 from app.utils.id_generator import IDGenerator
+from app.generator.__main__ import logical_checksums
 
 def test_fixed_seed_reproducibility():
     """
@@ -63,3 +64,8 @@ def test_fixed_seed_reproducibility():
         assert g1["issue_type"] == g2["issue_type"]
         assert g1["expected_decision"] == g2["expected_decision"]
         assert g1["record_id"] == g2["record_id"]
+
+def test_logical_checksums_ignore_database_managed_timestamps():
+    rows_a = {"assets": [{"asset_id": "ASSET-1", "value": 4, "created_at": "t1"}]}
+    rows_b = {"assets": [{"asset_id": "ASSET-1", "value": 4, "created_at": "t2"}]}
+    assert logical_checksums(rows_a, []) == logical_checksums(rows_b, [])

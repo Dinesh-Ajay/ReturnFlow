@@ -34,7 +34,9 @@ class AnomalyInjector:
         injected_records = []
 
         # Target assets that have events
-        eligible_asset_ids = list({e["asset_id"] for e in custody_events})
+        # Sorting removes process-level hash randomization before the seeded
+        # shuffle, making the injected targets reproducible across processes.
+        eligible_asset_ids = sorted({e["asset_id"] for e in custody_events})
         self.rng.shuffle(eligible_asset_ids)
 
         ptr = 0

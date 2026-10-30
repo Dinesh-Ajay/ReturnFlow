@@ -2,6 +2,7 @@ import os
 from datetime import date, datetime
 from typing import Optional
 from dotenv import load_dotenv
+from sqlalchemy.engine import make_url
 
 load_dotenv()
 
@@ -14,11 +15,11 @@ class Settings:
     # Database Settings
     DATABASE_URL: str = os.getenv(
         "DATABASE_URL", 
-        "mysql+pymysql://root:root@localhost:3306/returnflow_db?charset=utf8mb4"
+        "mysql+pymysql://returnflow_user:configure-me@localhost:3306/returnflow_db?charset=utf8mb4"
     )
     TEST_DATABASE_URL: str = os.getenv(
-        "TEST_DATABASE_URL", 
-        "mysql+pymysql://root:root@localhost:3306/returnflow_db?charset=utf8mb4"
+        "TEST_DATABASE_URL",
+        make_url(DATABASE_URL).set(database=f"{make_url(DATABASE_URL).database or 'returnflow'}_test").render_as_string(hide_password=False)
     )
     
     # Supabase / PostgreSQL Support
@@ -26,7 +27,7 @@ class Settings:
     SUPABASE_KEY: Optional[str] = os.getenv("SUPABASE_KEY", None)
     
     # Better Auth & Security
-    AUTH_SECRET: str = os.getenv("AUTH_SECRET", "returnflow-secret-key-32-chars-minimum-prod")
+    AUTH_SECRET: str = os.getenv("AUTH_SECRET") or "returnflow-secret-key-32-chars-minimum-prod"
     AUTH_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 1 day
     
