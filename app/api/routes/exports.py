@@ -121,7 +121,13 @@ def export_anomalies(
     db: Session = Depends(get_db)
 ):
     """Downloads Detected Operational Invariants & Anomalies in CSV or PDF."""
-    records = db.query(AnomalyRecord).order_by(AnomalyRecord.detected_timestamp.desc()).all()
+    try:
+        from app.validation.anomaly_detection import AnomalyDetectionEngine
+        metrics = AnomalyDetectionEngine.evaluate_detection_metrics(db)
+    except Exception:
+        metrics = None
+
+    records = db.query(AnomalyRecord).order_by(AnomalyRecord.created_at.desc()).all()
     date_str = datetime.now().strftime("%Y%m%d")
 
     if format == "csv":
@@ -132,7 +138,7 @@ def export_anomalies(
             headers={"Content-Disposition": f'attachment; filename="returnflow_anomalies_{date_str}.csv"'}
         )
     else:
-        pdf_buffer = ExportService.export_anomalies_pdf(records)
+        pdf_buffer = ExportService.export_anomalies_pdf(records, metrics=metrics)
         return Response(
             content=pdf_buffer.getvalue(),
             media_type="application/pdf",

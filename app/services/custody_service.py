@@ -96,6 +96,7 @@ class CustodyService:
             "events": [
                 {
                     "custody_event_id": e.custody_event_id,
+                    "asset_id": e.asset_id,
                     "event_type": e.event_type,
                     "event_timestamp": e.event_timestamp.isoformat(),
                     "from_owner_id": e.from_owner_id,

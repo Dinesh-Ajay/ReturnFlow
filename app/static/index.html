@@ -528,11 +528,38 @@
                         <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
                         <p class="text-sm text-slate-500">Overview of reusable assets, shipments, returns and operational health</p>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <div class="inline-flex items-center gap-2 bg-white border border-slate-200 px-3.5 py-2 rounded-lg text-xs font-medium text-slate-700 shadow-sm cursor-pointer hover:bg-slate-50">
+                    <div class="relative">
+                        <button id="dateRangeBtn" onclick="toggleDateRangeDropdown()" class="inline-flex items-center gap-2 bg-white border border-slate-200 px-3.5 py-2 rounded-lg text-xs font-medium text-slate-700 shadow-sm cursor-pointer hover:bg-slate-50 transition-colors">
                             <i class="fa-regular fa-calendar text-slate-500"></i>
-                            <span>Oct 1, 2026 - Oct 22, 2026</span>
+                            <span id="dateRangeLabel">Loading Date Range...</span>
                             <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 ml-1"></i>
+                        </button>
+                        <div id="dateRangeMenu" class="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-slate-200 p-3 hidden z-40 space-y-2 text-xs">
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2">Reporting Periods</div>
+                            <button type="button" onclick="selectDateRangePreset('last30')" class="w-full text-left px-2.5 py-1.5 rounded hover:bg-slate-50 text-slate-700 font-medium flex items-center justify-between">
+                                <span>Last 30 Days</span>
+                                <span class="text-[10px] text-blue-600 font-semibold">Recommended</span>
+                            </button>
+                            <button type="button" onclick="selectDateRangePreset('last7')" class="w-full text-left px-2.5 py-1.5 rounded hover:bg-slate-50 text-slate-700">Last 7 Days</button>
+                            <button type="button" onclick="selectDateRangePreset('thisMonth')" class="w-full text-left px-2.5 py-1.5 rounded hover:bg-slate-50 text-slate-700">This Month (October)</button>
+                            <button type="button" onclick="selectDateRangePreset('prevMonth')" class="w-full text-left px-2.5 py-1.5 rounded hover:bg-slate-50 text-slate-700">Previous Month (September)</button>
+                            <button type="button" onclick="selectDateRangePreset('today')" class="w-full text-left px-2.5 py-1.5 rounded hover:bg-slate-50 text-slate-700">Today</button>
+                            <div class="pt-2 border-t border-slate-100">
+                                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2 mb-2">Custom Range</div>
+                                <div class="grid grid-cols-2 gap-2 px-1">
+                                    <div>
+                                        <label class="text-[10px] text-slate-500 block mb-0.5">Start Date</label>
+                                        <input type="date" id="customStartDate" class="w-full border border-slate-200 rounded px-2 py-1 text-[11px] text-slate-700">
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] text-slate-500 block mb-0.5">End Date</label>
+                                        <input type="date" id="customEndDate" class="w-full border border-slate-200 rounded px-2 py-1 text-[11px] text-slate-700">
+                                    </div>
+                                </div>
+                                <div class="flex justify-end mt-2 px-1">
+                                    <button type="button" onclick="applyCustomDateRange()" class="bg-blue-600 text-white px-3 py-1 rounded text-xs font-semibold hover:bg-blue-700">Apply</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -713,7 +740,7 @@
                         <button onclick="openExportModal('assets')" class="inline-flex items-center gap-2 bg-white border border-slate-200 px-4 py-2 rounded-lg text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50">
                             <i class="fa-solid fa-arrow-up-from-bracket"></i> Export
                         </button>
-                        <button onclick="showToast('info', 'Asset Provisioning', 'Direct asset registration is synced via ERP API.')" class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-sm hover:bg-blue-700">
+                        <button onclick="openAddAssetModal()" class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-sm hover:bg-blue-700">
                             <i class="fa-solid fa-plus"></i> Add Asset
                         </button>
                     </div>
@@ -901,17 +928,20 @@
                             <div class="py-2" id="custodyTimelineContainer"></div>
                         </div>
                         <div class="pt-4 border-t border-slate-100 flex justify-end">
-                            <button onclick="switchDetailTab('events')" class="text-xs font-semibold text-blue-600 hover:text-blue-800">
-                                View All Events &rarr;
+                            <button type="button" onclick="viewAllAssetEvents()" class="text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1">
+                                <span>View All Events</span> &rarr;
                             </button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Lower Section Tabs -->
-                <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden">
+                <div id="assetDetailTabsSection" class="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden scroll-mt-6">
                     <div class="border-b border-slate-200 px-5 flex items-center gap-6 text-xs font-semibold">
-                        <button onclick="switchDetailTab('events')" id="tab-btn-events" class="py-3.5 border-b-2 border-blue-600 text-blue-600">Event History</button>
+                        <button onclick="switchDetailTab('events')" id="tab-btn-events" class="py-3.5 border-b-2 border-blue-600 text-blue-600 flex items-center gap-1.5">
+                            <span>Event History</span>
+                            <span id="detailEventsTabCount" class="px-1.5 py-0.2 rounded-full text-[10px] bg-blue-100 text-blue-700">0</span>
+                        </button>
                         <button onclick="switchDetailTab('rmas')" id="tab-btn-rmas" class="py-3.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800">Return Authorizations</button>
                         <button onclick="switchDetailTab('inspections')" id="tab-btn-inspections" class="py-3.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800">Inspections</button>
                         <button onclick="switchDetailTab('repairs')" id="tab-btn-repairs" class="py-3.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800">Repairs</button>
@@ -924,11 +954,13 @@
                                 <thead>
                                     <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase text-[10px]">
                                         <th class="py-2.5 px-3">Event ID</th>
+                                        <th class="py-2.5 px-3">Asset ID</th>
                                         <th class="py-2.5 px-3">Event Type</th>
                                         <th class="py-2.5 px-3">From Location</th>
                                         <th class="py-2.5 px-3">To Location</th>
-                                        <th class="py-2.5 px-3">Actor</th>
-                                        <th class="py-2.5 px-3">Event Date</th>
+                                        <th class="py-2.5 px-3">Actor / Custodian</th>
+                                        <th class="py-2.5 px-3">Shipment ID</th>
+                                        <th class="py-2.5 px-3">Date & Time</th>
                                         <th class="py-2.5 px-3">Notes</th>
                                     </tr>
                                 </thead>
@@ -1506,6 +1538,82 @@
         </div>
     </div>
 
+    <!-- ================= ADD ASSET MODAL ================= -->
+    <div id="addAssetModal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2 text-slate-800 font-bold text-base">
+                    <i class="fa-solid fa-box-archive text-blue-600"></i>
+                    <span>Register New Reusable Asset</span>
+                </div>
+                <button type="button" onclick="closeAddAssetModal()" class="text-slate-400 hover:text-slate-600 text-lg">&times;</button>
+            </div>
+            <p class="text-xs text-slate-500">Register a new packaging asset, pallet, or container into ReturnFlow's active lifecycle fleet.</p>
+            
+            <form id="addAssetForm" onsubmit="event.preventDefault(); submitAddAsset();" class="space-y-3.5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    <div>
+                        <label class="text-xs font-semibold text-slate-700 block mb-1">Asset Type <span class="text-rose-500">*</span></label>
+                        <select id="newAssetType" onchange="onAssetTypeChange()" required class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 bg-white focus:outline-blue-500">
+                            <option value="">Loading types...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-slate-700 block mb-1">Owner Entity <span class="text-rose-500">*</span></label>
+                        <select id="newAssetOwner" required class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 bg-white focus:outline-blue-500">
+                            <option value="">Loading owners...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    <div>
+                        <label class="text-xs font-semibold text-slate-700 block mb-1">Current Facility / Location <span class="text-rose-500">*</span></label>
+                        <select id="newAssetLocation" required class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 bg-white focus:outline-blue-500">
+                            <option value="">Loading facilities...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-slate-700 block mb-1">Initial Status <span class="text-rose-500">*</span></label>
+                        <select id="newAssetStatus" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 bg-white focus:outline-blue-500">
+                            <option value="AVAILABLE" selected>AVAILABLE (At Facility)</option>
+                            <option value="IN_CUSTODY">IN_CUSTODY (Leased)</option>
+                            <option value="IN_TRANSIT">IN_TRANSIT (In Transit)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    <div>
+                        <label class="text-xs font-semibold text-slate-700 block mb-1">Purchase Date <span class="text-rose-500">*</span></label>
+                        <input type="date" id="newAssetPurchaseDate" required class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 focus:outline-blue-500">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-slate-700 block mb-1">Deposit Amount ($) <span class="text-rose-500">*</span></label>
+                        <input type="number" id="newAssetDeposit" step="0.01" min="0.01" placeholder="50.00" required class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 focus:outline-blue-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold text-slate-700 block mb-1">Serial Number <span class="text-slate-400 font-normal">(Optional &mdash; auto-generated if blank)</span></label>
+                    <input type="text" id="newAssetSerial" placeholder="e.g. SN-TOTE-998811" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 focus:outline-blue-500">
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold text-slate-700 block mb-1">Commissioning Notes <span class="text-slate-400 font-normal">(Optional)</span></label>
+                    <textarea id="newAssetNotes" rows="2" placeholder="Initial procurement notes or equipment batch identifier" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 focus:outline-blue-500"></textarea>
+                </div>
+
+                <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2.5">
+                    <button type="button" onclick="closeAddAssetModal()" class="px-4 py-2 border border-slate-200 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50">Cancel</button>
+                    <button type="submit" id="addAssetSubmitBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 shadow-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus"></i> Register Asset
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- ================= TOAST NOTIFICATION CONTAINER ================= -->
     <div id="toastContainer" class="fixed bottom-5 right-5 z-50 space-y-2 max-w-sm"></div>
 
@@ -1909,13 +2017,33 @@
             downloadDirect(`/api/exports/assets?format=${format}`);
         }
 
-        function downloadDirect(url) {
-            const a = document.createElement('a');
-            a.href = url;
-            a.setAttribute('download', '');
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
+        async function downloadDirect(url) {
+            showToast('info', 'Export Started', 'Generating file for download...');
+            try {
+                const res = await fetch(url);
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({ detail: 'Failed to generate export file.' }));
+                    showToast('error', 'Export Failed', err.detail || 'Server error occurred during export.');
+                    return;
+                }
+                const blob = await res.blob();
+                const disposition = res.headers.get('Content-Disposition') || '';
+                let filename = 'returnflow_export';
+                const match = disposition.match(/filename="?([^";]+)"?/);
+                if (match && match[1]) filename = match[1];
+
+                const blobUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = blobUrl;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(blobUrl);
+                showToast('success', 'Download Complete', `${filename} downloaded successfully.`);
+            } catch(err) {
+                showToast('error', 'Download Error', 'Network error or download was interrupted.');
+            }
         }
 
         // Badge formatter
@@ -2182,20 +2310,59 @@
             }
         }
 
+        function viewAllAssetEvents() {
+            switchDetailTab('events');
+            const target = document.getElementById('assetDetailTabsSection');
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                target.classList.add('ring-2', 'ring-blue-400');
+                setTimeout(() => target.classList.remove('ring-2', 'ring-blue-400'), 1500);
+            }
+        }
+
         function renderDetailSubtabs(data) {
-            // Events
+            // Update Tab Count
+            const eventCount = (data.events || []).length;
+            const countBadge = document.getElementById('detailEventsTabCount');
+            if (countBadge) countBadge.innerText = eventCount;
+
+            // Events Table with complete 9-column traceability
             const evtBody = document.getElementById('detailEventsTableBody');
-            evtBody.innerHTML = (data.events || []).map(e => `
-                <tr class="hover:bg-slate-50">
-                    <td class="py-2.5 px-3 font-semibold text-blue-600">${e.custody_event_id}</td>
-                    <td class="py-2.5 px-3 font-medium">${e.event_type}</td>
-                    <td class="py-2.5 px-3 text-slate-600">${e.from_location_name || '-'}</td>
-                    <td class="py-2.5 px-3 text-slate-600">${e.to_location_name || '-'}</td>
-                    <td class="py-2.5 px-3 text-slate-600">${e.actor_owner_name || 'Operator'}</td>
-                    <td class="py-2.5 px-3 font-mono text-[11px]">${e.event_timestamp ? e.event_timestamp.replace('T', ' ').slice(0, 16) : '-'}</td>
-                    <td class="py-2.5 px-3 text-slate-400">${e.notes || '-'}</td>
-                </tr>
-            `).join('');
+            if (!data.events || data.events.length === 0) {
+                evtBody.innerHTML = '<tr><td colspan="9" class="text-center py-6 text-slate-400">No custody events recorded for this asset.</td></tr>';
+            } else {
+                evtBody.innerHTML = data.events.map(e => {
+                    const evtType = e.event_type || 'COMMISSIONED';
+                    let typeBadge = `<span class="px-2 py-0.5 rounded text-[10px] bg-blue-100 text-blue-800 font-semibold">${evtType}</span>`;
+                    if (evtType === 'RECEIVED') typeBadge = '<span class="px-2 py-0.5 rounded text-[10px] bg-emerald-100 text-emerald-800 font-semibold">RECEIVED</span>';
+                    else if (evtType === 'IN_TRANSIT') typeBadge = '<span class="px-2 py-0.5 rounded text-[10px] bg-sky-100 text-sky-800 font-semibold">IN_TRANSIT</span>';
+                    else if (evtType === 'RETURNED') typeBadge = '<span class="px-2 py-0.5 rounded text-[10px] bg-indigo-100 text-indigo-800 font-semibold">RETURNED</span>';
+                    else if (evtType === 'COMMISSIONED') typeBadge = '<span class="px-2 py-0.5 rounded text-[10px] bg-emerald-100 text-emerald-800 font-semibold">COMMISSIONED</span>';
+                    else if (evtType === 'LOST_REPORTED') typeBadge = '<span class="px-2 py-0.5 rounded text-[10px] bg-rose-100 text-rose-800 font-semibold">LOST_REPORTED</span>';
+
+                    let actorDisplay = e.actor_owner_name || '-';
+                    if (!e.actor_owner_id && (!e.actor_owner_name || e.actor_owner_name === 'MISSING_ACTOR')) {
+                        actorDisplay = '<span class="px-2 py-0.5 rounded text-[10px] bg-amber-100 text-amber-800 font-semibold inline-flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation"></i> Missing Actor</span>';
+                    }
+
+                    const shipmentDisplay = e.shipment_id ? `<span class="font-mono text-blue-600 font-semibold">${e.shipment_id}</span>` : '<span class="text-slate-300">-</span>';
+                    const timeStr = e.event_timestamp ? e.event_timestamp.replace('T', ' ').slice(0, 16) : '-';
+
+                    return `
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="py-2.5 px-3 font-semibold text-blue-600 font-mono text-[11px]">${e.custody_event_id}</td>
+                            <td class="py-2.5 px-3 font-mono text-[11px] text-slate-700 font-semibold">${e.asset_id || data.asset_id}</td>
+                            <td class="py-2.5 px-3">${typeBadge}</td>
+                            <td class="py-2.5 px-3 text-slate-600">${e.from_location_name || '-'}</td>
+                            <td class="py-2.5 px-3 text-slate-600">${e.to_location_name || '-'}</td>
+                            <td class="py-2.5 px-3 text-slate-600">${actorDisplay}</td>
+                            <td class="py-2.5 px-3">${shipmentDisplay}</td>
+                            <td class="py-2.5 px-3 font-mono text-[11px] text-slate-500">${timeStr}</td>
+                            <td class="py-2.5 px-3 text-slate-500 max-w-xs truncate" title="${e.notes || ''}">${e.notes || '-'}</td>
+                        </tr>
+                    `;
+                }).join('');
+            }
 
             // RMAs
             const rmaBody = document.getElementById('detailRmasTableBody');
@@ -2524,18 +2691,294 @@
             } catch(e) {}
         }
 
+        // ==================== ADD ASSET WORKFLOW ====================
+        let cachedAssetTypes = null;
+        let cachedOwners = null;
+        let cachedLocations = null;
+
+        async function openAddAssetModal() {
+            const modal = document.getElementById('addAssetModal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+
+            const pDate = document.getElementById('newAssetPurchaseDate');
+            if (pDate && !pDate.value) {
+                pDate.value = new Date().toISOString().split('T')[0];
+            }
+
+            if (!cachedAssetTypes) {
+                try {
+                    const res = await fetch('/api/asset-types');
+                    cachedAssetTypes = await res.json();
+                } catch(e) { cachedAssetTypes = []; }
+            }
+            const typeSelect = document.getElementById('newAssetType');
+            if (typeSelect && cachedAssetTypes.length) {
+                typeSelect.innerHTML = '<option value="">Select Asset Type</option>' + 
+                    cachedAssetTypes.map(t => `<option value="${t.type_code}" data-deposit="${t.default_deposit_amount}">${t.type_name} (${t.type_code})</option>`).join('');
+            }
+
+            if (!cachedOwners) {
+                try {
+                    const res = await fetch('/api/owners');
+                    cachedOwners = await res.json();
+                } catch(e) { cachedOwners = []; }
+            }
+            const ownerSelect = document.getElementById('newAssetOwner');
+            if (ownerSelect && cachedOwners.length) {
+                ownerSelect.innerHTML = '<option value="">Select Owner</option>' + 
+                    cachedOwners.map(o => `<option value="${o.owner_id}">${o.owner_name} (${o.owner_type})</option>`).join('');
+            }
+
+            if (!cachedLocations) {
+                try {
+                    const res = await fetch('/api/locations');
+                    cachedLocations = await res.json();
+                } catch(e) { cachedLocations = []; }
+            }
+            const locSelect = document.getElementById('newAssetLocation');
+            if (locSelect && cachedLocations.length) {
+                locSelect.innerHTML = '<option value="">Select Current Facility</option>' + 
+                    cachedLocations.map(l => `<option value="${l.location_id}">${l.location_name} (${l.city}, ${l.state})</option>`).join('');
+            }
+        }
+
+        function closeAddAssetModal() {
+            document.getElementById('addAssetModal')?.classList.add('hidden');
+            document.getElementById('addAssetForm')?.reset();
+        }
+
+        function onAssetTypeChange() {
+            const select = document.getElementById('newAssetType');
+            const opt = select.options[select.selectedIndex];
+            const deposit = opt?.getAttribute('data-deposit');
+            if (deposit) {
+                document.getElementById('newAssetDeposit').value = parseFloat(deposit).toFixed(2);
+            }
+        }
+
+        async function submitAddAsset() {
+            const typeCode = document.getElementById('newAssetType').value;
+            const ownerId = parseInt(document.getElementById('newAssetOwner').value);
+            const locationId = parseInt(document.getElementById('newAssetLocation').value);
+            const status = document.getElementById('newAssetStatus').value;
+            const purchaseDate = document.getElementById('newAssetPurchaseDate').value;
+            const deposit = parseFloat(document.getElementById('newAssetDeposit').value);
+            const serial = document.getElementById('newAssetSerial').value.trim();
+            const notes = document.getElementById('newAssetNotes').value.trim();
+            const submitBtn = document.getElementById('addAssetSubmitBtn');
+
+            if (!typeCode || !ownerId || !locationId || !purchaseDate || isNaN(deposit)) {
+                showToast('error', 'Validation Error', 'Please complete all required fields.');
+                return;
+            }
+
+            if (deposit <= 0) {
+                showToast('error', 'Invalid Deposit', 'Deposit amount must be strictly greater than $0.00.');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Registering...';
+
+            try {
+                const payload = {
+                    asset_type_code: typeCode,
+                    owner_id: ownerId,
+                    current_location_id: locationId,
+                    asset_status: status,
+                    purchase_date: purchaseDate,
+                    deposit_amount: deposit,
+                    serial_number: serial || null,
+                    notes: notes || null
+                };
+
+                const res = await fetch('/api/assets', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.detail || 'Failed to register asset.');
+                }
+
+                closeAddAssetModal();
+                showToast('success', 'Asset Registered', `${data.message} Assigned ID: ${data.asset.asset_id}`);
+                
+                // Immediately refresh Assets table
+                currentPage = 1;
+                await fetchAssetsTable();
+
+                // Refresh dashboard metrics
+                if (currentStartDate && currentEndDate) {
+                    loadDashboardMetrics(currentStartDate, currentEndDate);
+                }
+            } catch (err) {
+                showToast('error', 'Registration Failed', err.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-plus mr-1.5"></i> Register Asset';
+            }
+        }
+
+        // ==================== DASHBOARD DATE FILTERING & CHARTS ====================
+        let currentStartDate = null;
+        let currentEndDate = null;
+        let datasetMaxDate = null;
+        let datasetMinDate = null;
+        let trendChartInstance = null;
+        let donutChartInstance = null;
+
+        function toggleDateRangeDropdown() {
+            const menu = document.getElementById('dateRangeMenu');
+            if (menu) menu.classList.toggle('hidden');
+        }
+
+        document.addEventListener('click', (e) => {
+            const btn = document.getElementById('dateRangeBtn');
+            const menu = document.getElementById('dateRangeMenu');
+            if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+
+        async function selectDateRangePreset(preset) {
+            document.getElementById('dateRangeMenu')?.classList.add('hidden');
+            const refDate = datasetMaxDate ? new Date(datasetMaxDate + 'T00:00:00') : new Date();
+            let start = new Date(refDate);
+            let end = new Date(refDate);
+
+            if (preset === 'today') {
+                // start and end are refDate
+            } else if (preset === 'last7') {
+                start.setDate(refDate.getDate() - 7);
+            } else if (preset === 'last30') {
+                start.setDate(refDate.getDate() - 30);
+            } else if (preset === 'thisMonth') {
+                start = new Date(refDate.getFullYear(), refDate.getMonth(), 1);
+            } else if (preset === 'prevMonth') {
+                start = new Date(refDate.getFullYear(), refDate.getMonth() - 1, 1);
+                end = new Date(refDate.getFullYear(), refDate.getMonth(), 0);
+            }
+
+            const startStr = start.toISOString().split('T')[0];
+            const endStr = end.toISOString().split('T')[0];
+            await loadDashboardMetrics(startStr, endStr);
+        }
+
+        async function applyCustomDateRange() {
+            const start = document.getElementById('customStartDate').value;
+            const end = document.getElementById('customEndDate').value;
+            if (!start || !end) {
+                showToast('error', 'Invalid Range', 'Please select both start and end dates.');
+                return;
+            }
+            if (start > end) {
+                showToast('error', 'Invalid Range', 'Start date cannot be after end date.');
+                return;
+            }
+            document.getElementById('dateRangeMenu')?.classList.add('hidden');
+            await loadDashboardMetrics(start, end);
+        }
+
+        async function loadDashboardMetrics(startDate, endDate) {
+            let url = '/api/analytics/overview';
+            const params = [];
+            if (startDate) params.push(`start_date=${startDate}`);
+            if (endDate) params.push(`end_date=${endDate}`);
+            if (params.length) url += `?${params.join('&')}`;
+
+            try {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('Failed to load metrics');
+                const data = await res.json();
+
+                currentStartDate = data.start_date;
+                currentEndDate = data.end_date;
+                datasetMaxDate = data.max_dataset_date;
+                datasetMinDate = data.min_dataset_date;
+
+                const fmt = d => new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                const labelEl = document.getElementById('dateRangeLabel');
+                if (labelEl) labelEl.innerText = `${fmt(data.start_date)} - ${fmt(data.end_date)}`;
+
+                const cs = document.getElementById('customStartDate');
+                const ce = document.getElementById('customEndDate');
+                if (cs) cs.value = data.start_date;
+                if (ce) ce.value = data.end_date;
+
+                // Update 8 Dashboard KPI cards
+                const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
+                setTxt('kpi-total-assets', (data.total_assets || 0).toLocaleString());
+                setTxt('kpi-in-transit', (data.active_in_transit || 0).toLocaleString());
+                setTxt('kpi-overdue-returns', (data.overdue_count || 0).toLocaleString());
+                setTxt('kpi-lost-assets', (data.lost_count || 0).toLocaleString());
+                setTxt('kpi-total-shipments', (data.period_shipments || data.total_shipments || 0).toLocaleString());
+                setTxt('kpi-total-rmas', (data.period_returned || data.total_returned || 0).toLocaleString());
+                setTxt('kpi-in-repair', (data.in_repair_count || 0).toLocaleString());
+                setTxt('kpi-open-anomalies', (data.open_anomalies || 0).toLocaleString());
+
+                // Update Donut Chart
+                if (donutChartInstance && data.status_distribution) {
+                    const sd = data.status_distribution;
+                    donutChartInstance.data.datasets[0].data = [
+                        sd['AVAILABLE'] || 0,
+                        sd['IN_TRANSIT'] || 0,
+                        sd['IN_CUSTODY'] || 0,
+                        sd['UNDER_REPAIR'] || 0,
+                        sd['LOST'] || 0,
+                        sd['DAMAGED'] || 0
+                    ];
+                    donutChartInstance.update();
+                }
+
+                // Update Line Chart
+                await updateMovementTrendChart(data.start_date, data.end_date);
+            } catch (err) {
+                console.error('Error loading dashboard metrics:', err);
+            }
+        }
+
+        async function updateMovementTrendChart(startDate, endDate) {
+            let url = '/api/analytics/trends';
+            const params = [];
+            if (startDate) params.push(`start_date=${startDate}`);
+            if (endDate) params.push(`end_date=${endDate}`);
+            if (params.length) url += `?${params.join('&')}`;
+
+            try {
+                const res = await fetch(url);
+                if (!res.ok) return;
+                const trends = await res.json();
+
+                if (trendChartInstance && trends.dates) {
+                    const shortLabels = trends.dates.map(d => {
+                        const parts = d.split('-');
+                        return parts.length >= 3 ? `${parts[1]}/${parts[2]}` : d;
+                    });
+                    trendChartInstance.data.labels = shortLabels;
+                    trendChartInstance.data.datasets[0].data = trends.dispatched;
+                    trendChartInstance.data.datasets[1].data = trends.returned;
+                    trendChartInstance.data.datasets[2].data = trends.in_transit;
+                    trendChartInstance.update();
+                }
+            } catch(e) {}
+        }
+
         // Initialize Charts
         function initDashboardCharts() {
             const trendCtx = document.getElementById('movementTrendChart')?.getContext('2d');
             if (trendCtx) {
-                new Chart(trendCtx, {
+                trendChartInstance = new Chart(trendCtx, {
                     type: 'line',
                     data: {
-                        labels: ['Oct 1', 'Oct 3', 'Oct 5', 'Oct 7', 'Oct 10', 'Oct 12', 'Oct 15', 'Oct 17', 'Oct 20', 'Oct 22'],
+                        labels: ['10/01', '10/05', '10/10', '10/15', '10/20', '10/25'],
                         datasets: [
                             {
                                 label: 'Dispatched',
-                                data: [280, 310, 480, 360, 440, 520, 460, 410, 560, 490],
+                                data: [280, 360, 440, 460, 560, 490],
                                 borderColor: '#2563EB',
                                 backgroundColor: 'rgba(37, 99, 235, 0.05)',
                                 tension: 0.35,
@@ -2545,7 +2988,7 @@
                             },
                             {
                                 label: 'Returned',
-                                data: [240, 270, 380, 290, 370, 440, 390, 430, 480, 420],
+                                data: [240, 290, 370, 390, 480, 420],
                                 borderColor: '#0284C7',
                                 backgroundColor: 'transparent',
                                 tension: 0.35,
@@ -2554,7 +2997,7 @@
                             },
                             {
                                 label: 'In Transit',
-                                data: [220, 230, 310, 230, 270, 320, 260, 280, 330, 290],
+                                data: [220, 230, 270, 260, 330, 290],
                                 borderColor: '#10B981',
                                 backgroundColor: 'transparent',
                                 tension: 0.35,
@@ -2568,7 +3011,7 @@
                         maintainAspectRatio: false,
                         plugins: { legend: { display: false } },
                         scales: {
-                            y: { min: 0, max: 800, ticks: { stepSize: 200, color: '#94A3B8', font: { size: 10 } }, grid: { color: '#F1F5F9' } },
+                            y: { min: 0, ticks: { color: '#94A3B8', font: { size: 10 } }, grid: { color: '#F1F5F9' } },
                             x: { ticks: { color: '#94A3B8', font: { size: 10 } }, grid: { display: false } }
                         }
                     }
@@ -2577,10 +3020,10 @@
 
             const donutCtx = document.getElementById('statusDonutChart')?.getContext('2d');
             if (donutCtx) {
-                new Chart(donutCtx, {
+                donutChartInstance = new Chart(donutCtx, {
                     type: 'doughnut',
                     data: {
-                        labels: ['At Location', 'In Transit', 'Under Inspection', 'In Repair', 'Lost', 'Other'],
+                        labels: ['At Location', 'In Transit', 'In Custody', 'In Repair', 'Lost', 'Damaged'],
                         datasets: [{
                             data: [11240, 3420, 1120, 312, 86, 3822],
                             backgroundColor: ['#2563EB', '#10B981', '#38BDF8', '#F59E0B', '#EF4444', '#94A3B8'],
@@ -2602,6 +3045,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             checkAuthStatus();
             initDashboardCharts();
+            loadDashboardMetrics();
             fetchAssetsTable();
         });
     </script>

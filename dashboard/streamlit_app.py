@@ -291,12 +291,11 @@ def get_db_session():
 # =========================================================================
 if nav == "Dashboard":
     st.subheader("Dashboard")
-    st.caption("Overview of reusable assets, shipments, returns and operational health • Date Range: Oct 1, 2026 – Oct 22, 2026")
-
     db = get_db_session()
     try:
         kpis = AnalyticsService.get_overview_kpis(db)
         fin = kpis["financial_summary"]
+        st.caption(f"Overview of reusable assets, shipments, returns and operational health • Active Period: {kpis['start_date']} to {kpis['end_date']} (Max Available: {kpis.get('max_dataset_date')})")
 
         # Row 1: 4 Top KPI Cards
         c1, c2, c3, c4 = st.columns(4)

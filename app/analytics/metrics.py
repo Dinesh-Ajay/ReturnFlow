@@ -1,6 +1,6 @@
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from decimal import Decimal
-from datetime import datetime, date
+from datetime import datetime, date, timedelta, time
 from sqlalchemy.orm import Session
 from sqlalchemy import func, text
 from app.config import settings
@@ -15,16 +15,62 @@ from app.services.deposit_service import DepositService
 
 class AnalyticsService:
     """
-    Computes business analytics, operational KPIs, and data quality metrics.
+    Computes business analytics, operational KPIs, and data quality metrics
+    with dynamic reporting period date-range filtering.
     """
 
     @classmethod
-    def get_overview_kpis(cls, db: Session) -> Dict[str, Any]:
+    def get_dataset_date_bounds(cls, db: Session) -> Dict[str, date]:
+        """
+        Determines the earliest and latest actual event/transaction dates in the database.
+        """
+        max_custody = db.execute(text("SELECT MAX(event_timestamp) FROM custody_events")).scalar()
+        max_deposit = db.execute(text("SELECT MAX(transaction_date) FROM deposit_ledger")).scalar()
+        min_custody = db.execute(text("SELECT MIN(event_timestamp) FROM custody_events")).scalar()
+
+        valid_maxes = [d for d in [max_custody, max_deposit] if d is not None]
+        if valid_maxes:
+            max_dt = max(valid_maxes)
+        else:
+            max_dt = datetime.now()
+
+        min_dt = min_custody if min_custody else (max_dt - timedelta(days=180))
+
+        max_d = max_dt.date() if isinstance(max_dt, datetime) else max_dt
+        min_d = min_dt.date() if isinstance(min_dt, datetime) else min_dt
+
+        return {"min_date": min_d, "max_date": max_d}
+
+    @classmethod
+    def get_overview_kpis(
+        cls,
+        db: Session,
+        start_date: Optional[date] = None,
+        end_date: Optional[date] = None
+    ) -> Dict[str, Any]:
+        bounds = cls.get_dataset_date_bounds(db)
+        dataset_max = bounds["max_date"]
+        dataset_min = bounds["min_date"]
+
+        # Default end date is latest available business date
+        if end_date is None:
+            end_date = dataset_max
+        if start_date is None:
+            start_date = end_date - timedelta(days=30)
+
+        # Handle inversion
+        if start_date > end_date:
+            start_date, end_date = end_date, start_date
+
+        start_dt = datetime.combine(start_date, time.min)
+        end_dt = datetime.combine(end_date, time.max)
+
+        # Current Asset Portfolio Lifetime Totals (not artificially truncated)
         total_assets = db.query(ReusableAsset).count()
         total_shipments = db.query(Shipment).count()
         total_events = db.query(CustodyEvent).count()
 
-        # Status counts
+        # Current Status counts across entire portfolio
         status_counts_raw = db.query(
             ReusableAsset.asset_status, 
             func.count(ReusableAsset.asset_id)
@@ -39,25 +85,49 @@ class AnalyticsService:
         under_repair = status_counts.get("UNDER_REPAIR", 0)
         lost = status_counts.get("LOST", 0)
 
-        # Outstanding assets = in active transit / custody / return pending
+        # Total outstanding assets in active circulation
         total_outstanding = in_transit + in_custody + return_pending
 
-        # Overdue assets calculation: days_outstanding > return_due_days
+        # Overdue calculation as of the selected end_date
         overdue_query = text("""
             SELECT COUNT(*) 
             FROM reusable_assets a
             JOIN asset_types t ON a.asset_type_id = t.asset_type_id
             WHERE a.asset_status IN ('IN_TRANSIT', 'IN_CUSTODY', 'RETURN_PENDING')
-              AND DATEDIFF(:ref_date, a.last_event_at) > t.return_due_days
+              AND DATEDIFF(:as_of_date, a.last_event_at) > t.return_due_days
         """)
-        overdue_count = db.execute(overdue_query, {"ref_date": settings.REFERENCE_DATE}).scalar() or 0
+        overdue_count = db.execute(overdue_query, {"as_of_date": end_date}).scalar() or 0
 
-        # Dispatched & Returned totals
+        # Period-Specific Dispatched & Returned Metrics (activity within the selected range)
+        period_dispatched = db.query(CustodyEvent).filter(
+            CustodyEvent.event_type == "DISPATCHED",
+            CustodyEvent.event_timestamp >= start_dt,
+            CustodyEvent.event_timestamp <= end_dt
+        ).count()
+
+        period_returned = db.query(CustodyEvent).filter(
+            CustodyEvent.event_type == "RETURNED",
+            CustodyEvent.event_timestamp >= start_dt,
+            CustodyEvent.event_timestamp <= end_dt
+        ).count()
+
+        period_shipments = db.query(Shipment).filter(
+            Shipment.dispatch_date >= start_dt,
+            Shipment.dispatch_date <= end_dt
+        ).count()
+
+        # Lifetime Dispatched & Returned (for cumulative fallback)
         total_dispatched = db.query(CustodyEvent).filter(CustodyEvent.event_type == "DISPATCHED").count()
         total_returned = db.query(CustodyEvent).filter(CustodyEvent.event_type == "RETURNED").count()
 
-        # Rates
-        return_rate = (total_returned / total_dispatched * 100.0) if total_dispatched > 0 else 0.0
+        # Dynamic rates based on the reporting period
+        if period_dispatched > 0:
+            return_rate = (period_returned / period_dispatched * 100.0)
+        elif total_dispatched > 0:
+            return_rate = (total_returned / total_dispatched * 100.0)
+        else:
+            return_rate = 0.0
+
         overdue_rate = (overdue_count / total_outstanding * 100.0) if total_outstanding > 0 else 0.0
         loss_rate = (lost / total_assets * 100.0) if total_assets > 0 else 0.0
 
@@ -65,14 +135,14 @@ class AnalyticsService:
         damage_count = db.query(Inspection).filter(Inspection.condition_status.in_(["DAMAGED", "CRITICAL"])).count()
         damage_rate = (damage_count / total_inspections * 100.0) if total_inspections > 0 else 0.0
 
-        # Average outstanding days
+        # Average outstanding days as of selected end_date
         avg_days_query = text("""
-            SELECT AVG(DATEDIFF(:ref_date, a.last_event_at))
+            SELECT AVG(DATEDIFF(:as_of_date, a.last_event_at))
             FROM reusable_assets a
             WHERE a.asset_status IN ('IN_TRANSIT', 'IN_CUSTODY', 'RETURN_PENDING')
               AND a.last_event_at IS NOT NULL
         """)
-        avg_days = db.execute(avg_days_query, {"ref_date": settings.REFERENCE_DATE}).scalar() or 0.0
+        avg_days = db.execute(avg_days_query, {"as_of_date": end_date}).scalar() or 0.0
 
         # Financial summary
         fin_summary = DepositService.get_portfolio_financial_summary(db)
@@ -82,8 +152,13 @@ class AnalyticsService:
         open_anomalies = db.execute(open_anomalies_query).scalar() or 0
 
         return {
+            "start_date": str(start_date),
+            "end_date": str(end_date),
+            "max_dataset_date": str(dataset_max),
+            "min_dataset_date": str(dataset_min),
             "total_assets": total_assets,
             "total_shipments": total_shipments,
+            "period_shipments": period_shipments,
             "total_custody_events": total_events,
             "active_in_transit": in_transit,
             "in_custody": in_custody,
@@ -94,6 +169,8 @@ class AnalyticsService:
             "in_repair_count": under_repair,
             "available_count": available,
             "total_returned": total_returned,
+            "period_dispatched": period_dispatched,
+            "period_returned": period_returned,
             "return_rate_pct": round(return_rate, 1),
             "overdue_rate_pct": round(overdue_rate, 1),
             "loss_rate_pct": round(loss_rate, 2),
@@ -106,10 +183,29 @@ class AnalyticsService:
         }
 
     @classmethod
-    def get_asset_movement_trends(cls, db: Session, days: int = 22) -> Dict[str, Any]:
+    def get_asset_movement_trends(
+        cls,
+        db: Session,
+        start_date: Optional[date] = None,
+        end_date: Optional[date] = None,
+        days: Optional[int] = None
+    ) -> Dict[str, Any]:
         """
-        Aggregates daily dispatched vs returned vs in_transit counts leading up to REFERENCE_DATE.
+        Aggregates daily dispatched vs returned vs in_transit counts for the requested date window.
         """
+        bounds = cls.get_dataset_date_bounds(db)
+        if end_date is None:
+            end_date = bounds["max_date"]
+        if start_date is None:
+            span_days = days if days is not None else 30
+            start_date = end_date - timedelta(days=span_days)
+
+        if start_date > end_date:
+            start_date, end_date = end_date, start_date
+
+        start_dt = datetime.combine(start_date, time.min)
+        end_dt = datetime.combine(end_date, time.max)
+
         query = text("""
             SELECT 
                 DATE(event_timestamp) as event_date,
@@ -117,12 +213,12 @@ class AnalyticsService:
                 SUM(CASE WHEN event_type = 'RETURNED' THEN 1 ELSE 0 END) as returned,
                 SUM(CASE WHEN event_type = 'IN_TRANSIT' THEN 1 ELSE 0 END) as in_transit
             FROM custody_events
-            WHERE event_timestamp >= DATE_SUB(:ref_date, INTERVAL :days DAY)
-              AND event_timestamp <= :ref_date
+            WHERE event_timestamp >= :start_dt
+              AND event_timestamp <= :end_dt
             GROUP BY DATE(event_timestamp)
             ORDER BY DATE(event_timestamp) ASC
         """)
-        rows = db.execute(query, {"ref_date": settings.REFERENCE_DATE, "days": days}).fetchall()
+        rows = db.execute(query, {"start_dt": start_dt, "end_dt": end_dt}).fetchall()
 
         labels = [str(r[0]) for r in rows]
         dispatched_counts = [int(r[1]) for r in rows]

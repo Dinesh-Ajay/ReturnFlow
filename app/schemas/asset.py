@@ -14,14 +14,17 @@ class AssetBase(BaseModel):
     deposit_amount: Decimal
 
 class AssetCreate(BaseModel):
-    asset_type_id: int
+    asset_type_id: Optional[int] = None
+    asset_type_code: Optional[str] = None
     owner_id: int
-    serial_number: str
-    manufacture_date: date
+    current_location_id: int
     purchase_date: date
-    current_location_id: Optional[int] = None
-    acquisition_cost: Decimal = Decimal("100.00")
-    deposit_amount: Decimal = Decimal("50.00")
+    manufacture_date: Optional[date] = None
+    serial_number: Optional[str] = None
+    acquisition_cost: Optional[Decimal] = None
+    deposit_amount: Decimal = Field(..., gt=0, description="Deposit amount must be strictly greater than 0")
+    asset_status: Optional[str] = "AVAILABLE"
+    notes: Optional[str] = None
 
 class AssetResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)

@@ -7,9 +7,28 @@ from app.services.custody_service import CustodyService
 from app.services.lifecycle_service import LifecycleService
 from app.services.deposit_service import DepositService
 from app.models.asset import ReusableAsset
-from app.schemas.asset import AssetListResponse
+from app.schemas.asset import AssetListResponse, AssetCreate
 
 router = APIRouter(prefix="/api/assets", tags=["Assets"])
+
+@router.post("", status_code=status.HTTP_201_CREATED)
+def create_asset(payload: AssetCreate, db: Session = Depends(get_db)):
+    """
+    Registers a new reusable asset in ReturnFlow.
+    Generates sequential ASSET-XXXXXXX identifier, links owner and location,
+    and logs initial commissioning custody event.
+    """
+    try:
+        new_asset = AssetService.create_asset(db, payload.model_dump())
+        return {
+            "status": "success",
+            "message": f"Asset {new_asset['asset_id']} successfully registered.",
+            "asset": new_asset
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to register asset: {str(e)}")
 
 @router.get("", response_model=AssetListResponse)
 def list_assets(
@@ -49,6 +68,7 @@ def get_asset_detail(asset_id: str, db: Session = Depends(get_db)):
     return data
 
 @router.get("/{asset_id}/history")
+@router.get("/{asset_id}/events")
 def get_asset_history(asset_id: str, db: Session = Depends(get_db)):
     data = CustodyService.get_asset_full_traceability(db, asset_id)
     if not data:

@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-10-30 07:58:22 UTC",
-  "total_duration_seconds": 1.4846,
+  "timestamp": "2026-10-30 12:32:57 UTC",
+  "total_duration_seconds": 1.2236,
   "integrity_checks": {
     "name": "Referential & Structural Integrity Validation",
     "passed": true,
@@ -68,7 +68,7 @@
     "is_reconciled": true
   },
   "anomaly_detection": {
-    "detection_duration_seconds": 0.8352,
+    "detection_duration_seconds": 0.6817,
     "total_detected": 50,
     "detected_by_type": {
       "SIMULTANEOUS_LOCATIONS": 10,

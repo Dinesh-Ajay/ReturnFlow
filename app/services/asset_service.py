@@ -1,6 +1,8 @@
 from typing import Dict, Any, List, Optional, Tuple
+from datetime import datetime, timezone, date
+from decimal import Decimal
 from sqlalchemy.orm import Session
-from sqlalchemy import or_, and_
+from sqlalchemy import or_, and_, func
 from app.models.asset import ReusableAsset
 from app.models.asset_type import AssetType
 from app.models.owner import Owner
@@ -93,3 +95,168 @@ class AssetService:
             })
 
         return results, total_count
+
+    @classmethod
+    def create_asset(
+        cls,
+        db: Session,
+        payload_data: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        Registers a new reusable asset in the database.
+        Validates references, generates sequential ASSET-XXXXXXX ID,
+        creates initial CustodyEvent, and returns comprehensive asset detail.
+        """
+        # 1. Validate Asset Type
+        asset_type = None
+        if payload_data.get("asset_type_id"):
+            asset_type = db.query(AssetType).filter(AssetType.asset_type_id == payload_data["asset_type_id"]).first()
+        elif payload_data.get("asset_type_code"):
+            asset_type = db.query(AssetType).filter(AssetType.type_code == payload_data["asset_type_code"]).first()
+        
+        if not asset_type:
+            raise ValueError("Valid Asset Type is required.")
+
+        # 2. Validate Owner
+        owner_id = payload_data.get("owner_id")
+        if not owner_id:
+            raise ValueError("Owner is required.")
+        owner = db.query(Owner).filter(Owner.owner_id == owner_id).first()
+        if not owner:
+            raise ValueError(f"Owner with ID {owner_id} does not exist.")
+
+        # 3. Validate Location
+        location_id = payload_data.get("current_location_id")
+        if not location_id:
+            raise ValueError("Current Location is required.")
+        location = db.query(Location).filter(Location.location_id == location_id).first()
+        if not location:
+            raise ValueError(f"Location with ID {location_id} does not exist.")
+
+        # 4. Validate Deposit Amount
+        deposit_val = payload_data.get("deposit_amount")
+        if deposit_val is None:
+            deposit_val = asset_type.default_deposit_amount
+        try:
+            deposit_amount = Decimal(str(deposit_val))
+        except Exception:
+            raise ValueError("Deposit amount must be a valid number.")
+
+        if deposit_amount <= 0:
+            raise ValueError("Deposit amount must be strictly greater than 0.")
+
+        # 5. Purchase and Manufacture Dates
+        p_date = payload_data.get("purchase_date")
+        if isinstance(p_date, str):
+            p_date = date.fromisoformat(p_date)
+        elif not p_date:
+            p_date = date.today()
+
+        m_date = payload_data.get("manufacture_date")
+        if isinstance(m_date, str):
+            m_date = date.fromisoformat(m_date)
+        elif not m_date:
+            m_date = p_date
+
+        # Acquisition cost
+        acq_val = payload_data.get("acquisition_cost")
+        if acq_val is not None:
+            acquisition_cost = Decimal(str(acq_val))
+        else:
+            acquisition_cost = Decimal(str(asset_type.default_deposit_amount * Decimal("2.0")))
+
+        # 6. Generate sequential unique Asset ID following ASSET-XXXXXXX convention
+        # Find maximum existing numeric ID
+        max_asset = db.query(ReusableAsset.asset_id).filter(
+            ReusableAsset.asset_id.like("ASSET-%")
+        ).order_by(ReusableAsset.asset_id.desc()).first()
+
+        next_num = 1
+        if max_asset and max_asset[0]:
+            try:
+                num_part = max_asset[0].split("-")[1]
+                next_num = int(num_part) + 1
+            except Exception:
+                next_num = db.query(ReusableAsset).count() + 1
+
+        new_asset_id = f"ASSET-{next_num:07d}"
+        while db.query(ReusableAsset).filter(ReusableAsset.asset_id == new_asset_id).first():
+            next_num += 1
+            new_asset_id = f"ASSET-{next_num:07d}"
+
+        # 7. Serial number
+        serial = payload_data.get("serial_number")
+        if serial:
+            serial = serial.strip()
+            existing_sn = db.query(ReusableAsset).filter(ReusableAsset.serial_number == serial).first()
+            if existing_sn:
+                raise ValueError(f"Serial number '{serial}' is already registered.")
+        else:
+            serial = f"SN-{asset_type.type_code}-{new_asset_id.replace('ASSET-', '')}"
+            # Ensure uniqueness
+            s_idx = 1
+            base_serial = serial
+            while db.query(ReusableAsset).filter(ReusableAsset.serial_number == serial).first():
+                serial = f"{base_serial}-{s_idx}"
+                s_idx += 1
+
+        initial_status = payload_data.get("asset_status") or "AVAILABLE"
+        now_dt = datetime.now(timezone.utc)
+        commission_ts = datetime.combine(p_date, datetime.min.time().replace(hour=8, minute=30))
+
+        # 8. Create ReusableAsset record
+        new_asset = ReusableAsset(
+            asset_id=new_asset_id,
+            asset_type_id=asset_type.asset_type_id,
+            owner_id=owner.owner_id,
+            serial_number=serial,
+            asset_status=initial_status,
+            manufacture_date=m_date,
+            purchase_date=p_date,
+            current_location_id=location.location_id,
+            current_custodian_owner_id=owner.owner_id,
+            acquisition_cost=acquisition_cost,
+            deposit_amount=deposit_amount,
+            last_event_at=commission_ts,
+            created_at=now_dt,
+            updated_at=now_dt
+        )
+        db.add(new_asset)
+        db.flush()
+
+        # 9. Create initial CustodyEvent
+        notes = payload_data.get("notes") or "Internal asset provisioning and initial commissioning."
+        cust_event = CustodyEvent(
+            custody_event_id=f"CUST-{new_asset_id}-000001",
+            asset_id=new_asset_id,
+            shipment_id=None,
+            from_owner_id=None,
+            to_owner_id=owner.owner_id,
+            from_location_id=None,
+            to_location_id=location.location_id,
+            actor_owner_id=owner.owner_id,
+            event_type="COMMISSIONED",
+            event_timestamp=commission_ts,
+            event_reference="INITIAL-REGISTRATION",
+            notes=f"Commissioned at {location.location_name} by {owner.owner_name}. {notes}",
+            created_at=now_dt
+        )
+        db.add(cust_event)
+        db.commit()
+        db.refresh(new_asset)
+
+        return {
+            "asset_id": new_asset.asset_id,
+            "serial_number": new_asset.serial_number,
+            "type_code": asset_type.type_code,
+            "type_name": asset_type.type_name,
+            "owner_id": owner.owner_id,
+            "owner_name": owner.owner_name,
+            "current_location_id": location.location_id,
+            "current_location_name": location.location_name,
+            "asset_status": new_asset.asset_status,
+            "deposit_amount": float(new_asset.deposit_amount),
+            "acquisition_cost": float(new_asset.acquisition_cost),
+            "purchase_date": str(new_asset.purchase_date),
+            "created_at": new_asset.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        }
