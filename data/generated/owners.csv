@@ -1,0 +1,41 @@
+owner_id,owner_code,owner_name,owner_type,contact_email,contact_phone,active
+1,OWN-001,Acme Packaging Corp,SUPPLIER,contact1@acmepackaging.fake,212-555-0101,True
+2,OWN-002,FreshMart Retail Inc,CUSTOMER,logistics2@freshmart.fake,312-555-0102,True
+3,OWN-003,Global Logistics Express,CARRIER,dispatch3@globallogistics.fake,415-555-0103,True
+4,OWN-004,Apex Freight Systems,CARRIER,freight4@apexfreight.fake,206-555-0104,True
+5,OWN-005,Inland Warehouse Operations,WAREHOUSE_OPERATOR,operations5@inlandwh.fake,713-555-0105,True
+6,OWN-006,ReturnFlow Internal Operations,INTERNAL_OPERATIONS,admin6@returnflow.fake,800-555-0106,True
+7,OWN-007,RetailCo Department Stores,CUSTOMER,inventory7@retailco.fake,214-555-0107,True
+8,OWN-008,Pinnacle Food Supplies,CUSTOMER,supply8@pinnaclefood.fake,404-555-0108,True
+9,OWN-009,Pacific Cold Storage,WAREHOUSE_OPERATOR,cold9@pacificstorage.fake,619-555-0109,True
+10,OWN-010,SpeedShip Transit Inc,CARRIER,shipping10@speedship.fake,305-555-0110,True
+11,OWN-011,Midwest Distribution Center,WAREHOUSE_OPERATOR,ops11@midwestdc.fake,317-555-0111,True
+12,OWN-012,BioPharma Supply Logistics,CUSTOMER,pharma12@biopharmasupply.fake,617-555-0112,True
+13,OWN-013,Acme Packaging Corp #2,SUPPLIER,contact13@acmepackaging.fake,212-555-0101,True
+14,OWN-014,FreshMart Retail Inc #2,CUSTOMER,logistics14@freshmart.fake,312-555-0102,True
+15,OWN-015,Global Logistics Express #2,CARRIER,dispatch15@globallogistics.fake,415-555-0103,True
+16,OWN-016,Apex Freight Systems #2,CARRIER,freight16@apexfreight.fake,206-555-0104,True
+17,OWN-017,Inland Warehouse Operations #2,WAREHOUSE_OPERATOR,operations17@inlandwh.fake,713-555-0105,True
+18,OWN-018,ReturnFlow Internal Operations #2,INTERNAL_OPERATIONS,admin18@returnflow.fake,800-555-0106,True
+19,OWN-019,RetailCo Department Stores #2,CUSTOMER,inventory19@retailco.fake,214-555-0107,True
+20,OWN-020,Pinnacle Food Supplies #2,CUSTOMER,supply20@pinnaclefood.fake,404-555-0108,True
+21,OWN-021,Pacific Cold Storage #2,WAREHOUSE_OPERATOR,cold21@pacificstorage.fake,619-555-0109,True
+22,OWN-022,SpeedShip Transit Inc #2,CARRIER,shipping22@speedship.fake,305-555-0110,True
+23,OWN-023,Midwest Distribution Center #2,WAREHOUSE_OPERATOR,ops23@midwestdc.fake,317-555-0111,True
+24,OWN-024,BioPharma Supply Logistics #2,CUSTOMER,pharma24@biopharmasupply.fake,617-555-0112,True
+25,OWN-025,Acme Packaging Corp #3,SUPPLIER,contact25@acmepackaging.fake,212-555-0101,True
+26,OWN-026,FreshMart Retail Inc #3,CUSTOMER,logistics26@freshmart.fake,312-555-0102,True
+27,OWN-027,Global Logistics Express #3,CARRIER,dispatch27@globallogistics.fake,415-555-0103,True
+28,OWN-028,Apex Freight Systems #3,CARRIER,freight28@apexfreight.fake,206-555-0104,True
+29,OWN-029,Inland Warehouse Operations #3,WAREHOUSE_OPERATOR,operations29@inlandwh.fake,713-555-0105,True
+30,OWN-030,ReturnFlow Internal Operations #3,INTERNAL_OPERATIONS,admin30@returnflow.fake,800-555-0106,True
+31,OWN-031,RetailCo Department Stores #3,CUSTOMER,inventory31@retailco.fake,214-555-0107,True
+32,OWN-032,Pinnacle Food Supplies #3,CUSTOMER,supply32@pinnaclefood.fake,404-555-0108,True
+33,OWN-033,Pacific Cold Storage #3,WAREHOUSE_OPERATOR,cold33@pacificstorage.fake,619-555-0109,True
+34,OWN-034,SpeedShip Transit Inc #3,CARRIER,shipping34@speedship.fake,305-555-0110,True
+35,OWN-035,Midwest Distribution Center #3,WAREHOUSE_OPERATOR,ops35@midwestdc.fake,317-555-0111,True
+36,OWN-036,BioPharma Supply Logistics #3,CUSTOMER,pharma36@biopharmasupply.fake,617-555-0112,True
+37,OWN-037,Acme Packaging Corp #4,SUPPLIER,contact37@acmepackaging.fake,212-555-0101,True
+38,OWN-038,FreshMart Retail Inc #4,CUSTOMER,logistics38@freshmart.fake,312-555-0102,True
+39,OWN-039,Global Logistics Express #4,CARRIER,dispatch39@globallogistics.fake,415-555-0103,True
+40,OWN-040,Apex Freight Systems #4,CARRIER,freight40@apexfreight.fake,206-555-0104,True

@@ -1,0 +1,183 @@
+{
+  "kpis": {
+    "total_assets": 20000,
+    "total_shipments": 10000,
+    "total_custody_events": 100030,
+    "active_in_transit": 3600,
+    "in_custody": 3600,
+    "total_outstanding": 7200,
+    "overdue_count": 1020,
+    "lost_count": 400,
+    "damaged_count": 0,
+    "in_repair_count": 191,
+    "available_count": 12209,
+    "total_returned": 12410,
+    "return_rate_pct": 62.1,
+    "overdue_rate_pct": 14.2,
+    "loss_rate_pct": 2.0,
+    "damage_rate_pct": 10.8,
+    "avg_outstanding_days": 13.0,
+    "open_anomalies": 50,
+    "deposit_liability": 1406984.0,
+    "financial_summary": {
+      "total_deposits_collected": 3909680.0,
+      "total_refunds_processed": 2333839.25,
+      "total_damage_charges": 90966.75,
+      "total_repair_charges": 0.0,
+      "total_loss_charges": 77890.0,
+      "total_adjustments": 0.0,
+      "outstanding_deposit_liability": 1406984.0,
+      "transaction_type_breakdown": {
+        "DAMAGE_CHARGE": 90966.75,
+        "DEPOSIT_CHARGE": 3909680.0,
+        "DEPOSIT_REFUND": -2333839.25,
+        "LOSS_CHARGE": 77890.0
+      },
+      "transaction_counts": {
+        "DAMAGE_CHARGE": 1338,
+        "DEPOSIT_CHARGE": 20000,
+        "DEPOSIT_REFUND": 12410,
+        "LOSS_CHARGE": 400
+      },
+      "reconciliation_status": "RECONCILED"
+    },
+    "status_distribution": {
+      "AVAILABLE": 12209,
+      "IN_CUSTODY": 3600,
+      "IN_TRANSIT": 3600,
+      "LOST": 400,
+      "UNDER_REPAIR": 191
+    }
+  },
+  "top_locations": [
+    {
+      "location_name": "Denver DC Branch 2",
+      "asset_count": 751
+    },
+    {
+      "location_name": "Boston WH Branch 2",
+      "asset_count": 735
+    },
+    {
+      "location_name": "Atlanta WH",
+      "asset_count": 730
+    },
+    {
+      "location_name": "Miami WH",
+      "asset_count": 729
+    },
+    {
+      "location_name": "Houston DC",
+      "asset_count": 713
+    }
+  ],
+  "inspection_breakdown": {
+    "total_inspections": 12400,
+    "counts": {
+      "DAMAGED": 1338,
+      "GOOD": 11062
+    },
+    "percentages": {
+      "DAMAGED": 10.8,
+      "GOOD": 89.2
+    }
+  },
+  "movement_trends": {
+    "dates": [
+      "2026-09-30",
+      "2026-10-01",
+      "2026-10-02",
+      "2026-10-03",
+      "2026-10-04",
+      "2026-10-05",
+      "2026-10-06",
+      "2026-10-07",
+      "2026-10-08",
+      "2026-10-09",
+      "2026-10-10",
+      "2026-10-11",
+      "2026-10-12",
+      "2026-10-13",
+      "2026-10-14",
+      "2026-10-15",
+      "2026-10-16",
+      "2026-10-17",
+      "2026-10-18",
+      "2026-10-19",
+      "2026-10-20",
+      "2026-10-21"
+    ],
+    "dispatched": [
+      32,
+      36,
+      28,
+      16,
+      170,
+      196,
+      168,
+      170,
+      194,
+      182,
+      164,
+      214,
+      198,
+      166,
+      200,
+      208,
+      170,
+      0,
+      972,
+      936,
+      874,
+      818
+    ],
+    "returned": [
+      186,
+      189,
+      204,
+      189,
+      196,
+      183,
+      210,
+      177,
+      201,
+      167,
+      153,
+      147,
+      130,
+      115,
+      91,
+      90,
+      75,
+      62,
+      48,
+      44,
+      16,
+      7
+    ],
+    "in_transit": [
+      64,
+      72,
+      56,
+      32,
+      340,
+      392,
+      336,
+      340,
+      388,
+      364,
+      328,
+      428,
+      396,
+      332,
+      400,
+      416,
+      340,
+      0,
+      1944,
+      1872,
+      1748,
+      1636
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+asset_type_id,type_code,type_name,description,default_deposit_amount,expected_lifecycle_days,return_due_days,loss_threshold_days,requires_inspection,repairable,active
+1,PALLET,Standard Wooden Pallet,Standard enterprise specification for Standard Wooden Pallet,50.00,730,30,60,True,True,True
+2,CONTAINER,Heavy-Duty Plastic Bulk Container,Standard enterprise specification for Heavy-Duty Plastic Bulk Container,250.00,1095,45,90,True,True,True
+3,CRATE,Collapsible Transport Crate,Standard enterprise specification for Collapsible Transport Crate,75.00,540,30,60,True,True,True
+4,RACK,Industrial Steel Stacking Rack,Standard enterprise specification for Industrial Steel Stacking Rack,500.00,1825,60,120,True,True,True
+5,TOTE,Automated Storage Tote,Standard enterprise specification for Automated Storage Tote,40.00,365,21,45,False,False,True
+6,METAL_PALLET,Galvanized Metal Pallet,Standard enterprise specification for Galvanized Metal Pallet,180.00,1460,45,90,True,True,True
+7,THERMAL_BOX,Insulated Cold-Chain Box,Standard enterprise specification for Insulated Cold-Chain Box,120.00,365,14,30,True,True,True
+8,DRUM,Reusable Stainless Steel Drum,Standard enterprise specification for Reusable Stainless Steel Drum,350.00,1825,60,120,True,True,True

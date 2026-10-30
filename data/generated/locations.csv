@@ -1,0 +1,31 @@
+location_id,location_code,location_name,location_type,city,state,country,active
+1,LOC-001,New York DC,DISTRIBUTION_CENTER,New York,NY,USA,True
+2,LOC-002,Chicago WH,WAREHOUSE,Chicago,IL,USA,True
+3,LOC-003,Los Angeles DC,DISTRIBUTION_CENTER,Los Angeles,CA,USA,True
+4,LOC-004,Dallas Repair Center,REPAIR_CENTER,Dallas,TX,USA,True
+5,LOC-005,Atlanta WH,WAREHOUSE,Atlanta,GA,USA,True
+6,LOC-006,Seattle DC,DISTRIBUTION_CENTER,Seattle,WA,USA,True
+7,LOC-007,Boston WH,WAREHOUSE,Boston,MA,USA,True
+8,LOC-008,Denver DC,DISTRIBUTION_CENTER,Denver,CO,USA,True
+9,LOC-009,Miami WH,WAREHOUSE,Miami,FL,USA,True
+10,LOC-010,Houston DC,DISTRIBUTION_CENTER,Houston,TX,USA,True
+11,LOC-011,Acme Supplier Site,SUPPLIER,Newark,NJ,USA,True
+12,LOC-012,FreshMart Store #101,CUSTOMER_SITE,Irvine,CA,USA,True
+13,LOC-013,RetailCo Store #44,CUSTOMER_SITE,Fort Worth,TX,USA,True
+14,LOC-014,Central Transit Hub,TRANSIT_HUB,Kansas City,MO,USA,True
+15,LOC-015,New York DC Branch 2,DISTRIBUTION_CENTER,New York,NY,USA,True
+16,LOC-016,Chicago WH Branch 2,WAREHOUSE,Chicago,IL,USA,True
+17,LOC-017,Los Angeles DC Branch 2,DISTRIBUTION_CENTER,Los Angeles,CA,USA,True
+18,LOC-018,Dallas Repair Center Branch 2,REPAIR_CENTER,Dallas,TX,USA,True
+19,LOC-019,Atlanta WH Branch 2,WAREHOUSE,Atlanta,GA,USA,True
+20,LOC-020,Seattle DC Branch 2,DISTRIBUTION_CENTER,Seattle,WA,USA,True
+21,LOC-021,Boston WH Branch 2,WAREHOUSE,Boston,MA,USA,True
+22,LOC-022,Denver DC Branch 2,DISTRIBUTION_CENTER,Denver,CO,USA,True
+23,LOC-023,Miami WH Branch 2,WAREHOUSE,Miami,FL,USA,True
+24,LOC-024,Houston DC Branch 2,DISTRIBUTION_CENTER,Houston,TX,USA,True
+25,LOC-025,Acme Supplier Site Branch 2,SUPPLIER,Newark,NJ,USA,True
+26,LOC-026,FreshMart Store #101 Branch 2,CUSTOMER_SITE,Irvine,CA,USA,True
+27,LOC-027,RetailCo Store #44 Branch 2,CUSTOMER_SITE,Fort Worth,TX,USA,True
+28,LOC-028,Central Transit Hub Branch 2,TRANSIT_HUB,Kansas City,MO,USA,True
+29,LOC-029,New York DC Branch 3,DISTRIBUTION_CENTER,New York,NY,USA,True
+30,LOC-030,Chicago WH Branch 3,WAREHOUSE,Chicago,IL,USA,True
