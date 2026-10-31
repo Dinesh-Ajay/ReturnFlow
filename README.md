@@ -3,7 +3,7 @@
 
 ReturnFlow is an enterprise-grade, data-driven software solution designed to coordinate reusable packaging, pallets, transport containers, equipment, shipments, chain-of-custody handoffs, customer returns, QA inspections, refurbishments, and financial security deposits across multi-node supply chain networks.
 
-Built for the **AI Forward Deployed Engineer** technical recruitment assessment, ReturnFlow demonstrates robust relational database design, Python backend engineering, event-based custody traceability, deterministic synthetic data generation at scale (20,000+ assets, 100,000+ events), independent anomaly detection, double-entry financial reconciliation, interactive operational dashboards, and automated verification.
+Built for the **AI Forward Deployed Engineer** technical recruitment assessment, ReturnFlow demonstrates robust relational database design, Python backend engineering, event-based custody traceability, deterministic synthetic data generation at scale (20,000+ assets, 100,000+ events), independent anomaly detection, signed deposit ledger management and financial reconciliation, interactive operational dashboards, and automated verification.
 
 ---
 
@@ -31,8 +31,8 @@ Built for the **AI Forward Deployed Engineer** technical recruitment assessment,
 - **Data Engineering & Analytics:** Pandas, NumPy, Faker, Python Datetime
 - **Testing:** Pytest, HTTPX, SQLAlchemy Unit-of-Work
 - **Dashboard & UI:** Streamlit, Plotly Express & Graph Objects
-- **Authentication & Security:** Better Auth compatible role-based access control (Admin, Operations Manager, Logistics Analyst, Warehouse Operator)
-- **Deployment & Telemetry:** Fly.io container configuration, Cloudflare Pages hosting compatibility, Google Analytics integration
+- **Authentication & Security:** Role-based access control (Admin, Operations Manager, Logistics Analyst, Warehouse Operator), authentication and authorization services
+- **Deployment & Telemetry:** Deployment-ready configuration for container-based hosting; Cloudflare Pages and Fly.io compatibility considerations; Google Analytics configuration support
 
 ---
 
@@ -95,7 +95,7 @@ ReturnFlow/
 ├── prompts/
 │   └── ai_prompt_history.md        # Comprehensive AI interaction transparency log
 │
-├── tests/                          # Automated Pytest suite (22 tests)
+├── tests/                          # Automated Pytest suite (58 tests passed in final audit)
 │
 ├── .env.example                    # Environment variable template
 ├── requirements.txt                # Python dependencies
@@ -116,7 +116,7 @@ ReturnFlow/
 ### Step 1: Clone and Configure Environment
 
 ```bash
-git clone https://github.com/your-username/ReturnFlow.git
+git clone https://github.com/Dinesh-Ajay/ReturnFlow.git
 cd ReturnFlow
 
 # Install dependencies
@@ -267,6 +267,7 @@ Returns asset master metadata, current custodian, chronological events array, sh
 ```bash
 curl -X POST "http://127.0.0.1:8000/api/validation/run"
 ```
+*Illustrative response for a successful synthetic-data validation run; actual execution metrics may vary.*
 **Response:**
 ```json
 {
