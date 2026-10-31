@@ -18,10 +18,11 @@ async def lifespan(app: FastAPI):
     from app.database.session import engine, SessionLocal
     from app.database.base import Base
     from app.models.user import User, PasswordResetOTP
+    from app.models.id_sequence import IDSequence
     from app.services.auth_service import AuthService
 
-    # Ensure auth tables exist
-    Base.metadata.create_all(bind=engine, tables=[User.__table__, PasswordResetOTP.__table__])
+    # Ensure auth and sequence tables exist
+    Base.metadata.create_all(bind=engine, tables=[User.__table__, PasswordResetOTP.__table__, IDSequence.__table__])
 
     # Bootstrap Operations Manager account
     db = SessionLocal()

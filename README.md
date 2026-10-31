@@ -186,9 +186,10 @@ python -m app.validation
 ### Start FastAPI Backend Server
 
 ```bash
-python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
+- **Application:** [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 - **Interactive Swagger Documentation:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 - **Redoc Documentation:** [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
 - **Health Endpoint:** [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)

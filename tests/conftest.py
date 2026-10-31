@@ -30,6 +30,9 @@ from app.main import app
 @pytest.fixture(scope="session")
 def db_engine():
     engine = create_engine(settings.TEST_DATABASE_URL, pool_pre_ping=True)
+    from app.models.id_sequence import IDSequence
+    from app.models.user import User, PasswordResetOTP
+    Base.metadata.create_all(bind=engine, tables=[User.__table__, PasswordResetOTP.__table__, IDSequence.__table__])
     return engine
 
 @pytest.fixture(scope="function")

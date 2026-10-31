@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-10-30 14:14:54 UTC",
-  "total_duration_seconds": 1.2144,
+  "timestamp": "2026-10-31 14:42:29 UTC",
+  "total_duration_seconds": 3.0993,
   "integrity_checks": {
     "name": "Referential & Structural Integrity Validation",
     "passed": true,
@@ -40,7 +40,30 @@
         "failed_count": 0,
         "affected_ids": []
       }
-    ]
+    ],
+    "total_records_checked": 222887,
+    "table_counts": {
+      "anomaly_records": 50,
+      "asset_types": 8,
+      "id_sequences": 0,
+      "locations": 30,
+      "owners": 40,
+      "password_reset_otps": 14,
+      "users": 1,
+      "return_authorizations": 12400,
+      "reusable_assets": 20009,
+      "shipments": 10000,
+      "custody_events": 100039,
+      "deposit_ledger": 34148,
+      "inspections": 12400,
+      "return_authorization_assets": 12400,
+      "shipment_assets": 20000,
+      "repairs": 1348
+    },
+    "primary_key_violations": 0,
+    "foreign_key_violations": 0,
+    "orphan_records": 0,
+    "duplicate_identifiers": 0
   },
   "financial_reconciliation": {
     "summary": {
@@ -64,11 +87,15 @@
     "total_collected": 3909680.0,
     "total_refunded": 2333839.25,
     "total_damage": 90966.75,
-    "net_liability": 1484874.0,
+    "total_loss": 77890.0,
+    "total_adjustments": 0.0,
+    "net_liability": 1406984.0,
+    "unreconciled_transactions": 0,
+    "duplicate_refund_findings": 10,
     "is_reconciled": true
   },
   "anomaly_detection": {
-    "detection_duration_seconds": 0.7145,
+    "detection_duration_seconds": 0.7696,
     "total_detected": 50,
     "detected_by_type": {
       "SIMULTANEOUS_LOCATIONS": 10,
@@ -82,12 +109,25 @@
       "total_detected": 50,
       "true_positives": 50,
       "false_positives": 0,
+      "true_negatives": null,
       "false_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "false_positive_rate": null,
       "precision_pct": 100.0,
       "recall_pct": 100.0,
-      "false_positive_rate_pct": 0.0,
-      "false_negative_rate_pct": 0.0,
+      "f1_score_pct": 100.0,
+      "false_positive_rate_pct": null,
+      "evaluation_note": "No labelled negative population; TN and false positive rate are unavailable.",
       "detected_by_type": {
+        "SIMULTANEOUS_LOCATIONS": 10,
+        "RETURN_BEFORE_DISPATCH": 10,
+        "DUPLICATE_REFUND": 10,
+        "REPAIR_WITHOUT_INSPECTION": 10,
+        "MISSING_CUSTODY_ACTOR": 10
+      },
+      "injected_by_type": {
         "SIMULTANEOUS_LOCATIONS": 10,
         "RETURN_BEFORE_DISPATCH": 10,
         "DUPLICATE_REFUND": 10,

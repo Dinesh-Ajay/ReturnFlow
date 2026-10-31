@@ -5,7 +5,7 @@ from app.models.inspection import Inspection
 from app.models.asset import ReusableAsset
 from app.models.return_authorization import ReturnAuthorization
 from app.services.lifecycle_service import LifecycleService
-from app.utils.id_generator import IDGenerator
+from app.utils.id_generator import IDGenerator, PersistentIDGenerator
 
 def utc_now():
     return datetime.now(timezone.utc)
@@ -34,6 +34,9 @@ class InspectionService:
         if not asset:
             raise ValueError(f"Asset {asset_id} not found.")
 
+        if asset.asset_status == "RETIRED":
+            raise ValueError(f"Asset {asset_id} is RETIRED and cannot be inspected.")
+
         # Determine next lifecycle status
         if condition_status == "GOOD":
             next_status = "AVAILABLE"
@@ -42,14 +45,19 @@ class InspectionService:
             next_status = "DAMAGED"
             requires_repair = True
 
-        insp_id = custom_id or IDGenerator(year=2026).next_inspection_id()
+        valid, err = LifecycleService.validate_transition(asset.asset_status, next_status)
+        if not valid and asset.asset_status not in ("INSPECTION_PENDING", "RETURNED", "UNDER_REPAIR"):
+            raise ValueError(f"Invalid transition for asset {asset_id} from {asset.asset_status} to {next_status}: {err}")
+
+        insp_dt = inspection_date or utc_now()
+        insp_id = custom_id or PersistentIDGenerator.next_inspection_id(db, year=insp_dt.year)
 
         inspection = Inspection(
             inspection_id=insp_id,
             asset_id=asset_id,
             rma_id=rma_id,
             inspector_owner_id=inspector_owner_id,
-            inspection_date=inspection_date or utc_now(),
+            inspection_date=insp_dt,
             condition_status=condition_status,
             damage_severity=damage_severity or ("NONE" if condition_status == "GOOD" else "MODERATE"),
             requires_repair=requires_repair,
@@ -58,6 +66,7 @@ class InspectionService:
 
         # Update asset status
         asset.asset_status = next_status
+        asset.last_event_at = insp_dt
         asset.updated_at = utc_now()
 
         db.add(inspection)

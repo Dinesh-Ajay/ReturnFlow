@@ -13,6 +13,7 @@ from app.models.repair import Repair
 from app.models.deposit_ledger import DepositLedger
 from app.models.anomaly_record import AnomalyRecord
 from app.models.user import User, PasswordResetOTP
+from app.models.id_sequence import IDSequence
 
 __all__ = [
     "Base",
@@ -30,5 +31,6 @@ __all__ = [
     "DepositLedger",
     "AnomalyRecord",
     "User",
-    "PasswordResetOTP"
+    "PasswordResetOTP",
+    "IDSequence"
 ]

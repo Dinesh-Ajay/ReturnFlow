@@ -9,6 +9,7 @@ from app.models.owner import Owner
 from app.models.location import Location
 from app.models.custody_event import CustodyEvent
 from app.services.lifecycle_service import LifecycleService
+from app.utils.id_generator import PersistentIDGenerator
 from app.config import settings
 
 class AssetService:
@@ -166,23 +167,7 @@ class AssetService:
             acquisition_cost = Decimal(str(asset_type.default_deposit_amount * Decimal("2.0")))
 
         # 6. Generate sequential unique Asset ID following ASSET-XXXXXXX convention
-        # Find maximum existing numeric ID
-        max_asset = db.query(ReusableAsset.asset_id).filter(
-            ReusableAsset.asset_id.like("ASSET-%")
-        ).order_by(ReusableAsset.asset_id.desc()).first()
-
-        next_num = 1
-        if max_asset and max_asset[0]:
-            try:
-                num_part = max_asset[0].split("-")[1]
-                next_num = int(num_part) + 1
-            except Exception:
-                next_num = db.query(ReusableAsset).count() + 1
-
-        new_asset_id = f"ASSET-{next_num:07d}"
-        while db.query(ReusableAsset).filter(ReusableAsset.asset_id == new_asset_id).first():
-            next_num += 1
-            new_asset_id = f"ASSET-{next_num:07d}"
+        new_asset_id = payload_data.get("asset_id") or PersistentIDGenerator.next_asset_id(db)
 
         # 7. Serial number
         serial = payload_data.get("serial_number")
