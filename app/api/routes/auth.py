@@ -49,7 +49,13 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
         )
 
     token = AuthService.create_access_token(
-        data={"sub": user.email, "role": user.role, "name": user.full_name}
+        data={
+            "sub": user.email,
+            "email": user.email,
+            "user_id": user.user_id,
+            "role": user.role,
+            "name": user.full_name
+        }
     )
 
     return {

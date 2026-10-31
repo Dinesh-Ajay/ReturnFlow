@@ -19,15 +19,16 @@ def get_current_user(
     """
     Session & role-based access dependency.
     Supports JWT tokens from Authorization: Bearer <token>,
-    falling back to initial Operations Manager (Dinesh Ajay).
+    falling back to the configured initial Operations Manager identity.
     """
     if authorization and authorization.startswith("Bearer "):
         token = authorization.split(" ", 1)[1].strip()
         payload = AuthService.decode_access_token(token)
         if payload:
+            email_val = payload.get("email") or payload.get("sub") or settings.INITIAL_ADMIN_EMAIL
             return CurrentUser(
                 user_id=str(payload.get("user_id", "usr_dinesh_ajay")),
-                email=str(payload.get("email", settings.INITIAL_ADMIN_EMAIL)),
+                email=str(email_val),
                 role=str(payload.get("role", settings.INITIAL_ADMIN_ROLE)),
                 name=str(payload.get("name", settings.INITIAL_ADMIN_NAME))
             )
