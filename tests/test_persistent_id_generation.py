@@ -30,7 +30,7 @@ def test_shipment_id_allocation_on_populated_db(db_session):
 
     shipment = ShipmentService.create_shipment(
         db=db_session,
-        origin_location_id=1,
+        origin_location_id=asset.current_location_id,
         destination_location_id=2,
         carrier_owner_id=3,
         dispatch_date=now,
@@ -72,6 +72,7 @@ def test_rma_id_allocation_on_populated_db(db_session):
 def test_inspection_id_allocation_on_populated_db(db_session):
     """Verify creating an inspection on a populated database produces no duplicate-ID error."""
     asset = db_session.query(ReusableAsset).first()
+    asset.asset_status = "INSPECTION_PENDING"
     insp = InspectionService.record_inspection(
         db=db_session,
         asset_id=asset.asset_id,
@@ -88,10 +89,13 @@ def test_inspection_id_allocation_on_populated_db(db_session):
 def test_repair_id_allocation_on_populated_db(db_session):
     """Verify creating a repair on a populated database produces no duplicate-ID error."""
     asset = db_session.query(ReusableAsset).first()
+    asset.asset_status = "INSPECTION_PENDING"
+    inspection = InspectionService.record_inspection(db_session, asset.asset_id, 1, "DAMAGED")
     rep = RepairService.initiate_repair(
         db=db_session,
         asset_id=asset.asset_id,
-        repair_location_id=1
+        repair_location_id=1,
+        inspection_id=inspection.inspection_id
     )
 
     assert rep.repair_id.startswith("REP-2026-")

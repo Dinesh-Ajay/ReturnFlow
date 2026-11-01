@@ -242,3 +242,14 @@ This document details the relational data dictionary for **ReturnFlow** (Databas
 | `is_injected` | BOOLEAN | NO | FALSE | - | Flag indicating injected synthetic anomaly |
 | `detected_at` | DATETIME | YES | NULL | - | Detection timestamp |
 | `created_at` | DATETIME | NO | CURRENT_TIMESTAMP | - | Creation timestamp |
+
+
+## Repair additions and corrections — 2026-10-31
+
+There are 16 mapped tables, including `users`, `password_reset_otps`, and `id_sequences`. `id_sequences.sequence_name` is the primary key; `current_value` is a BIGINT; `updated_at` is UTC. It is an allocation counter inside the enclosing business transaction, not a user-editable asset identifier.
+
+`deposit_ledger.transaction_reference` now has unique constraint `uq_deposit_reference`. `related_ledger_id` references the original deposit ledger entry for new refunds. It is not a ground-truth label. Existing duplicate references block migration rather than being deleted.
+
+New event types include RETURN_REQUESTED, INSPECTED_GOOD, INSPECTED_DAMAGED, INSPECTED_UNUSABLE, REPAIR_STARTED and REPAIR_COMPLETED. Inspection/repair completion preserve location and custodian unless a physical transfer was explicitly recorded. Loss clears both; transit clears physical facility location.
+
+New schema installation uses frozen Alembic operations, including server-side timestamp/scalar defaults needed by raw seed import. Legacy `database/schema.sql` is a historical alternative, not the complete current schema by itself; follow it with migrations if used.

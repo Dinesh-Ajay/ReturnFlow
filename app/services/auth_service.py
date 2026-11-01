@@ -21,7 +21,7 @@ class AuthService:
     def hash_password(plain_password: str) -> str:
         """Securely hash a password using PBKDF2-HMAC-SHA256 with a random salt."""
         salt = secrets.token_hex(16)
-        iterations = 100000
+        iterations = 600000
         key = hashlib.pbkdf2_hmac(
             'sha256',
             plain_password.encode('utf-8'),
@@ -68,7 +68,7 @@ class AuthService:
     def decode_access_token(token: str) -> Optional[dict]:
         """Decode and validate a JWT access token."""
         try:
-            payload = jwt.decode(token, settings.AUTH_SECRET, algorithms=[settings.AUTH_ALGORITHM])
+            payload = jwt.decode(token, settings.AUTH_SECRET, algorithms=[settings.AUTH_ALGORITHM], options={"require": ["exp", "iat", "sub"]})
             return payload
         except jwt.ExpiredSignatureError:
             logger.debug("JWT token has expired.")
@@ -115,21 +115,6 @@ class AuthService:
         if cls.verify_password(password, user.password_hash):
             return user
 
-        # Fallback synchronization for configured administrator:
-        admin_email = (settings.INITIAL_ADMIN_EMAIL or "").strip().lower()
-        if email_clean in (admin_email, "dineshajay874@gmail.com"):
-            allowed_passwords = [
-                settings.INITIAL_ADMIN_PASSWORD,
-                "ReturnFlow@2026!",
-                "Admin@ReturnFlow2026!",
-                "NewSecretPassword2026!"
-            ]
-            if any(password == p for p in allowed_passwords if p):
-                user.password_hash = cls.hash_password(password)
-                db.commit()
-                logger.info(f"Synchronized password hash for admin {email_clean}")
-                return user
-
         return None
 
     @classmethod
@@ -142,7 +127,7 @@ class AuthService:
         user = db.query(User).filter(User.email == email_clean, User.is_active == True).first()
         if not user:
             # Prevent account enumeration by returning a generic prompt, or clear status if internal
-            return False, f"No active ReturnFlow account found for {email_clean}."
+            return True, "If the account is eligible, recovery instructions will be sent."
 
         now = datetime.now(timezone.utc)
 
@@ -200,7 +185,7 @@ class AuthService:
         record = db.query(PasswordResetOTP).filter(
             PasswordResetOTP.email == email_clean,
             PasswordResetOTP.is_used == False
-        ).order_by(PasswordResetOTP.created_at.desc()).first()
+        ).order_by(PasswordResetOTP.created_at.desc(), PasswordResetOTP.id.desc()).with_for_update().first()
 
         if not record:
             return False, "No active verification code found. Please request a new code.", None
@@ -241,17 +226,20 @@ class AuthService:
         Sets a new password using the validated reset token.
         """
         email_clean = email.strip().lower()
-        if len(new_password) < 6:
-            return False, "Password must be at least 6 characters long."
+        if len(new_password) < 12:
+            return False, "Password must be at least 12 characters long."
 
         record = db.query(PasswordResetOTP).filter(
             PasswordResetOTP.email == email_clean,
             PasswordResetOTP.reset_token == reset_token
-        ).first()
+        ).with_for_update().first()
 
         if not record:
             return False, "Invalid or expired password reset session. Please restart recovery."
 
+        expiry = record.expires_at.replace(tzinfo=timezone.utc) if record.expires_at.tzinfo is None else record.expires_at
+        if datetime.now(timezone.utc) > expiry:
+            return False, "Password reset session has expired."
         user = db.query(User).filter(User.email == email_clean, User.is_active == True).first()
         if not user:
             return False, "User account not found."

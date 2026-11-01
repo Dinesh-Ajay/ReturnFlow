@@ -36,11 +36,6 @@ class PersistentIDGenerator:
     """
 
     @classmethod
-    def _ensure_table(cls, db: Session) -> None:
-        """Ensures the sequence table exists in the target database."""
-        IDSequence.__table__.create(bind=db.get_bind(), checkfirst=True)
-
-    @classmethod
     def _find_max_existing_id(
         cls,
         db: Session,
@@ -152,39 +147,28 @@ class PersistentIDGenerator:
         Atomically locks, initializes if needed, and increments the database sequence.
         Returns the allocated sequential integer.
         """
-        cls._ensure_table(db)
-
-        # Attempt to lock existing row
-        seq = db.query(IDSequence).filter(
-            IDSequence.sequence_name == sequence_name
-        ).with_for_update().first()
-
-        if seq is None:
-            # First allocation: determine baseline from existing data
-            baseline_val = cls._find_max_existing_id(db, entity_type, year=year, asset_id=asset_id)
-            try:
-                with db.begin_nested():
-                    new_seq = IDSequence(
-                        sequence_name=sequence_name,
-                        current_value=baseline_val,
-                        updated_at=utc_now()
-                    )
-                    db.add(new_seq)
-                    db.flush()
-            except IntegrityError:
-                # Concurrent worker created the sequence entry in parallel; proceed to acquire lock
-                pass
-
-            # Acquire exclusive row-level lock on the sequence record
-            seq = db.query(IDSequence).filter(
-                IDSequence.sequence_name == sequence_name
-            ).with_for_update().first()
-
-            if seq is None:
-                raise RuntimeError(f"Could not acquire sequence lock for '{sequence_name}'.")
-
-        # Concurrently safe increment
-        seq.current_value += 1
+        # Schema is installed by migrations, never DDL inside an allocation.
+        # Upsert BEFORE SELECT FOR UPDATE avoids concurrent missing-row gap locks.
+        dialect = db.get_bind().dialect.name
+        values = dict(sequence_name=sequence_name, current_value=0, updated_at=utc_now())
+        if dialect in ("mysql", "mariadb"):
+            from sqlalchemy.dialects.mysql import insert
+            stmt = insert(IDSequence).values(**values)
+            db.execute(stmt.on_duplicate_key_update(sequence_name=stmt.inserted.sequence_name))
+        elif dialect == "sqlite":
+            from sqlalchemy.dialects.sqlite import insert
+            db.execute(insert(IDSequence).values(**values).on_conflict_do_nothing(index_elements=["sequence_name"]))
+        elif dialect == "postgresql":
+            from sqlalchemy.dialects.postgresql import insert
+            db.execute(insert(IDSequence).values(**values).on_conflict_do_nothing(index_elements=["sequence_name"]))
+        else:
+            raise RuntimeError("Unsupported sequence database dialect")
+        seq = db.query(IDSequence).filter_by(sequence_name=sequence_name).populate_existing().with_for_update().one()
+        # Also recover a stale counter after an externally loaded dataset.
+        baseline = cls._find_max_existing_id(db, entity_type, year=year, asset_id=asset_id)
+        seq.current_value = max(seq.current_value, baseline) + 1
+        if seq.current_value > (9999999 if entity_type == "asset" else 999999):
+            raise ValueError("Identifier capacity exhausted; refusing to change ID format")
         seq.updated_at = utc_now()
         db.flush()
         return seq.current_value

@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from sqlalchemy import Column, Integer, String, Numeric, DateTime, ForeignKey, Index
+from sqlalchemy import Column, Integer, String, Numeric, DateTime, ForeignKey, Index, UniqueConstraint
 from sqlalchemy.orm import relationship
 from app.database.base import Base
 
@@ -8,6 +8,7 @@ def utc_now():
 
 class DepositLedger(Base):
     __tablename__ = "deposit_ledger"
+    __table_args__ = (UniqueConstraint("transaction_reference", name="uq_deposit_reference"),)
 
     ledger_id = Column(Integer, primary_key=True, autoincrement=True)
     asset_id = Column(String(32), ForeignKey("reusable_assets.asset_id", ondelete="CASCADE"), nullable=False, index=True)

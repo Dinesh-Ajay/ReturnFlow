@@ -14,8 +14,8 @@ from app.services.asset_service import AssetService
 from app.analytics.metrics import AnalyticsService
 
 @pytest.fixture
-def client():
-    return TestClient(app)
+def client(api_client):
+    return api_client
 
 # =========================================================================
 # 1. FIX ADD ASSET FUNCTIONALITY TESTS

@@ -1,3 +1,4 @@
+import os
 import argparse
 import random
 import time
@@ -114,6 +115,8 @@ def run_generator(profile_name: str = "starter", seed: int = 20261022, load_db: 
     logger.info("Exporting generated files to disk..." if export else "Skipping generated-file export for an in-memory run...")
     if export:
         Exporter.export_all(all_data, ground_truth)
+        from app.generator.manifest import build
+        build(os.path.join(settings.EXPORTS_DIR, "source_manifest.json"), profile=profile_name, seed=seed)
     checksums = logical_checksums(all_data, ground_truth)
 
     # Step 5: Database Insertion
@@ -141,12 +144,13 @@ def run_generator(profile_name: str = "starter", seed: int = 20261022, load_db: 
                     f"Populated tables: {existing_rows}"
                 )
 
-            # Clear existing data in reverse dependency order
-            db.execute(text("SET FOREIGN_KEY_CHECKS = 0;"))
-            for tbl in target_tables:
-                db.execute(text(f"TRUNCATE TABLE {tbl};"))
-            db.execute(text("SET FOREIGN_KEY_CHECKS = 1;"))
-            db.commit()
+            # Dependency-ordered transactional deletes, never FK bypass or TRUNCATE.
+            if existing_rows:
+                db_name = db.get_bind().url.database or ""
+                if not (db_name.endswith("_test") or "_test_" in db_name):
+                    raise RuntimeError("Replacement loads are restricted to disposable test databases")
+                for tbl in target_tables:
+                    db.execute(text(f"DELETE FROM {tbl}"))
 
             # Batch insert records
             batch_size = 1000
@@ -155,7 +159,6 @@ def run_generator(profile_name: str = "starter", seed: int = 20261022, load_db: 
                 for i in range(0, len(rows), batch_size):
                     chunk = rows[i:i + batch_size]
                     db.bulk_insert_mappings(model_cls, chunk)
-                db.commit()
 
             bulk_insert(AssetType, asset_types)
             bulk_insert(Owner, owners)
@@ -189,6 +192,7 @@ def run_generator(profile_name: str = "starter", seed: int = 20261022, load_db: 
                 for gt in ground_truth
             ]
             bulk_insert(AnomalyRecord, ar_rows)
+            db.commit()
 
             t1_db = time.perf_counter()
             db_duration = t1_db - t0_db

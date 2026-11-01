@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI, Request, status, Depends
+from app.api.dependencies import authorize_business_request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from app.config import settings
@@ -45,7 +46,7 @@ app = FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[settings.API_BASE_URL],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -62,20 +63,20 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 # Include API Routers
 app.include_router(auth.router)
-app.include_router(exports.router)
+app.include_router(exports.router, dependencies=[Depends(authorize_business_request)])
 app.include_router(health.router)
-app.include_router(assets.router)
-app.include_router(asset_types.router)
-app.include_router(owners.router)
-app.include_router(locations.router)
-app.include_router(shipments.router)
-app.include_router(custody.router)
-app.include_router(returns.router)
-app.include_router(inspections.router)
-app.include_router(repairs.router)
-app.include_router(deposits.router)
-app.include_router(validation.router)
-app.include_router(analytics.router)
+app.include_router(assets.router, dependencies=[Depends(authorize_business_request)])
+app.include_router(asset_types.router, dependencies=[Depends(authorize_business_request)])
+app.include_router(owners.router, dependencies=[Depends(authorize_business_request)])
+app.include_router(locations.router, dependencies=[Depends(authorize_business_request)])
+app.include_router(shipments.router, dependencies=[Depends(authorize_business_request)])
+app.include_router(custody.router, dependencies=[Depends(authorize_business_request)])
+app.include_router(returns.router, dependencies=[Depends(authorize_business_request)])
+app.include_router(inspections.router, dependencies=[Depends(authorize_business_request)])
+app.include_router(repairs.router, dependencies=[Depends(authorize_business_request)])
+app.include_router(deposits.router, dependencies=[Depends(authorize_business_request)])
+app.include_router(validation.router, dependencies=[Depends(authorize_business_request)])
+app.include_router(analytics.router, dependencies=[Depends(authorize_business_request)])
 
 import os
 from fastapi.staticfiles import StaticFiles

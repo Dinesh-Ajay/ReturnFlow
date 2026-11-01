@@ -1,0 +1,97 @@
+{
+  "profile": "full",
+  "seed": 20261022,
+  "reference_date": "2026-10-22",
+  "generator_version": "1.0.0",
+  "producer_commit": null,
+  "producer_commit_note": "Historical producer commit not established",
+  "current_generator_source_sha256": {
+    "app/generator/__init__.py": "30f7c02240243d2993167249d52973217176e62aa74ac26b30b0a329aef52d4c",
+    "app/generator/__main__.py": "5308fa19851090abf6c3d9b525ebe6edad3f24abcdd55df0f08051986bc8a964",
+    "app/generator/anomaly_injector.py": "a07dc48584129400fb3c2c9b2cd0209e6e4fafe385e2e8a9eb3f25b816705268",
+    "app/generator/config.py": "fa4197c9a32499309ae064faa905a1ac38bc2954402c6b3d69665d6224351d72",
+    "app/generator/exporter.py": "b8162ef22f663ee6708810552a429a24dd67fc643ebbe0ba1aabf18f872e4270",
+    "app/generator/manifest.py": "9f5fea8b7ff4fb635e2643b29e1a0aa665aac220796e3871b587c61ac6f3848e",
+    "app/generator/master_generator.py": "5d2f2a2ba32643302cf81ada854710e9cd4006269a9a2af12a32ae295412171e",
+    "app/generator/transaction_generator.py": "ba941d4b0ce2a5ecafee13e17b928eea2136fb299d933f3dce1bc247fcc0f1fc"
+  },
+  "synthetic_data_provenance": "Deterministic Python random/Decimal generators and curated fictional masters; intentionally injected anomalies are labelled separately.",
+  "external_data_usage": "No external operational dataset used by the inspected generators. Original historical execution provenance is not independently attested.",
+  "generated_files": [
+    {
+      "path": "data/generated/asset_types.csv",
+      "bytes": 1247,
+      "sha256": "aa3bf96b17f71dae0319e8f85848edff4bd41b4381504c9a8a887e7d5edb89ba"
+    },
+    {
+      "path": "data/generated/assets.csv",
+      "bytes": 2331691,
+      "sha256": "89347b713e9e9d39b66529127b93d43bcb55fd244994581f8bb186d3d378cba6"
+    },
+    {
+      "path": "data/generated/custody_events.csv",
+      "bytes": 17953662,
+      "sha256": "744fb6d2737d8b93066cf59b50ea25141c000789fb75b8b3ff03e7d704f0772b"
+    },
+    {
+      "path": "data/generated/deposit_ledger.csv",
+      "bytes": 5772315,
+      "sha256": "68e8039e6cad7058f03299480139e7a8f609665cf48584eb8338fc447b7f712c"
+    },
+    {
+      "path": "data/generated/inspections.csv",
+      "bytes": 1568891,
+      "sha256": "3f39dc9d05c9c701d2e3263fe9cc1dc56ec45bac0352d64ec07eddf067a4e685"
+    },
+    {
+      "path": "data/generated/locations.csv",
+      "bytes": 2015,
+      "sha256": "d7092eed10e32c7111302daa066f05ada948875c5a8781f49e73bd5ba93dfa83"
+    },
+    {
+      "path": "data/generated/owners.csv",
+      "bytes": 3828,
+      "sha256": "cb18ad5f23722ac7754f23ebc854d207fc60168d1a288c4a85ad8e8b093c5be9"
+    },
+    {
+      "path": "data/generated/repairs.csv",
+      "bytes": 224820,
+      "sha256": "f2fb5fb74d91a391e7573fe6364a1a2a7c9d199652c0a982f6fbf43d9074ae0c"
+    },
+    {
+      "path": "data/generated/return_authorizations.csv",
+      "bytes": 2233556,
+      "sha256": "7e88a6c2ed17368c63924b599559ea000bc3bfafd615a456ff091d0e0ace5a50"
+    },
+    {
+      "path": "data/generated/rma_assets.csv",
+      "bytes": 757645,
+      "sha256": "17aa40c6b703eb5868bc253a6b27b4bc71895ac6ea7a27ba612ae5f0e1e3f7cf"
+    },
+    {
+      "path": "data/generated/shipment_assets.csv",
+      "bytes": 1120033,
+      "sha256": "d6ed88f3a31b7046f951e13fb16d6208172516885d49dd03c0cd721d22c1d699"
+    },
+    {
+      "path": "data/generated/shipments.csv",
+      "bytes": 1276876,
+      "sha256": "d37964167871eae6c48a108e05e64baab9b8a65486500925f0bb51259192a271"
+    },
+    {
+      "path": "data/ground_truth/ground_truth.csv",
+      "bytes": 12957,
+      "sha256": "f68cdead24e31ce25accd677af0c94966bb04423b8051e58836169bf84ac73c4"
+    },
+    {
+      "path": "data/ground_truth/ground_truth.json",
+      "bytes": 23200,
+      "sha256": "72f67f5a98130c095cdf1cd57833efdb068a1ff39c9f060a4b1df8362c6f2055"
+    },
+    {
+      "path": "data/exports/returnflow_seed.sql",
+      "bytes": 37755416,
+      "sha256": "723bbde27744a7bac700ccdde91f73cfbc29661d13ed7fe606885b02b7b114ab"
+    }
+  ]
+}

@@ -31,3 +31,11 @@ class CustodyEvent(Base):
     from_location = relationship("Location", foreign_keys=[from_location_id])
     to_location = relationship("Location", foreign_keys=[to_location_id])
     actor_owner = relationship("Owner", foreign_keys=[actor_owner_id])
+
+
+from sqlalchemy import event as orm_event
+
+@orm_event.listens_for(CustodyEvent, "before_update")
+@orm_event.listens_for(CustodyEvent, "before_delete")
+def reject_history_mutation(mapper, connection, target):
+    raise ValueError("Custody history is append-only; record a correcting event instead")

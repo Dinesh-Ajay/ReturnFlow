@@ -18,8 +18,8 @@ class EmailService:
         Returns (success: bool, message: str).
         """
         if not settings.SMTP_APP_PASSWORD or not settings.SMTP_EMAIL:
-            logger.info(f"[DEV OTP] SMTP credentials not configured. Generated verification code for {to_email}: {otp_code}")
-            return True, f"Verification code generated (Dev OTP: {otp_code}). Enter this code to reset your password."
+            logger.warning("Password recovery delivery unavailable: SMTP is not configured")
+            return False, "Password recovery delivery is not configured. Contact the operator."
 
         subject = "ReturnFlow Security: Password Reset Verification Code"
         

@@ -47,4 +47,10 @@ def test_portfolio_reconciliation(db_session):
     summary = DepositService.get_portfolio_financial_summary(db_session)
     assert summary["total_deposits_collected"] > 0
     assert summary["total_refunds_processed"] > 0
-    assert summary["reconciliation_status"] == "RECONCILED"
+    assert summary["reconciliation_status"] == "DISCREPANCY_DETECTED"  # seeded duplicate refunds are intentional
+    from app.validation.financial import FinancialValidator
+    audit = FinancialValidator.reconcile_ledger_totals(db_session)
+    assert audit["portfolio_arithmetic_balanced"] is True
+    assert audit["individual_obligations_valid"] is False
+    assert len(audit["negative_asset_liabilities"]) >= 10
+    assert audit["is_reconciled"] is False

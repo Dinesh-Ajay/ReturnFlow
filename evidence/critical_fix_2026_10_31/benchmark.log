@@ -1,0 +1,93 @@
+2026-10-31 16:15:42,850 [INFO] [returnflow]: Starting ReturnFlow Synthetic Data Generator with profile='full', seed=20261022
+2026-10-31 16:15:42,851 [INFO] [returnflow]: Generating Master records (AssetTypes, Owners, Locations, ReusableAssets)...
+2026-10-31 16:15:42,950 [INFO] [returnflow]: Generating Workflows (Shipments, CustodyEvents, RMAs, Inspections, Repairs, DepositLedger)...
+2026-10-31 16:15:43,388 [INFO] [returnflow]: Injecting 5 required anomaly scenarios (10 instances each)...
+2026-10-31 16:15:43,516 [INFO] [returnflow]: Data Generation completed in 0.67 seconds.
+2026-10-31 16:15:43,516 [INFO] [returnflow]: Skipping generated-file export for an in-memory run...
+2026-10-31 16:15:45,160 [INFO] [returnflow]: Summary of Generated Data:
+2026-10-31 16:15:45,161 [INFO] [returnflow]:   Asset Types:               8
+2026-10-31 16:15:45,161 [INFO] [returnflow]:   Owners:                    40
+2026-10-31 16:15:45,161 [INFO] [returnflow]:   Locations:                 30
+2026-10-31 16:15:45,161 [INFO] [returnflow]:   Reusable Assets:           20000
+2026-10-31 16:15:45,161 [INFO] [returnflow]:   Shipments:                 10000
+2026-10-31 16:15:45,161 [INFO] [returnflow]:   Custody Events:            100030
+2026-10-31 16:15:45,161 [INFO] [returnflow]:   Return Authorizations:     12400
+2026-10-31 16:15:45,161 [INFO] [returnflow]:   Inspections:               12400
+2026-10-31 16:15:45,161 [INFO] [returnflow]:   Repairs:                   1348
+2026-10-31 16:15:45,161 [INFO] [returnflow]:   Deposit Ledger Entries:    34148
+2026-10-31 16:15:45,161 [INFO] [returnflow]:   Injected Anomalies:        50
+2026-10-31 16:15:45,161 [INFO] [returnflow]:   Data Gen Time:             0.665s
+2026-10-31 16:15:45,161 [INFO] [returnflow]:   DB Load Time:              0.000s
+{
+  "measured_at": "2026-10-31T16:15:59.889282+00:00",
+  "environment": {
+    "python": "3.12.3",
+    "platform": "Linux-6.18.15-x86_64-with-glibc2.39",
+    "database_server_version": "10.11.14-MariaDB-0ubuntu0.24.04.1",
+    "database_dialect": "MySQL"
+  },
+  "dataset_counts_in_database": {
+    "reusable_assets": 20000,
+    "shipments": 10000,
+    "custody_events": 100030,
+    "deposit_ledger": 34148
+  },
+  "generation": {
+    "profile": "full",
+    "seed": 20261022,
+    "generated_counts": {
+      "asset_types": 8,
+      "owners": 40,
+      "locations": 30,
+      "assets": 20000,
+      "shipments": 10000,
+      "shipment_assets": 20000,
+      "custody_events": 100030,
+      "return_authorizations": 12400,
+      "rma_assets": 12400,
+      "inspections": 12400,
+      "repairs": 1348,
+      "deposit_ledger": 34148
+    },
+    "elapsed_seconds": 0.6654639670000506,
+    "custody_events_per_generation_second": 150316.18
+  },
+  "database_operation_method": "One warm-up, then 3 perf_counter measurements; median reported.",
+  "database_operations": {
+    "database_validation": {
+      "repeats": 3,
+      "median_seconds": 0.692894,
+      "min_seconds": 0.673361,
+      "max_seconds": 0.700464
+    },
+    "custody_history": {
+      "repeats": 3,
+      "median_seconds": 0.000671,
+      "min_seconds": 0.000645,
+      "max_seconds": 0.000837
+    },
+    "asset_search": {
+      "repeats": 3,
+      "median_seconds": 0.124763,
+      "min_seconds": 0.120749,
+      "max_seconds": 0.129755
+    },
+    "anomaly_detection_and_evaluation": {
+      "repeats": 3,
+      "median_seconds": 1.518377,
+      "min_seconds": 1.49596,
+      "max_seconds": 1.533153
+    },
+    "analytics_overview": {
+      "repeats": 3,
+      "median_seconds": 1.178037,
+      "min_seconds": 1.175575,
+      "max_seconds": 1.213344
+    }
+  },
+  "database_insertion": {
+    "status": "NOT MEASURED",
+    "reason": "Insertion is not timed by this read-only benchmark. See clean_full_load.log for the separate one-off disposable-database load measurement."
+  },
+  "query_plan_review": "Use EXPLAIN ANALYZE on the target MySQL version for production query plans; this report records execution timings only."
+}

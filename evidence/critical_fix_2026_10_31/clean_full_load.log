@@ -1,0 +1,23 @@
+<frozen runpy>:128: RuntimeWarning: 'app.generator.__main__' found in sys.modules after import of package 'app.generator', but prior to execution of 'app.generator.__main__'; this may result in unpredictable behaviour
+2026-10-31 16:08:28,754 [INFO] [returnflow]: Starting ReturnFlow Synthetic Data Generator with profile='full', seed=20261022
+2026-10-31 16:08:28,754 [INFO] [returnflow]: Generating Master records (AssetTypes, Owners, Locations, ReusableAssets)...
+2026-10-31 16:08:28,854 [INFO] [returnflow]: Generating Workflows (Shipments, CustodyEvents, RMAs, Inspections, Repairs, DepositLedger)...
+2026-10-31 16:08:29,315 [INFO] [returnflow]: Injecting 5 required anomaly scenarios (10 instances each)...
+2026-10-31 16:08:29,470 [INFO] [returnflow]: Data Generation completed in 0.72 seconds.
+2026-10-31 16:08:29,470 [INFO] [returnflow]: Exporting generated files to disk...
+2026-10-31 16:08:33,876 [INFO] [returnflow]: Loading records into MySQL database via batch operations...
+2026-10-31 16:08:50,497 [INFO] [returnflow]: Database insertion completed in 16.62 seconds.
+2026-10-31 16:08:50,497 [INFO] [returnflow]: Summary of Generated Data:
+2026-10-31 16:08:50,498 [INFO] [returnflow]:   Asset Types:               8
+2026-10-31 16:08:50,498 [INFO] [returnflow]:   Owners:                    40
+2026-10-31 16:08:50,498 [INFO] [returnflow]:   Locations:                 30
+2026-10-31 16:08:50,498 [INFO] [returnflow]:   Reusable Assets:           20000
+2026-10-31 16:08:50,498 [INFO] [returnflow]:   Shipments:                 10000
+2026-10-31 16:08:50,498 [INFO] [returnflow]:   Custody Events:            100030
+2026-10-31 16:08:50,498 [INFO] [returnflow]:   Return Authorizations:     12400
+2026-10-31 16:08:50,498 [INFO] [returnflow]:   Inspections:               12400
+2026-10-31 16:08:50,498 [INFO] [returnflow]:   Repairs:                   1348
+2026-10-31 16:08:50,498 [INFO] [returnflow]:   Deposit Ledger Entries:    34148
+2026-10-31 16:08:50,498 [INFO] [returnflow]:   Injected Anomalies:        50
+2026-10-31 16:08:50,498 [INFO] [returnflow]:   Data Gen Time:             0.716s
+2026-10-31 16:08:50,498 [INFO] [returnflow]:   DB Load Time:              16.622s

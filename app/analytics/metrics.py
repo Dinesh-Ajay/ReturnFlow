@@ -2,7 +2,7 @@ from typing import Dict, Any, List, Optional
 from decimal import Decimal
 from datetime import datetime, date, timedelta, time
 from sqlalchemy.orm import Session
-from sqlalchemy import func, text
+from sqlalchemy import func, text, or_
 from app.config import settings
 from app.models.asset import ReusableAsset
 from app.models.shipment import Shipment
@@ -55,7 +55,7 @@ class AnalyticsService:
 
         # Default end date is latest available business date
         if end_date is None:
-            end_date = dataset_max
+            end_date = settings.REFERENCE_DATE
         if start_date is None:
             start_date = end_date - timedelta(days=30)
 
@@ -87,17 +87,16 @@ class AnalyticsService:
         lost = status_counts.get("LOST", 0)
 
         # Total outstanding assets in active circulation
-        total_outstanding = in_transit + in_custody + return_pending
+        total_outstanding = in_transit + in_custody + return_pending + status_counts.get("DISPATCHED", 0)
 
-        # Overdue calculation as of the selected end_date
-        overdue_query = text("""
-            SELECT COUNT(*) 
-            FROM reusable_assets a
-            JOIN asset_types t ON a.asset_type_id = t.asset_type_id
-            WHERE a.asset_status IN ('IN_TRANSIT', 'IN_CUSTODY', 'RETURN_PENDING')
-              AND DATEDIFF(:as_of_date, a.last_event_at) > t.return_due_days
-        """)
-        overdue_count = db.execute(overdue_query, {"as_of_date": end_date}).scalar() or 0
+        dispatches = LifecycleService.dispatch_subquery(db)
+        active = db.query(ReusableAsset).join(dispatches, ReusableAsset.asset_id == dispatches.c.asset_id).filter(
+            ReusableAsset.asset_status.in_(["DISPATCHED", "IN_TRANSIT", "IN_CUSTODY", "RETURN_PENDING"]),
+            dispatches.c.dispatch_at.isnot(None),
+            or_(dispatches.c.returned_at.is_(None), dispatches.c.dispatch_at > dispatches.c.returned_at))
+        from app.models.asset_type import AssetType
+        age = LifecycleService.age_sql(dispatches.c.dispatch_at, settings.REFERENCE_DATE, db.get_bind().dialect.name)
+        overdue_count = active.join(ReusableAsset.asset_type).filter(age > AssetType.return_due_days).count()
 
         # Period-Specific Dispatched & Returned Metrics (activity within the selected range)
         period_dispatched = db.query(CustodyEvent).filter(
@@ -137,14 +136,8 @@ class AnalyticsService:
         damage_count = db.query(Inspection).filter(Inspection.condition_status.in_(["DAMAGED", "CRITICAL"])).count()
         damage_rate = (damage_count / total_inspections * 100.0) if total_inspections > 0 else 0.0
 
-        # Average outstanding days as of selected end_date
-        avg_days_query = text("""
-            SELECT AVG(DATEDIFF(:as_of_date, a.last_event_at))
-            FROM reusable_assets a
-            WHERE a.asset_status IN ('IN_TRANSIT', 'IN_CUSTODY', 'RETURN_PENDING')
-              AND a.last_event_at IS NOT NULL
-        """)
-        avg_days = db.execute(avg_days_query, {"as_of_date": end_date}).scalar() or 0.0
+        # Same active circulation cycle and UTC reference as list/detail.
+        avg_days = active.with_entities(func.avg(age)).scalar() or 0.0
 
         # Financial summary
         fin_summary = DepositService.get_portfolio_financial_summary(db)
@@ -154,6 +147,7 @@ class AnalyticsService:
         open_anomalies = db.execute(open_anomalies_query).scalar() or 0
 
         return {
+            "standing_reference_date": str(settings.REFERENCE_DATE),
             "start_date": str(start_date),
             "end_date": str(end_date),
             "max_dataset_date": str(dataset_max),

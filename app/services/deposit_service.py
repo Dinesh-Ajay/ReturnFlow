@@ -1,3 +1,4 @@
+from app.services.lifecycle_service import atomic_operation
 from typing import Dict, Any, List, Optional
 from decimal import Decimal
 from datetime import datetime, timezone
@@ -68,10 +69,11 @@ class DepositService:
             "net_deposit_liability": float(net_deposit_liability),
             "refundable_balance": float(refundable_balance),
             "transaction_count": len(entries),
-            "is_reconciled": bool(net_deposit_liability >= Decimal("0.00"))
+            "is_reconciled": cls._asset_obligations_valid(db, asset_id)
         }
 
     @classmethod
+    @atomic_operation
     def record_deposit_charge(
         cls,
         db: Session,
@@ -85,6 +87,15 @@ class DepositService:
     ) -> DepositLedger:
         if amount <= 0:
             raise ValueError("Deposit charge amount must be strictly positive.")
+
+        db.query(ReusableAsset).filter_by(asset_id=asset_id).with_for_update().one()
+        if not reference or not reference.strip():
+            raise ValueError("Transaction reference required")
+        existing = db.query(DepositLedger).filter_by(transaction_reference=reference).first()
+        if existing:
+            if existing.asset_id == asset_id and existing.owner_id == owner_id and existing.shipment_id == shipment_id and existing.transaction_type == "DEPOSIT_CHARGE" and existing.transaction_amount == amount:
+                return existing
+            raise ValueError("Transaction reference reused with different financial facts")
 
         entry = DepositLedger(
             asset_id=asset_id,
@@ -101,6 +112,7 @@ class DepositService:
         return entry
 
     @classmethod
+    @atomic_operation
     def record_deposit_refund(
         cls,
         db: Session,
@@ -117,10 +129,42 @@ class DepositService:
         if amount <= 0:
             raise ValueError("Deposit refund amount must be positive.")
 
+        asset = db.query(ReusableAsset).filter_by(asset_id=asset_id).with_for_update().one()
+        if not reference or not reference.strip():
+            raise ValueError("Transaction reference required")
+        existing = db.query(DepositLedger).filter_by(transaction_reference=reference).first()
+        if existing:
+            if existing.asset_id == asset_id and existing.owner_id == owner_id and existing.rma_id == rma_id and existing.transaction_type == "DEPOSIT_REFUND" and existing.transaction_amount == -amount:
+                return existing  # idempotent retry of identical request
+            raise ValueError("Transaction reference reused with different financial facts")
+        query = db.query(DepositLedger).filter_by(asset_id=asset_id, owner_id=owner_id, transaction_type="DEPOSIT_CHARGE")
+        if related_ledger_id:
+            query = query.filter_by(ledger_id=related_ledger_id)
+        candidates = query.all()
+        if len(candidates) != 1:
+            raise ValueError("Specify a unique original deposit using related_ledger_id")
+        original = candidates[0]
+        related_ledger_id = original.ledger_id
+        if rma_id:
+            from app.models.return_authorization_asset import ReturnAuthorizationAsset
+            if not db.query(ReturnAuthorizationAsset).filter_by(rma_id=rma_id, asset_id=asset_id).first():
+                raise ValueError("Refund RMA does not contain this asset")
         balance = cls.get_asset_financial_balance(db, asset_id)
-        current_refundable = Decimal(str(balance["refundable_balance"]))
+        entries = db.query(DepositLedger).filter_by(asset_id=asset_id).all()
+        cycle_balance = Decimal(original.transaction_amount)
+        for row in entries:
+            if row.ledger_id == original.ledger_id:
+                continue
+            if row.related_ledger_id == original.ledger_id or (row.shipment_id and row.shipment_id == original.shipment_id and row.owner_id == owner_id):
+                if row.transaction_type == "DEPOSIT_REFUND":
+                    cycle_balance += row.transaction_amount
+                elif row.transaction_type in ("DAMAGE_CHARGE", "LOSS_CHARGE"):
+                    cycle_balance -= row.transaction_amount
+                elif row.transaction_type == "ADJUSTMENT":
+                    cycle_balance += row.transaction_amount
+        current_refundable = min(Decimal(str(balance["refundable_balance"])), max(Decimal("0.00"), cycle_balance))
 
-        if not allow_over_refund and amount > current_refundable:
+        if amount > current_refundable:
             raise ValueError(
                 f"Requested refund of {amount} exceeds eligible refundable balance {current_refundable} for asset {asset_id}."
             )
@@ -175,5 +219,15 @@ class DepositService:
             "outstanding_deposit_liability": float(net_deposit_liability),
             "transaction_type_breakdown": {k: float(v) for k, v in type_sums.items()},
             "transaction_counts": type_counts,
-            "reconciliation_status": "RECONCILED" if net_deposit_liability >= Decimal("0.00") else "DISCREPANCY_DETECTED"
+            "reconciliation_status": "RECONCILED" if cls._obligations_valid(db) else "DISCREPANCY_DETECTED"
         }
+
+    @staticmethod
+    def _obligations_valid(db):
+        from app.validation.financial import FinancialValidator
+        return FinancialValidator.reconcile_ledger_totals(db)["is_reconciled"]
+
+    @staticmethod
+    def _asset_obligations_valid(db, asset_id):
+        from app.validation.financial import FinancialValidator
+        return FinancialValidator.audit_obligations(db, asset_id=asset_id)["is_reconciled"]

@@ -97,3 +97,15 @@ As required by Section 25 of the ReturnFlow technical assessment guidelines, thi
   - Fixed duplicate join on `locations` table in `app/api/routes/shipments.py`.
 - **How Result Was Validated:**
   Executed `python -m pytest -v`. All 22 tests passed in 4.70 seconds.
+
+
+## Repair session — 2026-10-31
+
+AI assistant: Genspark. User requested audit plus direct corrections, not a rewrite. Work performed on an isolated clone of ef3b069; the owner's local unpublished changes were not accessible. No commit/push. Baseline checkpoint retained outside the repair checkout. Existing code preserved and targeted changes added for IDs, lifecycle events, replay, age, finance, filters, migrations and authorization. Tests and browser checks executed; evidence packaged. Original company materials were missing, so no assertion of full company compliance. Historical replay exceptions and dataset-version mismatch are explicitly retained. Final report records limitations; no fabricated PASS statuses.
+
+---
+
+### Final Stabilization, Lifecycle Validation, and Verification Session
+- **Date:** 2026-11-01
+- **Focus:** Root cause resolution of `test_database_enforces_unique_financial_reference` (Alembic migration alignment to test DB and test fixture schema assertion) and `test_repair_lifecycle_enforcement` (timestamp microsecond truncation in `utc_naive()` preventing MySQL DATETIME round-up race conditions).
+- **Outcome:** Full test suite achieved 116 passed, 0 failed across three consecutive runs and order-reversed runs. Complete report generated at `docs/FINAL_STABILITY_VERIFICATION.md`.

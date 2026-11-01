@@ -1,7 +1,8 @@
+from app.services.lifecycle_service import atomic_operation
 from typing import Dict, Any, List, Optional, Tuple
 from datetime import datetime, timezone, date
 from decimal import Decimal
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import or_, and_, func
 from app.models.asset import ReusableAsset
 from app.models.asset_type import AssetType
@@ -28,9 +29,18 @@ class AssetService:
         status: Optional[str] = None,
         owner_id: Optional[int] = None,
         location_id: Optional[int] = None,
-        overdue_only: bool = False
+        overdue_only: bool = False,
+        reference_date: Optional[date] = None
     ) -> Tuple[List[Dict[str, Any]], int]:
-        query = db.query(ReusableAsset).join(ReusableAsset.asset_type)
+        dispatches = LifecycleService.dispatch_subquery(db)
+        active_dispatch = and_(dispatches.c.dispatch_at.isnot(None), or_(dispatches.c.returned_at.is_(None), dispatches.c.dispatch_at > dispatches.c.returned_at))
+        query = db.query(ReusableAsset).join(ReusableAsset.asset_type).outerjoin(dispatches, dispatches.c.asset_id == ReusableAsset.asset_id)
+        aliases = {"at location": "AVAILABLE", "in transit": "IN_TRANSIT", "in custody": "IN_CUSTODY", "in repair": "UNDER_REPAIR", "under inspection": "INSPECTION_PENDING", "in_repair": "UNDER_REPAIR"}
+        if status:
+            status = aliases.get(status.strip().lower(), status)
+        if search and search.strip().lower() in aliases:
+            query = query.filter(ReusableAsset.asset_status == aliases[search.strip().lower()])
+            search = None
 
         if search:
             s_clean = f"%{search.strip()}%"
@@ -57,22 +67,24 @@ class AssetService:
         if location_id:
             query = query.filter(ReusableAsset.current_location_id == location_id)
 
+        if overdue_only:
+            age = LifecycleService.age_sql(dispatches.c.dispatch_at, reference_date or settings.REFERENCE_DATE, db.get_bind().dialect.name)
+            query = query.filter(ReusableAsset.asset_status.in_(["DISPATCHED", "IN_TRANSIT", "IN_CUSTODY", "RETURN_PENDING"]), active_dispatch, age > AssetType.return_due_days)
         total_count = query.count()
         offset = (page - 1) * page_size
-        assets = query.order_by(ReusableAsset.asset_id.asc()).offset(offset).limit(page_size).all()
+        assets = query.add_columns(dispatches.c.dispatch_at, dispatches.c.returned_at).options(joinedload(ReusableAsset.asset_type), joinedload(ReusableAsset.owner), joinedload(ReusableAsset.current_location), joinedload(ReusableAsset.current_custodian)).order_by(ReusableAsset.asset_id.asc()).offset(offset).limit(page_size).all()
 
         results = []
-        for a in assets:
+        for a, dispatch_at, returned_at in assets:
             # Calculate standing & days outstanding
             standing = LifecycleService.classify_asset_standing(
                 status=a.asset_status,
-                dispatch_date=a.last_event_at,
+                dispatch_date=dispatch_at if dispatch_at and (not returned_at or dispatch_at > returned_at) else None,
+                reference_date=reference_date,
                 return_due_days=a.asset_type.return_due_days if a.asset_type else 30,
                 loss_threshold_days=a.asset_type.loss_threshold_days if a.asset_type else 60
             )
 
-            if overdue_only and not standing["is_overdue"]:
-                continue
 
             results.append({
                 "asset_id": a.asset_id,
@@ -98,6 +110,7 @@ class AssetService:
         return results, total_count
 
     @classmethod
+    @atomic_operation
     def create_asset(
         cls,
         db: Session,
@@ -186,6 +199,8 @@ class AssetService:
                 s_idx += 1
 
         initial_status = payload_data.get("asset_status") or "AVAILABLE"
+        if initial_status != "AVAILABLE":
+            raise ValueError("New assets must be commissioned as AVAILABLE")
         now_dt = datetime.now(timezone.utc)
         commission_ts = datetime.combine(p_date, datetime.min.time().replace(hour=8, minute=30))
 
@@ -227,7 +242,7 @@ class AssetService:
             created_at=now_dt
         )
         db.add(cust_event)
-        db.commit()
+        db.flush()
         db.refresh(new_asset)
 
         return {

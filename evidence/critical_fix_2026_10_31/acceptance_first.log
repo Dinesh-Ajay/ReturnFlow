@@ -1,0 +1,41 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0 -- /home/user/rfvenv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/user/ReturnFlow
+plugins: Faker-40.44.0, anyio-4.15.1
+collecting ... collected 26 items
+
+tests/test_critical_acceptance.py::test_full_live_lifecycle_replays_after_every_operation PASSED [  3%]
+tests/test_critical_acceptance.py::test_loss_nulls_and_recovery_replay PASSED [  7%]
+tests/test_critical_acceptance.py::test_service_failure_is_atomic_even_if_caller_catches PASSED [ 11%]
+tests/test_critical_acceptance.py::test_duplicate_delivery_rejected_without_extra_events PASSED [ 15%]
+tests/test_critical_acceptance.py::test_outstanding_age_uses_dispatch_not_checkpoint PASSED [ 19%]
+tests/test_critical_acceptance.py::test_return_and_subsequent_dispatch_reset_age PASSED [ 23%]
+tests/test_critical_acceptance.py::test_utc_outstanding_and_missing_dispatch PASSED [ 26%]
+tests/test_critical_acceptance.py::test_overdue_filter_before_count_and_pagination PASSED [ 30%]
+tests/test_critical_acceptance.py::test_visible_status_aliases[At Location-AVAILABLE] PASSED [ 34%]
+tests/test_critical_acceptance.py::test_visible_status_aliases[In Transit-IN_TRANSIT] PASSED [ 38%]
+tests/test_critical_acceptance.py::test_visible_status_aliases[In Repair-UNDER_REPAIR] PASSED [ 42%]
+tests/test_critical_acceptance.py::test_duplicate_refunds_survive_reference_renaming PASSED [ 46%]
+tests/test_critical_acceptance.py::test_equal_partial_refunds_not_duplicates PASSED [ 50%]
+tests/test_critical_acceptance.py::test_positive_portfolio_never_hides_negative_asset PASSED [ 53%]
+tests/test_critical_acceptance.py::test_invalid_original_and_cross_asset_refund PASSED [ 57%]
+tests/test_critical_acceptance.py::test_refund_idempotency_and_cycle_limit PASSED [ 61%]
+tests/test_critical_acceptance.py::test_cold_concurrent_sequences[shipment] PASSED [ 65%]
+tests/test_critical_acceptance.py::test_cold_concurrent_sequences[rma] PASSED [ 69%]
+tests/test_critical_acceptance.py::test_cold_concurrent_sequences[inspection] PASSED [ 73%]
+tests/test_critical_acceptance.py::test_cold_concurrent_sequences[repair] PASSED [ 76%]
+tests/test_critical_acceptance.py::test_business_routes_require_valid_token[None] PASSED [ 80%]
+tests/test_critical_acceptance.py::test_business_routes_require_valid_token[Bearer invalid-token] PASSED [ 84%]
+tests/test_critical_acceptance.py::test_expired_and_missing_exp_tokens_rejected PASSED [ 88%]
+tests/test_critical_acceptance.py::test_role_is_read_from_database_not_headers PASSED [ 92%]
+tests/test_critical_acceptance.py::test_no_smtp_never_returns_otp PASSED [ 96%]
+tests/test_critical_acceptance.py::test_admin_fallback_password_removed PASSED [100%]
+
+=============================== warnings summary ===============================
+../rfvenv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /home/user/rfvenv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 26 passed, 1 warning in 8.59s =========================

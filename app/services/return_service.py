@@ -1,3 +1,4 @@
+from app.services.lifecycle_service import atomic_operation, record_transition, utc_naive
 from typing import List, Optional
 from datetime import datetime, timezone, timedelta
 from sqlalchemy.orm import Session
@@ -17,6 +18,7 @@ class ReturnService:
     """
 
     @classmethod
+    @atomic_operation
     def create_rma(
         cls,
         db: Session,
@@ -29,10 +31,12 @@ class ReturnService:
         reason: Optional[str] = None,
         custom_id: Optional[str] = None
     ) -> ReturnAuthorization:
-        req_dt = requested_date or utc_now()
-        exp_dt = expected_return_date or (req_dt + timedelta(days=7))
+        req_dt = utc_naive(requested_date or utc_now())
+        exp_dt = utc_naive(expected_return_date) or (req_dt + timedelta(days=7))
         if req_dt > exp_dt:
             raise ValueError("Requested date cannot be later than expected return date.")
+        if asset_ids and len(set(asset_ids)) != len(asset_ids):
+            raise ValueError("Duplicate asset in manifest")
         if not asset_ids:
             raise ValueError("RMA must contain at least one asset.")
 
@@ -53,20 +57,13 @@ class ReturnService:
         db.add(rma)
         db.flush()
 
-        for a_id in asset_ids:
-            asset = db.query(ReusableAsset).filter(ReusableAsset.asset_id == a_id).first()
+        for a_id in sorted(set(asset_ids)):
+            asset = db.query(ReusableAsset).filter(ReusableAsset.asset_id == a_id).with_for_update().populate_existing().first()
             if not asset:
                 raise ValueError(f"Asset {a_id} does not exist.")
 
-            # Validate lifecycle eligibility
-            if asset.asset_status == "RETIRED":
-                raise ValueError(f"Asset {a_id} is RETIRED and cannot be returned.")
-            if asset.asset_status == "LOST":
-                raise ValueError(f"Asset {a_id} is LOST and cannot be returned without recovery.")
-            if asset.asset_status not in ("IN_CUSTODY", "AVAILABLE", "DISPATCHED", "RETURN_PENDING"):
-                valid, err = LifecycleService.validate_transition(asset.asset_status, "RETURN_PENDING")
-                if not valid:
-                    raise ValueError(f"Asset {a_id} in status '{asset.asset_status}' is not eligible for RMA: {err}")
+            if asset.asset_status != "IN_CUSTODY":
+                raise ValueError(f"Asset {a_id} in {asset.asset_status} is not eligible for return")
 
             link = ReturnAuthorizationAsset(
                 rma_id=rma_id,
@@ -74,14 +71,14 @@ class ReturnService:
             )
             db.add(link)
 
-            # Update asset status
-            asset.asset_status = "RETURN_PENDING"
-            asset.updated_at = utc_now()
+            record_transition(db, asset, "RETURN_REQUESTED", req_dt, requesting_owner_id,
+                              reference=rma_id)
 
         db.flush()
         return rma
 
     @classmethod
+    @atomic_operation
     def receive_return(
         cls,
         db: Session,
@@ -89,11 +86,13 @@ class ReturnService:
         actual_return_date: Optional[datetime] = None,
         default_condition: str = "GOOD"
     ) -> ReturnAuthorization:
-        rma = db.query(ReturnAuthorization).filter(ReturnAuthorization.rma_id == rma_id).first()
+        rma = db.query(ReturnAuthorization).filter(ReturnAuthorization.rma_id == rma_id).with_for_update().populate_existing().first()
         if not rma:
             raise ValueError(f"RMA {rma_id} not found.")
 
-        ret_dt = actual_return_date or utc_now()
+        if rma.rma_status != "APPROVED":
+            raise ValueError("RMA is not awaiting receipt")
+        ret_dt = utc_naive(actual_return_date or utc_now())
         if ret_dt < rma.requested_date:
             raise ValueError("Actual return date cannot precede requested date.")
 
@@ -104,35 +103,11 @@ class ReturnService:
         for raa in rma.rma_assets:
             raa.received_at = ret_dt
             raa.return_condition = default_condition
-            asset = db.query(ReusableAsset).filter(ReusableAsset.asset_id == raa.asset_id).first()
+            asset = db.query(ReusableAsset).filter(ReusableAsset.asset_id == raa.asset_id).with_for_update().populate_existing().first()
             if asset:
-                if asset.asset_status == "RETIRED":
-                    raise ValueError(f"Asset {asset.asset_id} is RETIRED and cannot be received.")
-
-                # Record immutable CustodyEvent for return receipt
-                ce_id = PersistentIDGenerator.next_custody_event_id(db, asset.asset_id)
-                cust_event = CustodyEvent(
-                    custody_event_id=ce_id,
-                    asset_id=asset.asset_id,
-                    shipment_id=None,
-                    from_owner_id=rma.requesting_owner_id,
-                    to_owner_id=rma.receiving_owner_id,
-                    from_location_id=None,
-                    to_location_id=rma.return_location_id,
-                    actor_owner_id=rma.receiving_owner_id,
-                    event_type="RETURNED",
-                    event_timestamp=ret_dt,
-                    event_reference=f"RMA-{rma.rma_id}",
-                    notes=f"Returned under RMA {rma.rma_id} to facility {rma.return_location_id}",
-                    created_at=utc_now()
-                )
-                db.add(cust_event)
-
-                asset.asset_status = "INSPECTION_PENDING"
-                asset.current_location_id = rma.return_location_id
-                asset.current_custodian_owner_id = rma.receiving_owner_id
-                asset.last_event_at = ret_dt
-                asset.updated_at = utc_now()
+                record_transition(db, asset, "RETURNED", ret_dt, rma.receiving_owner_id,
+                                  physical=True, location=rma.return_location_id,
+                                  custodian=rma.receiving_owner_id, reference=rma.rma_id)
 
         db.flush()
         return rma

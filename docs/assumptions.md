@@ -46,3 +46,12 @@ This document records all engineering and domain assumptions adopted in the impl
 ## 5. Storage Engine & Database Portability
 - Primary relational storage is MySQL 8.0+ / 9.1 with `InnoDB` engine, `utf8mb4` character set, and `utf8mb4_unicode_ci` collation.
 - All SQLAlchemy models and database queries avoid dialect-specific non-standard syntax, providing full portability to PostgreSQL / Supabase simply by updating `DATABASE_URL`.
+
+
+## Repair evidence boundary — 2026-10-31
+
+The original company assessment was not supplied; this repair does not elevate previous AI recommendations into company requirements. User-specified corrections are traced separately.
+
+Naive database timestamps are interpreted as UTC, and aware inputs are normalized to UTC. Current standing uses the fixed reference date. Historical seeded repair completion without a movement/post-repair inspection fact is insufficient to assert AVAILABLE at a previous warehouse. Such exceptions are preserved and enumerated.
+
+Current generator repeatability is not a promise that old artifacts were produced by the same generator revision. Database and independent evaluation labels must be version-paired.

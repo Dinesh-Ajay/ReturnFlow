@@ -1,0 +1,58 @@
+ M .env.example
+ M FINAL_REQUIREMENTS_AUDIT.md
+ M README.md
+ M app/analytics/metrics.py
+ M app/api/dependencies.py
+ M app/api/routes/assets.py
+ M app/api/routes/auth.py
+ M app/api/routes/custody.py
+ M app/api/routes/deposits.py
+ M app/api/routes/shipments.py
+ M app/config.py
+ M app/database/connection.py
+ M app/generator/__main__.py
+ M app/generator/exporter.py
+ M app/main.py
+ M app/models/custody_event.py
+ M app/models/deposit_ledger.py
+ M app/services/asset_service.py
+ M app/services/auth_service.py
+ M app/services/custody_service.py
+ M app/services/deposit_service.py
+ M app/services/email_service.py
+ M app/services/inspection_service.py
+ M app/services/lifecycle_service.py
+ M app/services/repair_service.py
+ M app/services/return_service.py
+ M app/services/shipment_service.py
+ M app/static/index.html
+ M app/utils/id_generator.py
+ M app/validation/anomaly_detection.py
+ M app/validation/benchmark.py
+ M app/validation/financial.py
+ M dashboard/streamlit_app.py
+ M docs/architecture.md
+ M docs/assumptions.md
+ M docs/business_rules.md
+ M docs/data_dictionary.md
+ M docs/limitations.md
+ M docs/performance_report.md
+ M docs/reproducibility_report.md
+ M docs/validation_report.md
+ M prompts/ai_prompt_history.md
+ M tests/conftest.py
+ M tests/test_financial.py
+ M tests/test_four_fixes.py
+ M tests/test_lifecycle_custody_enforcement.py
+ M tests/test_persistent_id_generation.py
+?? FINAL_CRITICAL_FIX_REPORT.md
+?? RETURNFLOW_REPAIR_PROGRESS.md
+?? app/generator/manifest.py
+?? app/services/projection_service.py
+?? app/validation/acceptance_audit.py
+?? data/source_manifest.json
+?? database/migrations/versions/0026_complete_schema.py
+?? database/migrations/versions/0027_ledger_idempotency.py
+?? docs/requirement_traceability.md
+?? evidence/
+?? tests/test_critical_acceptance.py

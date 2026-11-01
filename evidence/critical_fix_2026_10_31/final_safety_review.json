@@ -1,0 +1,9 @@
+{
+  "new_secret_pattern_findings": [],
+  "staged_files": 0,
+  "deleted_tracked_files": 0,
+  "new_env_files": 0,
+  "existing_tracked_data_modified": false,
+  "commit_or_push_performed": false,
+  "review_scope": "Changed source and deliberate evidence artifacts; test-only credentials in tests and example placeholders are not production credentials."
+}

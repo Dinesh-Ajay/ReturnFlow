@@ -65,10 +65,10 @@ class Exporter:
     @classmethod
     def generate_sql_seed(cls, data: Dict[str, List[Dict[str, Any]]], ground_truth: List[Dict[str, Any]], output_path: str):
         with open(output_path, "w", encoding="utf-8") as f:
-            f.write("-- ReturnFlow Production Seed Data\n")
+            f.write("-- ReturnFlow Synthetic Demonstration Seed Data\n")
             f.write("-- Generated with fixed seed\n")
             f.write("USE returnflow_db;\n\n")
-            f.write("SET FOREIGN_KEY_CHECKS = 0;\n\n")
+            f.write("-- Foreign keys remain enabled. Import only into an empty target.\n\n")
 
             insertion_order = [
                 ("asset_types", data.get("asset_types", [])),
@@ -136,4 +136,4 @@ class Exporter:
                     val_strs.append(f"({', '.join(row_vals)})")
                 f.write(f"INSERT INTO anomaly_records ({col_str}) VALUES\n" + ",\n".join(val_strs) + ";\n\n")
 
-            f.write("SET FOREIGN_KEY_CHECKS = 1;\n")
+            f.write("-- End of synthetic seed.\n")

@@ -43,3 +43,17 @@ This document transparently records current system limitations and planned archi
    - Extend `Location` with geospatial polygon boundaries (`ST_GeomFromText`) and integrate automated transit geofence triggers.
 4. **Automated Deposit Escrow Integration:**
    - Integrate automated ACH / credit card deposit pre-authorization holds and automated settlement via banking APIs.
+
+
+## Remaining limitations after repair — 2026-10-31 (supersedes stronger earlier claims)
+
+- Overall status PARTIAL: 4,956 of 20,000 preserved historical assets have replay/projection exceptions; 4,928 are not anomaly-labelled. Exact records and reasons are in the delivered evidence. Historical records were not changed merely to force agreement.
+- Actual MySQL 8/9 server execution and PostgreSQL/Supabase end-to-end operation NOT VERIFIED; MariaDB 10.11.14 was exercised.
+- Original company problem statement/instructions and full independent report/evidence JSON were absent. Local unpublished changes and the owner's actual working database were inaccessible.
+- The freshly generated dataset and committed artifact set have different anomaly targets. Each must use its own independent label file; historical producer commit is unknown.
+- The four-role policy does not implement tenant isolation. Session revocation, distributed login throttling, hashed reset tokens, comprehensive XSS/CSP review and production hardening remain. SMTP external delivery was not tested.
+- Delivery without explicit recipient uses the legacy legal-owner default. Supply receiving_owner_id for actual custody attribution.
+- ORM custody history is append-only, but a privileged raw SQL administrator can modify it. No database trigger or cryptographic event signing was added.
+- Legacy ambiguous financial obligations are reported, not reassigned to conceal a deficit. A signed liability ledger is not double-entry accounting or external bank reconciliation.
+- Existing migrations preserve rows and add schema/idempotency; they do not automatically repair arbitrary schema drift. MySQL-family DDL is nontransactional. Review/back up before any live upgrade.
+- No direct local working-tree update or GitHub push was performed. Apply the delivered patch only after reviewing local changes.

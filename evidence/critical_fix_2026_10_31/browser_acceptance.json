@@ -1,0 +1,21 @@
+{
+  "login_password_not_prefilled": true,
+  "category_options": [
+    "",
+    "PALLET",
+    "CONTAINER",
+    "CRATE",
+    "RACK",
+    "TOTE",
+    "METAL_PALLET",
+    "THERMAL_BOX",
+    "DRUM"
+  ],
+  "category_page_reset": true,
+  "status_page_reset": true,
+  "visible_status_search": true,
+  "authenticated_frontend_fetch": true,
+  "authenticated_export": true,
+  "page_errors": [],
+  "all_checks_pass": true
+}

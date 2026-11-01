@@ -1,3 +1,19 @@
+# Validation repair update — 2026-10-31
+
+This section supersedes historical all-clear claims below. Verification used dedicated disposable MariaDB databases, never the owner's working database.
+
+- Complete final suite: **116 passed**, one third-party Starlette/httpx deprecation warning.
+- Preserved baseline: 20,000 assets; 10,000 shipments; 100,030 custody events; 12,400 RMAs and inspections; 1,348 repairs; 34,148 ledger rows; 50 anomaly labels.
+- Structural integrity: PASS; zero PK/FK/orphan/declared-unique violations in the baseline audit.
+- Independent detector: 50 TP, 0 FP, 0 FN against the matching committed positive-label set. No labelled-negative population; TN/FPR unavailable.
+- Finance: portfolio arithmetic balanced, but individual obligations invalid; 10 duplicate refunds, 10 over-refunds, 10 negative asset liabilities. `is_reconciled=false` is the correct seed result, not a failed arithmetic calculation.
+- Replay: 15,044 fully consistent assets; 4,956 exceptions, including 4,928 unlabelled assets. Historical replay acceptance remains PARTIAL. Exact IDs/reasons are in `evidence/event_replay_exceptions.json` in the repair package.
+- Standing: full list and analytics overdue counts agree at 1,098 for reference date 2026-10-22.
+- Clean install: blank database -> all migrations -> full constrained generation load succeeded. All model tables/indexes/FKs/unique constraints were found by the full audit.
+- Original company compliance NOT VERIFIED because original assessment files were absent.
+
+## Historical report (not evidence for the repaired snapshot)
+
 # ReturnFlow Validation Report
 
 Read-only database audit run: 2026-10-30 (local MySQL database, server 9.1.0).

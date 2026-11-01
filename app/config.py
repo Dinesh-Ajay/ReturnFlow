@@ -1,4 +1,5 @@
 import os
+import secrets
 from datetime import date, datetime
 from typing import Optional
 from dotenv import load_dotenv
@@ -27,7 +28,7 @@ class Settings:
     SUPABASE_KEY: Optional[str] = os.getenv("SUPABASE_KEY", None)
     
     # Better Auth & Security
-    AUTH_SECRET: str = os.getenv("AUTH_SECRET") or "returnflow-secret-key-32-chars-minimum-prod"
+    AUTH_SECRET: str = os.getenv("AUTH_SECRET") or secrets.token_urlsafe(48)
     AUTH_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 1 day
     
@@ -35,7 +36,7 @@ class Settings:
     INITIAL_ADMIN_EMAIL: str = os.getenv("INITIAL_ADMIN_EMAIL", "dineshajay874@gmail.com")
     INITIAL_ADMIN_NAME: str = os.getenv("INITIAL_ADMIN_NAME", "Dinesh Ajay")
     INITIAL_ADMIN_ROLE: str = os.getenv("INITIAL_ADMIN_ROLE", "Operations Manager")
-    INITIAL_ADMIN_PASSWORD: str = os.getenv("INITIAL_ADMIN_PASSWORD", "ReturnFlow@2026!")
+    INITIAL_ADMIN_PASSWORD: str = os.getenv("INITIAL_ADMIN_PASSWORD", "")
 
     # SMTP Configuration (Gmail TLS)
     SMTP_SERVER: str = os.getenv("SMTP_SERVER", "smtp.gmail.com")
@@ -65,9 +66,11 @@ class Settings:
     # Directories
     BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     DATA_DIR: str = os.path.join(BASE_DIR, "data")
-    GENERATED_DIR: str = os.path.join(DATA_DIR, "generated")
-    GROUND_TRUTH_DIR: str = os.path.join(DATA_DIR, "ground_truth")
-    EXPORTS_DIR: str = os.path.join(DATA_DIR, "exports")
+    GENERATED_DIR: str = os.getenv("RETURNFLOW_GENERATED_DIR", os.path.join(DATA_DIR, "generated"))
+    GROUND_TRUTH_DIR: str = os.getenv("RETURNFLOW_GROUND_TRUTH_DIR", os.path.join(DATA_DIR, "ground_truth"))
+    EXPORTS_DIR: str = os.getenv("RETURNFLOW_EXPORTS_DIR", os.path.join(DATA_DIR, "exports"))
 
 
 settings = Settings()
+if settings.ENVIRONMENT == "production" and (not os.getenv("AUTH_SECRET") or len(os.getenv("AUTH_SECRET", "")) < 32):
+    raise RuntimeError("Production requires an explicitly configured AUTH_SECRET of at least 32 characters")

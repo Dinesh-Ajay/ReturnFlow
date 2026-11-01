@@ -1,3 +1,4 @@
+from app.services.lifecycle_service import atomic_operation, record_transition, utc_naive
 from typing import Dict, Any, Optional
 from datetime import datetime, timezone
 from sqlalchemy.orm import Session
@@ -17,6 +18,7 @@ class InspectionService:
     """
 
     @classmethod
+    @atomic_operation
     def record_inspection(
         cls,
         db: Session,
@@ -30,26 +32,26 @@ class InspectionService:
         inspection_date: Optional[datetime] = None,
         custom_id: Optional[str] = None
     ) -> Inspection:
-        asset = db.query(ReusableAsset).filter(ReusableAsset.asset_id == asset_id).first()
+        asset = db.query(ReusableAsset).filter(ReusableAsset.asset_id == asset_id).with_for_update().populate_existing().first()
         if not asset:
             raise ValueError(f"Asset {asset_id} not found.")
 
         if asset.asset_status == "RETIRED":
             raise ValueError(f"Asset {asset_id} is RETIRED and cannot be inspected.")
 
-        # Determine next lifecycle status
-        if condition_status == "GOOD":
-            next_status = "AVAILABLE"
-            requires_repair = False
-        else:
-            next_status = "DAMAGED"
-            requires_repair = True
+        if condition_status not in ("GOOD", "DAMAGED", "CRITICAL", "UNUSABLE"):
+            raise ValueError("Invalid inspection condition")
+        if asset.asset_status not in ("INSPECTION_PENDING", "RETURNED"):
+            raise ValueError("Inspection requires a returned or inspection-pending asset")
+        if asset.asset_status == "RETURNED":
+            asset.asset_status = "INSPECTION_PENDING"  # compound inspection prerequisite
+        if rma_id:
+            from app.models.return_authorization_asset import ReturnAuthorizationAsset
+            if not db.query(ReturnAuthorizationAsset).filter_by(rma_id=rma_id, asset_id=asset_id).first():
+                raise ValueError("Inspection RMA does not contain this asset")
+        requires_repair = condition_status in ("DAMAGED", "CRITICAL")
 
-        valid, err = LifecycleService.validate_transition(asset.asset_status, next_status)
-        if not valid and asset.asset_status not in ("INSPECTION_PENDING", "RETURNED", "UNDER_REPAIR"):
-            raise ValueError(f"Invalid transition for asset {asset_id} from {asset.asset_status} to {next_status}: {err}")
-
-        insp_dt = inspection_date or utc_now()
+        insp_dt = utc_naive(inspection_date or utc_now())
         insp_id = custom_id or PersistentIDGenerator.next_inspection_id(db, year=insp_dt.year)
 
         inspection = Inspection(
@@ -64,10 +66,8 @@ class InspectionService:
             inspection_notes=inspection_notes or f"Asset condition evaluated as {condition_status}"
         )
 
-        # Update asset status
-        asset.asset_status = next_status
-        asset.last_event_at = insp_dt
-        asset.updated_at = utc_now()
+        event_type = {"GOOD": "INSPECTED_GOOD", "UNUSABLE": "INSPECTED_UNUSABLE"}.get(condition_status, "INSPECTED_DAMAGED")
+        record_transition(db, asset, event_type, insp_dt, inspector_owner_id, reference=insp_id)
 
         db.add(inspection)
         db.flush()

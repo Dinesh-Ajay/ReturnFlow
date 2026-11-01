@@ -1,0 +1,8 @@
+{
+  "base": "ef3b0696840d8e2e875be8bb72d5285d140ee033",
+  "git_apply_check": true,
+  "applied_to_checkpoint_copy": true,
+  "all_changed_files_byte_match": true,
+  "changed_files_checked": 96,
+  "note": "Verification report is included in the archives; patch was verified before this report was written."
+}

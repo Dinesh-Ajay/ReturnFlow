@@ -1,18 +1,21 @@
 # ReturnFlow 📦
 ### Reusable Asset Return & Lifecycle Management System
 
-ReturnFlow is an enterprise-grade, data-driven software solution designed to coordinate reusable packaging, pallets, transport containers, equipment, shipments, chain-of-custody handoffs, customer returns, QA inspections, refurbishments, and financial security deposits across multi-node supply chain networks.
+ReturnFlow is an data-driven assessment software solution designed to coordinate reusable packaging, pallets, transport containers, equipment, shipments, chain-of-custody handoffs, customer returns, QA inspections, refurbishments, and financial security deposits across multi-node supply chain networks.
 
 Built for the **AI Forward Deployed Engineer** technical recruitment assessment, ReturnFlow demonstrates robust relational database design, Python backend engineering, event-based custody traceability, deterministic synthetic data generation at scale (20,000+ assets, 100,000+ events), independent anomaly detection, signed deposit ledger management and financial reconciliation, interactive operational dashboards, and automated verification.
 
 ---
 
+
+> **Repair status — 2026-10-31: PARTIAL overall.** Code corrections and 116 automated tests pass on disposable MariaDB databases. The immutable historical dataset still has 4,956 replay exceptions, and original company assessment files/local unpublished Git changes were unavailable. See `FINAL_CRITICAL_FIX_REPORT.md` and `docs/requirement_traceability.md`. No automatic historical-data repair was performed.
+
 ## 1. Key Business Capabilities
 
 1. **Complete Chain-of-Custody Traceability:**
-   Every physical movement and handoff is recorded as an immutable `CustodyEvent`. Historical records are never updated in place.
-2. **Materialized State Projection with Self-Healing Verification:**
-   Fast current-state queries via materialized projections on `reusable_assets` (`current_location_id`, `current_custodian_owner_id`, `asset_status`), coupled with a service that rebuilds projections directly from the immutable event log.
+   New live workflows append custody/domain events atomically with their projections. ORM edits/deletes are rejected; legacy seeded histories have documented gaps and database-admin writes are outside this guard.
+2. **Materialized State Projection with Read-Only Replay Verification:**
+   Fast current-state queries via materialized projections on `reusable_assets` (`current_location_id`, `current_custodian_owner_id`, `asset_status`), coupled with read-only replay of custody events and legacy inspection/repair facts. Replay does not silently overwrite projections or invent missing evidence.
 3. **Deterministic Scale Synthetic Generator:**
    Fixed-seed generation (`20261022`) supporting both a developer starter profile (200 assets, 1,000 events) and a full-scale benchmark profile (20,000 assets, 10,000 shipments, 100,030 custody events) executing in ~1.2 seconds.
 4. **Independent Anomaly Detection Engine:**
@@ -27,12 +30,12 @@ Built for the **AI Forward Deployed Engineer** technical recruitment assessment,
 ## 2. Technology Stack
 
 - **Backend:** Python 3.11 / 3.13, FastAPI, SQLAlchemy 2.0 ORM, Pydantic v2, Alembic
-- **Database:** MySQL 8.0+ / 9.1 Community Server (InnoDB, Foreign Key Constraints, Composite Indexes) • Fully compatible with Supabase PostgreSQL
+- **Database:** MySQL 8.0+ / 9.1 Community Server (InnoDB, Foreign Key Constraints, Composite Indexes); this repair was executed on MariaDB 10.11. PostgreSQL/Supabase end-to-end compatibility is not verified.
 - **Data Engineering & Analytics:** Pandas, NumPy, Faker, Python Datetime
 - **Testing:** Pytest, HTTPX, SQLAlchemy Unit-of-Work
 - **Dashboard & UI:** Streamlit, Plotly Express & Graph Objects
-- **Authentication & Security:** Role-based access control (Admin, Operations Manager, Logistics Analyst, Warehouse Operator), authentication and authorization services
-- **Deployment & Telemetry:** Deployment-ready configuration for container-based hosting; Cloudflare Pages and Fly.io compatibility considerations; Google Analytics configuration support
+- **Authentication & Security:** JWT authentication and explicit role policy (Operations Manager, Operations Staff, Finance Manager, Viewer); not an external Better Auth integration
+- **Deployment & Telemetry:** Cloud hosting and telemetry integrations are planned/configuration placeholders, not verified deployed integrations
 
 ---
 
@@ -95,7 +98,7 @@ ReturnFlow/
 ├── prompts/
 │   └── ai_prompt_history.md        # Comprehensive AI interaction transparency log
 │
-├── tests/                          # Automated Pytest suite (58 tests passed in final audit)
+├── tests/                          # Automated Pytest suite (116 tests passed in this repair; see final evidence)
 │
 ├── .env.example                    # Environment variable template
 ├── requirements.txt                # Python dependencies
@@ -110,7 +113,7 @@ ReturnFlow/
 ### Prerequisites
 
 - Python 3.11 or later
-- MySQL Server 8.0 or later (running locally on port 3306), or Supabase PostgreSQL instance
+- MySQL-compatible InnoDB server; tested here with MariaDB 10.11.14. Actual MySQL 8/9 and PostgreSQL runs remain unverified
 - Git
 
 ### Step 1: Clone and Configure Environment
@@ -129,7 +132,7 @@ Create `.env` based on `.env.example`:
 
 ```ini
 DATABASE_URL=mysql+pymysql://<user>:<password>@localhost:3306/returnflow_db?charset=utf8mb4
-TEST_DATABASE_URL=mysql+pymysql://<user>:<password>@localhost:3306/returnflow_test_db?charset=utf8mb4
+TEST_DATABASE_URL=mysql+pymysql://<user>:<password>@localhost:3306/returnflow_test?charset=utf8mb4
 RANDOM_SEED=20261022
 REFERENCE_DATE=2026-10-22
 DATA_PROFILE=full
@@ -144,7 +147,11 @@ API_PORT=8000
 
 ### Step 3: Initialize Database
 
-Ensure MySQL is running, then create the database and apply migrations:
+Create an empty database and a least-privilege application user using your database administration process. Set `DATABASE_URL` before running migrations. Revisions `0026_complete_schema` and `0027_ledger_idempotency` provide the complete schema and unique financial idempotency key; the historic initial revision remains in the chain.
+
+For an existing database, back up first and review schema differences. Upgrade preserves rows, but DDL is not transactional on MySQL/MariaDB and duplicate financial references deliberately block the unique-key migration. No automatic destructive downgrade is provided.
+
+Apply migrations:
 
 ```bash
 # Run Alembic migrations
@@ -165,7 +172,7 @@ python -m app.generator --profile starter --no-db
 python -m app.generator --profile full --seed 20261022 --no-db
 ```
 
-The database-loading generator refuses to replace populated tables by default. Use an empty database for normal loads. `--replace-existing` explicitly enables table truncation and should be used only with a disposable database after taking a backup.
+The database-loading generator refuses to replace populated tables by default. Use an empty database for normal loads. `--replace-existing` is restricted to a disposable `_test`/`_test_` database and uses dependency-ordered transactional deletes. The loader never disables foreign keys or truncates tables. Do not use replacement loads for data you need to preserve.
 
 ### Verify counts, reproducibility, and performance
 
@@ -200,7 +207,7 @@ python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 streamlit run dashboard/streamlit_app.py
 ```
 
-Opens the enterprise operational dashboard at `http://localhost:8501`.
+Opens the operational dashboard at `http://localhost:8501`. Both the web portal and Streamlit require sign-in. Configure an initial administrator password explicitly; none is embedded or prefilled. Configure a stable AUTH_SECRET before using multiple processes; production rejects an absent/short configured secret.
 
 ### Run Automated Pytest Suite
 
@@ -290,3 +297,32 @@ curl -X POST "http://127.0.0.1:8000/api/validation/run"
 ## 7. Audit and verification
 
 The detailed requirement-by-requirement evidence, actual database counts, results, blockers, and known limitations are maintained in [FINAL_REQUIREMENTS_AUDIT.md](FINAL_REQUIREMENTS_AUDIT.md). Measured reports are in `docs/` and machine-readable run outputs are in `data/exports/`.
+
+
+## Repair verification and dataset provenance
+
+Run tests only with a dedicated database name ending `_test` or containing `_test_`:
+
+```bash
+python -m alembic upgrade head
+python -m app.validation.counts
+python -m app.validation.acceptance_audit
+python -m app.validation.reproducibility --profile full --seed 20261022
+python -m pytest -v
+```
+
+The test suite requires a populated full-profile dedicated test database. A fresh database can be loaded with `python -m app.generator --profile full --seed 20261022` after pointing `DATABASE_URL` at that empty test database. This exports data too; use `RETURNFLOW_GENERATED_DIR`, `RETURNFLOW_GROUND_TRUTH_DIR`, and `RETURNFLOW_EXPORTS_DIR` to isolate outputs from the checked-in historical files.
+
+**Always pair the database with its matching ground truth.** Set `RETURN_FLOW_TEST_GROUND_TRUTH_DIR` for pytest and `RETURNFLOW_GROUND_TRUTH_DIR` for normal commands when using an alternate generated dataset. The committed artifact set differs from the current generator's anomaly targeting despite equal seed/counts; never mix the two label files. These repair runs did not replace committed data.
+
+`data/source_manifest.json` hashes the preserved historical artifacts and records that their exact producing commit is unknown. Fresh generator exports now emit an accompanying source manifest. Logical repeatability excludes database timestamps, not business fields.
+
+`GET /api/deposits/reconciliation` reports portfolio arithmetic **and** individual obligations. The deliberately anomalous seed correctly returns `is_reconciled=false`; a positive portfolio total is not sufficient. Repair costs are separately billed, while damage/loss charges consume deposits. This is a signed liability ledger, not a double-entry general ledger.
+
+Current standing uses the fixed UTC reference date 2026-10-22 and the latest active-cycle dispatch, not the latest scan. Dashboard reporting dates filter activity; current holding/age metrics retain the same standing reference date, exposed as `standing_reference_date`. They are not historical as-of portfolio reconstructions.
+
+Live delivery supports `POST /api/shipments/{shipment_id}/deliver` with `actual_delivery_date` and optional `receiving_owner_id`. Supply the actual recipient; if omitted, the legacy convention uses each asset's legal owner. The event records the selected custodian without changing legal ownership.
+
+Business APIs require bearer tokens. Health, documentation, static login assets and recovery/login entry points remain public. Read access is allowed to the four documented roles; operations writes are manager/staff, financial writes manager/finance, and validation runs manager-only. Database roles, not client headers/token role claims, determine permissions. This is a small application policy, not tenant isolation or a comprehensive enterprise IAM system.
+
+Security limitations: token logout is client-side (no revocation list), browser tokens remain in localStorage, login lacks a distributed rate limiter, SMTP delivery was not externally exercised, and password-reset token storage deserves further hardening. Do not expose the assessment deployment publicly without operational security controls.

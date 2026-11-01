@@ -31,6 +31,41 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# Authentication gate for the direct-database dashboard (not an API bypass).
+from app.services.auth_service import AuthService
+from app.models.user import User
+
+def dashboard_user():
+    token = st.session_state.get("access_token")
+    payload = AuthService.decode_access_token(token) if token else None
+    if not payload:
+        return None
+    with SessionLocal() as db:
+        return db.query(User).filter_by(email=payload.get("sub"), is_active=True).first()
+
+active_user = dashboard_user()
+if active_user is None:
+    with st.form("returnflow_sign_in"):
+        st.subheader("Sign in to ReturnFlow")
+        email = st.text_input("Email")
+        password = st.text_input("Password", type="password")
+        submit = st.form_submit_button("Sign in")
+    if submit:
+        with SessionLocal() as db:
+            user = AuthService.authenticate(db, email, password)
+            if user:
+                st.session_state.access_token = AuthService.create_access_token({"sub": user.email})
+                st.rerun()
+            else:
+                st.error("Invalid credentials")
+    st.stop()
+if active_user.role not in {"Operations Manager", "Operations Staff", "Finance Manager", "Viewer"}:
+    st.error("Role not permitted")
+    st.stop()
+if st.sidebar.button("Sign out"):
+    st.session_state.pop("access_token", None)
+    st.rerun()
+
 # Enterprise SaaS CSS Custom Styling matching the reference mockup
 st.markdown("""
 <style>
@@ -831,7 +866,7 @@ elif nav == "Anomaly Center":
     try:
         col_btn, col_info = st.columns([1, 3])
         with col_btn:
-            if st.button("⚡ Run Full Detection Engine"):
+            if st.button("⚡ Run Full Detection Engine", disabled=active_user.role != "Operations Manager"):
                 with st.spinner("Executing independent validation rules..."):
                     run_all_validation()
                 st.success("Validation and anomaly detection complete!")

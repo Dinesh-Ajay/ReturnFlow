@@ -1,0 +1,142 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0 -- /home/user/rfvenv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/user/ReturnFlow
+plugins: Faker-40.44.0, anyio-4.15.1
+collecting ... collected 39 items
+
+tests/test_critical_acceptance.py::test_full_live_lifecycle_replays_after_every_operation PASSED [  2%]
+tests/test_critical_acceptance.py::test_loss_nulls_and_recovery_replay PASSED [  5%]
+tests/test_critical_acceptance.py::test_service_failure_is_atomic_even_if_caller_catches PASSED [  7%]
+tests/test_critical_acceptance.py::test_duplicate_delivery_rejected_without_extra_events PASSED [ 10%]
+tests/test_critical_acceptance.py::test_outstanding_age_uses_dispatch_not_checkpoint PASSED [ 12%]
+tests/test_critical_acceptance.py::test_return_and_subsequent_dispatch_reset_age PASSED [ 15%]
+tests/test_critical_acceptance.py::test_utc_outstanding_and_missing_dispatch PASSED [ 17%]
+tests/test_critical_acceptance.py::test_overdue_filter_before_count_and_pagination PASSED [ 20%]
+tests/test_critical_acceptance.py::test_visible_status_aliases[At Location-AVAILABLE] PASSED [ 23%]
+tests/test_critical_acceptance.py::test_visible_status_aliases[In Transit-IN_TRANSIT] PASSED [ 25%]
+tests/test_critical_acceptance.py::test_visible_status_aliases[In Repair-UNDER_REPAIR] PASSED [ 28%]
+tests/test_critical_acceptance.py::test_duplicate_refunds_survive_reference_renaming PASSED [ 30%]
+tests/test_critical_acceptance.py::test_equal_partial_refunds_not_duplicates PASSED [ 33%]
+tests/test_critical_acceptance.py::test_positive_portfolio_never_hides_negative_asset PASSED [ 35%]
+tests/test_critical_acceptance.py::test_invalid_original_and_cross_asset_refund PASSED [ 38%]
+tests/test_critical_acceptance.py::test_refund_idempotency_and_cycle_limit FAILED [ 41%]
+tests/test_critical_acceptance.py::test_cold_concurrent_sequences[shipment] PASSED [ 43%]
+tests/test_critical_acceptance.py::test_cold_concurrent_sequences[rma] PASSED [ 46%]
+tests/test_critical_acceptance.py::test_cold_concurrent_sequences[inspection] PASSED [ 48%]
+tests/test_critical_acceptance.py::test_cold_concurrent_sequences[repair] PASSED [ 51%]
+tests/test_critical_acceptance.py::test_business_routes_require_valid_token[None] PASSED [ 53%]
+tests/test_critical_acceptance.py::test_business_routes_require_valid_token[Bearer invalid-token] PASSED [ 56%]
+tests/test_critical_acceptance.py::test_expired_and_missing_exp_tokens_rejected PASSED [ 58%]
+tests/test_critical_acceptance.py::test_role_is_read_from_database_not_headers PASSED [ 61%]
+tests/test_critical_acceptance.py::test_no_smtp_never_returns_otp PASSED [ 64%]
+tests/test_critical_acceptance.py::test_admin_fallback_password_removed PASSED [ 66%]
+tests/test_critical_acceptance.py::test_two_live_creations_per_entity_on_populated_db[shipment] PASSED [ 69%]
+tests/test_critical_acceptance.py::test_two_live_creations_per_entity_on_populated_db[rma] PASSED [ 71%]
+tests/test_critical_acceptance.py::test_two_live_creations_per_entity_on_populated_db[inspection] PASSED [ 74%]
+tests/test_critical_acceptance.py::test_two_live_creations_per_entity_on_populated_db[repair] PASSED [ 76%]
+tests/test_critical_acceptance.py::test_equal_timestamp_domain_events_are_deterministic PASSED [ 79%]
+tests/test_critical_acceptance.py::test_orm_custody_events_are_append_only PASSED [ 82%]
+tests/test_critical_acceptance.py::test_two_separate_financial_cycles_are_not_duplicates PASSED [ 84%]
+tests/test_critical_acceptance.py::test_deductions_reduce_refundable_obligation[DAMAGE_CHARGE] PASSED [ 87%]
+tests/test_critical_acceptance.py::test_deductions_reduce_refundable_obligation[LOSS_CHARGE] PASSED [ 89%]
+tests/test_critical_acceptance.py::test_database_enforces_unique_financial_reference PASSED [ 92%]
+tests/test_critical_acceptance.py::test_api_age_matches_list_detail_and_overdue PASSED [ 94%]
+tests/test_critical_acceptance.py::test_expired_reset_session_is_rejected PASSED [ 97%]
+tests/test_critical_acceptance.py::test_configured_bootstrap_password_is_not_login_backdoor PASSED [100%]
+
+=================================== FAILURES ===================================
+___________________ test_refund_idempotency_and_cycle_limit ____________________
+
+db_session = <sqlalchemy.orm.session.Session object at 0x7fae9727f440>
+
+    def test_refund_idempotency_and_cycle_limit(db_session):
+        db=db_session
+        a=asset(db)
+        c=ledger(db,a,'DEPOSIT_CHARGE',100)
+        ref=uuid4().hex
+        r=DepositService.record_deposit_refund(db,a.asset_id,1,Decimal('60'),ref,related_ledger_id=c.ledger_id)
+        retry=DepositService.record_deposit_refund(db,a.asset_id,1,Decimal('60'),ref,related_ledger_id=c.ledger_id)
+        assert r.ledger_id == retry.ledger_id
+        with pytest.raises(ValueError):
+>           DepositService.record_deposit_refund(db,a.asset_id,1,Decimal('60'),uuid4().hex,related_ledger_id=c.ledger_id)
+
+tests/test_critical_acceptance.py:216: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/services/lifecycle_service.py:136: in wrapped
+    return method(cls, db, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/services/deposit_service.py:152: in record_deposit_refund
+    balance = cls.get_asset_financial_balance(db, asset_id)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/services/deposit_service.py:72: in get_asset_financial_balance
+    "is_reconciled": cls._asset_obligations_valid(db, asset_id)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/services/deposit_service.py:233: in _asset_obligations_valid
+    return FinancialValidator.audit_obligations(db, asset_id=asset_id)["is_reconciled"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+cls = <class 'app.validation.financial.FinancialValidator'>
+db = <sqlalchemy.orm.session.Session object at 0x7fae9727f440>
+asset_id = 'ASSET-0020007'
+
+    @classmethod
+    def audit_obligations(cls, db: Session, asset_id=None) -> Dict[str, Any]:
+        query = db.query(DepositLedger)
+        if asset_id is not None:
+            query = query.filter_by(asset_id=asset_id)
+        rows = query.order_by(DepositLedger.transaction_date, DepositLedger.ledger_id).all()
+        by_id = {r.ledger_id: r for r in rows}
+        charges = defaultdict(list)
+        for r in rows:
+            if r.transaction_type == "DEPOSIT_CHARGE":
+                charges[r.asset_id].append(r)
+        links = set(db.query(ReturnAuthorizationAsset.rma_id, ReturnAuthorizationAsset.asset_id).all())
+        balances = {r.ledger_id: Decimal(r.transaction_amount) for rs in charges.values() for r in rs}
+        asset_net = defaultdict(lambda: ZERO)
+        totals = defaultdict(lambda: ZERO)
+        counts = defaultdict(int)
+        seen_refs = set()
+        refund_history = defaultdict(list)
+        rma_charge = defaultdict(set)
+        duplicates, over_refunds, invalid, exceptions = [], [], [], []
+        def finding(r, reason):
+            return {"asset_id": r.asset_id, "ledger_id": r.ledger_id,
+                    "reference": r.transaction_reference, "reason": reason}
+        for r in rows:
+            amount = Decimal(r.transaction_amount)
+            kind = r.transaction_type
+            totals[kind] += amount
+            counts[kind] += 1
+            ref = (r.transaction_reference or "").strip()
+            repeated_ref = bool(ref and ref in seen_refs)
+            if not ref or repeated_ref:
+                invalid.append(finding(r, "Empty or reused transaction reference"))
+            seen_refs.add(ref)
+            if kind not in {"DEPOSIT_CHARGE", "DEPOSIT_REFUND", "DAMAGE_CHARGE", "LOSS_CHARGE", "REPAIR_CHARGE", "ADJUSTMENT"}:
+                exceptions.append(finding(r, "Unknown transaction type"))
+            if (kind == "DEPOSIT_REFUND" and amount >= 0) or (kind in {"DEPOSIT_CHARGE", "DAMAGE_CHARGE", "LOSS_CHARGE", "REPAIR_CHARGE"} and amount <= 0):
+                exceptions.append(finding(r, "Invalid transaction sign"))
+            signed = -amount if kind in DEDUCTIONS else amount if kind != "REPAIR_CHARGE" else ZERO
+            asset_net[r.asset_id] += signed
+            if kind in {"DEPOSIT_CHARGE", "REPAIR_CHARGE"}:
+                continue
+            if kind == "DEPOSIT_REFUND" and r.rma_id and (r.rma_id, r.asset_id) not in links:
+                invalid.append(finding(r, "RMA does not contain asset"))
+            if r.related_ledger_id:
+                original = by_id.get(r.related_ledger_id)
+>               candidates = [original] if original and original.transaction_type == "DEPOSIT_CHARGE" and original.asset_id == r.asset_id and original.owner_id == r.owner_id and original.transaction_date <= r.transaction_date and (not r.shipment_id or original.shipment_id == r.shipment_id) else []
+                                                                                                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               TypeError: can't compare offset-naive and offset-aware datetimes
+
+app/validation/financial.py:66: TypeError
+=============================== warnings summary ===============================
+../rfvenv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /home/user/rfvenv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_critical_acceptance.py::test_refund_idempotency_and_cycle_limit
+=================== 1 failed, 38 passed, 1 warning in 9.83s ====================

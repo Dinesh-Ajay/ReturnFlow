@@ -27,16 +27,7 @@ class ResetPasswordRequest(BaseModel):
     new_password: str
     confirm_password: str
 
-def get_current_user(authorization: Optional[str] = Header(None), db: Session = Depends(get_db)) -> Optional[User]:
-    """Dependency to extract authenticated User from Bearer token."""
-    if not authorization or not authorization.startswith("Bearer "):
-        return None
-    token = authorization.split(" ")[1]
-    payload = AuthService.decode_access_token(token)
-    if not payload or "sub" not in payload:
-        return None
-    user = db.query(User).filter(User.email == payload["sub"], User.is_active == True).first()
-    return user
+from app.api.dependencies import get_current_user
 
 @router.post("/login")
 def login(payload: LoginRequest, db: Session = Depends(get_db)):

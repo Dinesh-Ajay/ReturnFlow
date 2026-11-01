@@ -1,0 +1,11 @@
+{
+  "baseline_commit": "ef3b0696840d8e2e875be8bb72d5285d140ee033",
+  "assets_checked": 20000,
+  "mismatches": {
+    "status": 12400,
+    "location": 4193,
+    "custodian": 400,
+    "last_event": 16000
+  },
+  "method": "Unmodified HEAD replay method executed against pristine migrated baseline data"
+}

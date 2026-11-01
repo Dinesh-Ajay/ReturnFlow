@@ -1,0 +1,14 @@
+Entity                               Expected minimum       Actual     Status
+asset_types                                   inspect            8       PASS
+owners                                        inspect           40       PASS
+locations                                     inspect           30       PASS
+reusable_assets                                 20000       20,000       PASS
+shipments                                       10000       10,000       PASS
+shipment_assets                               inspect       20,000       PASS
+custody_events                                 100000      100,030       PASS
+return_authorizations                         inspect       12,400       PASS
+return_authorization_assets                   inspect       12,400       PASS
+inspections                                   inspect       12,400       PASS
+repairs                                       inspect        1,348       PASS
+deposit_ledger                                inspect       34,148       PASS
+anomaly_records                               inspect           50       PASS

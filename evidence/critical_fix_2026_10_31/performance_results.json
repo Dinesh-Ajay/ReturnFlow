@@ -1,0 +1,73 @@
+{
+  "measured_at": "2026-10-31T16:15:59.889282+00:00",
+  "environment": {
+    "python": "3.12.3",
+    "platform": "Linux-6.18.15-x86_64-with-glibc2.39",
+    "database_server_version": "10.11.14-MariaDB-0ubuntu0.24.04.1",
+    "database_dialect": "MySQL"
+  },
+  "dataset_counts_in_database": {
+    "reusable_assets": 20000,
+    "shipments": 10000,
+    "custody_events": 100030,
+    "deposit_ledger": 34148
+  },
+  "generation": {
+    "profile": "full",
+    "seed": 20261022,
+    "generated_counts": {
+      "asset_types": 8,
+      "owners": 40,
+      "locations": 30,
+      "assets": 20000,
+      "shipments": 10000,
+      "shipment_assets": 20000,
+      "custody_events": 100030,
+      "return_authorizations": 12400,
+      "rma_assets": 12400,
+      "inspections": 12400,
+      "repairs": 1348,
+      "deposit_ledger": 34148
+    },
+    "elapsed_seconds": 0.6654639670000506,
+    "custody_events_per_generation_second": 150316.18
+  },
+  "database_operation_method": "One warm-up, then 3 perf_counter measurements; median reported.",
+  "database_operations": {
+    "database_validation": {
+      "repeats": 3,
+      "median_seconds": 0.692894,
+      "min_seconds": 0.673361,
+      "max_seconds": 0.700464
+    },
+    "custody_history": {
+      "repeats": 3,
+      "median_seconds": 0.000671,
+      "min_seconds": 0.000645,
+      "max_seconds": 0.000837
+    },
+    "asset_search": {
+      "repeats": 3,
+      "median_seconds": 0.124763,
+      "min_seconds": 0.120749,
+      "max_seconds": 0.129755
+    },
+    "anomaly_detection_and_evaluation": {
+      "repeats": 3,
+      "median_seconds": 1.518377,
+      "min_seconds": 1.49596,
+      "max_seconds": 1.533153
+    },
+    "analytics_overview": {
+      "repeats": 3,
+      "median_seconds": 1.178037,
+      "min_seconds": 1.175575,
+      "max_seconds": 1.213344
+    }
+  },
+  "database_insertion": {
+    "status": "NOT MEASURED",
+    "reason": "Insertion is not timed by this read-only benchmark. See clean_full_load.log for the separate one-off disposable-database load measurement."
+  },
+  "query_plan_review": "Use EXPLAIN ANALYZE on the target MySQL version for production query plans; this report records execution timings only."
+}

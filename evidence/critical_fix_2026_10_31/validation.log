@@ -1,0 +1,17 @@
+<frozen runpy>:128: RuntimeWarning: 'app.validation.__main__' found in sys.modules after import of package 'app.validation', but prior to execution of 'app.validation.__main__'; this may result in unpredictable behaviour
+2026-10-31 16:07:28,241 [INFO] [returnflow]: === Starting ReturnFlow Comprehensive Data Validation & Anomaly Detection ===
+2026-10-31 16:07:28,242 [INFO] [returnflow]: Running primary/foreign key integrity checks...
+2026-10-31 16:07:29,458 [INFO] [returnflow]: Running financial ledger reconciliation...
+2026-10-31 16:07:30,408 [INFO] [returnflow]: Executing independent anomaly detection engine...
+2026-10-31 16:07:32,297 [INFO] [returnflow]: === Validation & Evaluation Summary ===
+2026-10-31 16:07:32,298 [INFO] [returnflow]: Integrity Checks Passed:         True
+2026-10-31 16:07:32,298 [INFO] [returnflow]: Financial Ledger Reconciled:     False (Net Liability: $1,406,984.00)
+2026-10-31 16:07:32,298 [INFO] [returnflow]: Injected Ground-Truth Anomalies: 50
+2026-10-31 16:07:32,298 [INFO] [returnflow]: Detected Anomalies:              50
+2026-10-31 16:07:32,298 [INFO] [returnflow]: True Positives:                  50
+2026-10-31 16:07:32,298 [INFO] [returnflow]: False Positives:                 0
+2026-10-31 16:07:32,298 [INFO] [returnflow]: False Negatives:                 0
+2026-10-31 16:07:32,298 [INFO] [returnflow]: Detection Precision:             100.0%
+2026-10-31 16:07:32,298 [INFO] [returnflow]: Detection Recall:                100.0%
+2026-10-31 16:07:32,298 [INFO] [returnflow]: Total Validation Time:           4.055s
+2026-10-31 16:07:32,298 [INFO] [returnflow]: Report exported to: /home/user/returnflow_evidence/validation_summary.json

@@ -11,6 +11,18 @@
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        const nativeFetch = window.fetch.bind(window);
+        window.fetch = (input, options = {}) => {
+            const target = new URL(typeof input === 'string' ? input : input.url, window.location.origin);
+            if (target.origin === window.location.origin && target.pathname.startsWith('/api/')) {
+                options.headers = new Headers(options.headers || {});
+                const token = localStorage.getItem('returnflow_token');
+                if (token) options.headers.set('Authorization', `Bearer ${token}`);
+            }
+            return nativeFetch(input, options);
+        };
+    </script>
+    <script>
         tailwind.config = {
             theme: {
                 extend: {
@@ -760,23 +772,18 @@
                         >
                     </div>
                     <div class="w-40">
-                        <select id="assetTypeFilter" onchange="fetchAssetsTable()" class="w-full py-2 px-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 focus:outline-none focus:border-blue-500">
+                        <select id="assetTypeFilter" onchange="currentPage=1;fetchAssetsTable()" class="w-full py-2 px-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 focus:outline-none focus:border-blue-500">
                             <option value="">Asset Type: All</option>
-                            <option value="PALLET">Pallet</option>
-                            <option value="CRATE">Crate</option>
-                            <option value="CONTAINER">Container</option>
-                            <option value="RACK">Rack</option>
-                            <option value="TOTE">Tote</option>
                         </select>
                     </div>
                     <div class="w-36">
-                        <select id="assetStatusFilter" onchange="fetchAssetsTable()" class="w-full py-2 px-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 focus:outline-none focus:border-blue-500">
+                        <select id="assetStatusFilter" onchange="currentPage=1;fetchAssetsTable()" class="w-full py-2 px-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 focus:outline-none focus:border-blue-500">
                             <option value="">Status: All</option>
                             <option value="AVAILABLE">At Location</option>
                             <option value="IN_TRANSIT">In Transit</option>
                             <option value="IN_CUSTODY">In Custody</option>
                             <option value="DAMAGED">Under Inspection</option>
-                            <option value="IN_REPAIR">In Repair</option>
+                            <option value="UNDER_REPAIR">In Repair</option>
                             <option value="LOST">Lost</option>
                             <option value="OVERDUE">Overdue</option>
                         </select>
@@ -1728,8 +1735,8 @@
         function fillAdminCredentials() {
             const emailInput = document.getElementById('loginEmail');
             const passInput = document.getElementById('loginPassword');
-            if (emailInput) emailInput.value = 'dineshajay874@gmail.com';
-            if (passInput) passInput.value = 'ReturnFlow@2026!';
+            if (emailInput) emailInput.value = '';
+            if (passInput) passInput.value = ''; // No embedded credentials
             const alertBox = document.getElementById('loginAlertBox');
             if (alertBox) alertBox.classList.add('hidden');
         }
@@ -2044,6 +2051,7 @@
                 if (query) {
                     navigateView('assets');
                     document.getElementById('assetSearchInput').value = query;
+                    currentPage = 1;
                     fetchAssetsTable();
                 }
             }
@@ -2102,7 +2110,7 @@
                 case 'IN_TRANSIT': return '<span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-100 text-blue-800">In Transit</span>';
                 case 'IN_CUSTODY': return '<span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-indigo-100 text-indigo-800">In Custody</span>';
                 case 'DAMAGED': return '<span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-100 text-amber-800">Under Inspection</span>';
-                case 'IN_REPAIR': return '<span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-orange-100 text-orange-800">In Repair</span>';
+                case 'UNDER_REPAIR': return '<span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-orange-100 text-orange-800">In Repair</span>';
                 case 'LOST': return '<span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-600 text-white">Lost</span>';
                 case 'OVERDUE': return '<span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-100 text-rose-700">Overdue</span>';
                 default: return `<span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-800">${status || 'Unknown'}</span>`;
@@ -2110,7 +2118,18 @@
         }
 
         // Fetch Assets Table
+        let assetTypesLoaded = false;
         async function fetchAssetsTable() {
+            if (!assetTypesLoaded) {
+                try {
+                    const response = await fetch('/api/asset-types');
+                    if (!response.ok) throw new Error('Categories unavailable');
+                    const types = await response.json();
+                    const select = document.getElementById('assetTypeFilter');
+                    for (const type of types) select.add(new Option(type.type_name, type.type_code));
+                    assetTypesLoaded = true;
+                } catch (error) { console.error(error); }
+            }
             const tbody = document.getElementById('assetsTableBody');
             tbody.innerHTML = '<tr><td colspan="8" class="text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading assets...</td></tr>';
 

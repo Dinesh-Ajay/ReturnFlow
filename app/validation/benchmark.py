@@ -59,7 +59,7 @@ def run():
                        "custody_events_per_generation_second": round(generated_events / generation["gen_duration"], 2)},
         "database_operation_method": "One warm-up, then 3 perf_counter measurements; median reported.",
         "database_operations": database_timings,
-        "database_insertion": {"status": "NOT MEASURED", "reason": "The existing generator truncates operational tables before insertion; no isolated disposable benchmark database is configured."},
+        "database_insertion": {"status": "NOT MEASURED", "reason": "Insertion is not timed by this read-only benchmark. See clean_full_load.log for the separate one-off disposable-database load measurement."},
         "query_plan_review": "Use EXPLAIN ANALYZE on the target MySQL version for production query plans; this report records execution timings only.",
     }
     path = Path(settings.EXPORTS_DIR) / "performance_results.json"

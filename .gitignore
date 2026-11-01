@@ -36,6 +36,9 @@ wheels/
 *.sqlite3
 *.db
 
+# Checkpoints & Temporary Audit files
+.audit_checkpoint*/
+
 # OS
 .DS_Store
 Thumbs.db

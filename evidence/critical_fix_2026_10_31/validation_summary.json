@@ -1,0 +1,490 @@
+{
+  "timestamp": "2026-10-31 16:07:32 UTC",
+  "total_duration_seconds": 4.0553,
+  "integrity_checks": {
+    "name": "Referential & Structural Integrity Validation",
+    "passed": true,
+    "checks": [
+      {
+        "check": "Asset ID Pattern (ASSET-XXXXXXX)",
+        "total_checked": 20000,
+        "passed": true,
+        "failed_count": 0,
+        "affected_ids": []
+      },
+      {
+        "check": "Shipment ID Pattern (SHP-YYYY-XXXXXX)",
+        "total_checked": 10000,
+        "passed": true,
+        "failed_count": 0,
+        "affected_ids": []
+      },
+      {
+        "check": "Asset -> AssetType Foreign Key Reference",
+        "total_checked": 20000,
+        "passed": true,
+        "failed_count": 0,
+        "affected_ids": []
+      },
+      {
+        "check": "CustodyEvent -> ReusableAsset Foreign Key Reference",
+        "total_checked": 100030,
+        "passed": true,
+        "failed_count": 0,
+        "affected_ids": []
+      },
+      {
+        "check": "DepositLedger -> ReusableAsset Foreign Key Reference",
+        "total_checked": 34148,
+        "passed": true,
+        "failed_count": 0,
+        "affected_ids": []
+      }
+    ],
+    "total_records_checked": 222854,
+    "table_counts": {
+      "anomaly_records": 50,
+      "asset_types": 8,
+      "id_sequences": 0,
+      "locations": 30,
+      "owners": 40,
+      "password_reset_otps": 0,
+      "users": 0,
+      "return_authorizations": 12400,
+      "reusable_assets": 20000,
+      "shipments": 10000,
+      "custody_events": 100030,
+      "deposit_ledger": 34148,
+      "inspections": 12400,
+      "return_authorization_assets": 12400,
+      "shipment_assets": 20000,
+      "repairs": 1348
+    },
+    "primary_key_violations": 0,
+    "foreign_key_violations": 0,
+    "orphan_records": 0,
+    "duplicate_identifiers": 0
+  },
+  "financial_reconciliation": {
+    "summary": {
+      "DEPOSIT_CHARGE": {
+        "amount": 3909680.0,
+        "count": 20000
+      },
+      "DEPOSIT_REFUND": {
+        "amount": -2333839.25,
+        "count": 12410
+      },
+      "DAMAGE_CHARGE": {
+        "amount": 90966.75,
+        "count": 1338
+      },
+      "LOSS_CHARGE": {
+        "amount": 77890.0,
+        "count": 400
+      },
+      "ADJUSTMENT": {
+        "amount": 0.0,
+        "count": 0
+      }
+    },
+    "total_collected": 3909680.0,
+    "total_refunded": 2333839.25,
+    "total_damage": 90966.75,
+    "total_loss": 77890.0,
+    "total_adjustments": 0.0,
+    "net_liability": 1406984.0,
+    "portfolio_arithmetic_balanced": true,
+    "individual_obligations_valid": false,
+    "negative_asset_liabilities": [
+      {
+        "asset_id": "ASSET-0005930",
+        "liability": -75.0
+      },
+      {
+        "asset_id": "ASSET-0008229",
+        "liability": -75.0
+      },
+      {
+        "asset_id": "ASSET-0008574",
+        "liability": -500.0
+      },
+      {
+        "asset_id": "ASSET-0011120",
+        "liability": -350.0
+      },
+      {
+        "asset_id": "ASSET-0012109",
+        "liability": -40.0
+      },
+      {
+        "asset_id": "ASSET-0015485",
+        "liability": -500.0
+      },
+      {
+        "asset_id": "ASSET-0016362",
+        "liability": -180.0
+      },
+      {
+        "asset_id": "ASSET-0017547",
+        "liability": -26.0
+      },
+      {
+        "asset_id": "ASSET-0017591",
+        "liability": -40.0
+      },
+      {
+        "asset_id": "ASSET-0019921",
+        "liability": -350.0
+      }
+    ],
+    "negative_cycle_liabilities": [
+      {
+        "original_ledger_id": 18,
+        "liability": -180.0
+      },
+      {
+        "original_ledger_id": 20,
+        "liability": -75.0
+      },
+      {
+        "original_ledger_id": 1,
+        "liability": -40.0
+      },
+      {
+        "original_ledger_id": 3,
+        "liability": -350.0
+      },
+      {
+        "original_ledger_id": 9,
+        "liability": -40.0
+      },
+      {
+        "original_ledger_id": 11,
+        "liability": -500.0
+      },
+      {
+        "original_ledger_id": 13,
+        "liability": -350.0
+      },
+      {
+        "original_ledger_id": 15,
+        "liability": -26.0
+      },
+      {
+        "original_ledger_id": 5,
+        "liability": -75.0
+      },
+      {
+        "original_ledger_id": 7,
+        "liability": -500.0
+      }
+    ],
+    "duplicate_refund_findings": 10,
+    "duplicate_refund_details": [
+      {
+        "issue_type": "DUPLICATE_REFUND",
+        "severity": "HIGH",
+        "asset_id": "ASSET-0016362",
+        "record_id": "REF-RMA-2026-000009-ASSET-0016362-DUP",
+        "ledger_id": 34147,
+        "entity_name": "deposit_ledger",
+        "expected_decision": "DUPLICATE_REFUND",
+        "description": "Repeated refund exceeds its original deposit obligation"
+      },
+      {
+        "issue_type": "DUPLICATE_REFUND",
+        "severity": "HIGH",
+        "asset_id": "ASSET-0005930",
+        "record_id": "REF-RMA-2026-000010-ASSET-0005930-DUP",
+        "ledger_id": 34148,
+        "entity_name": "deposit_ledger",
+        "expected_decision": "DUPLICATE_REFUND",
+        "description": "Repeated refund exceeds its original deposit obligation"
+      },
+      {
+        "issue_type": "DUPLICATE_REFUND",
+        "severity": "HIGH",
+        "asset_id": "ASSET-0017591",
+        "record_id": "REF-RMA-2026-000001-ASSET-0017591-DUP",
+        "ledger_id": 34139,
+        "entity_name": "deposit_ledger",
+        "expected_decision": "DUPLICATE_REFUND",
+        "description": "Repeated refund exceeds its original deposit obligation"
+      },
+      {
+        "issue_type": "DUPLICATE_REFUND",
+        "severity": "HIGH",
+        "asset_id": "ASSET-0011120",
+        "record_id": "REF-RMA-2026-000002-ASSET-0011120-DUP",
+        "ledger_id": 34140,
+        "entity_name": "deposit_ledger",
+        "expected_decision": "DUPLICATE_REFUND",
+        "description": "Repeated refund exceeds its original deposit obligation"
+      },
+      {
+        "issue_type": "DUPLICATE_REFUND",
+        "severity": "HIGH",
+        "asset_id": "ASSET-0008574",
+        "record_id": "REF-RMA-2026-000006-ASSET-0008574-DUP",
+        "ledger_id": 34144,
+        "entity_name": "deposit_ledger",
+        "expected_decision": "DUPLICATE_REFUND",
+        "description": "Repeated refund exceeds its original deposit obligation"
+      },
+      {
+        "issue_type": "DUPLICATE_REFUND",
+        "severity": "HIGH",
+        "asset_id": "ASSET-0017547",
+        "record_id": "REF-REM-RMA-2026-000008-ASSET-0017547-DUP",
+        "ledger_id": 34146,
+        "entity_name": "deposit_ledger",
+        "expected_decision": "DUPLICATE_REFUND",
+        "description": "Repeated refund exceeds its original deposit obligation"
+      },
+      {
+        "issue_type": "DUPLICATE_REFUND",
+        "severity": "HIGH",
+        "asset_id": "ASSET-0012109",
+        "record_id": "REF-RMA-2026-000005-ASSET-0012109-DUP",
+        "ledger_id": 34143,
+        "entity_name": "deposit_ledger",
+        "expected_decision": "DUPLICATE_REFUND",
+        "description": "Repeated refund exceeds its original deposit obligation"
+      },
+      {
+        "issue_type": "DUPLICATE_REFUND",
+        "severity": "HIGH",
+        "asset_id": "ASSET-0019921",
+        "record_id": "REF-RMA-2026-000007-ASSET-0019921-DUP",
+        "ledger_id": 34145,
+        "entity_name": "deposit_ledger",
+        "expected_decision": "DUPLICATE_REFUND",
+        "description": "Repeated refund exceeds its original deposit obligation"
+      },
+      {
+        "issue_type": "DUPLICATE_REFUND",
+        "severity": "HIGH",
+        "asset_id": "ASSET-0015485",
+        "record_id": "REF-RMA-2026-000004-ASSET-0015485-DUP",
+        "ledger_id": 34142,
+        "entity_name": "deposit_ledger",
+        "expected_decision": "DUPLICATE_REFUND",
+        "description": "Repeated refund exceeds its original deposit obligation"
+      },
+      {
+        "issue_type": "DUPLICATE_REFUND",
+        "severity": "HIGH",
+        "asset_id": "ASSET-0008229",
+        "record_id": "REF-RMA-2026-000003-ASSET-0008229-DUP",
+        "ledger_id": 34141,
+        "entity_name": "deposit_ledger",
+        "expected_decision": "DUPLICATE_REFUND",
+        "description": "Repeated refund exceeds its original deposit obligation"
+      }
+    ],
+    "over_refund_findings": 10,
+    "over_refund_details": [
+      {
+        "asset_id": "ASSET-0016362",
+        "ledger_id": 34147,
+        "reference": "REF-RMA-2026-000009-ASSET-0016362-DUP",
+        "reason": "Refund exceeds remaining cycle obligation"
+      },
+      {
+        "asset_id": "ASSET-0005930",
+        "ledger_id": 34148,
+        "reference": "REF-RMA-2026-000010-ASSET-0005930-DUP",
+        "reason": "Refund exceeds remaining cycle obligation"
+      },
+      {
+        "asset_id": "ASSET-0017591",
+        "ledger_id": 34139,
+        "reference": "REF-RMA-2026-000001-ASSET-0017591-DUP",
+        "reason": "Refund exceeds remaining cycle obligation"
+      },
+      {
+        "asset_id": "ASSET-0011120",
+        "ledger_id": 34140,
+        "reference": "REF-RMA-2026-000002-ASSET-0011120-DUP",
+        "reason": "Refund exceeds remaining cycle obligation"
+      },
+      {
+        "asset_id": "ASSET-0008574",
+        "ledger_id": 34144,
+        "reference": "REF-RMA-2026-000006-ASSET-0008574-DUP",
+        "reason": "Refund exceeds remaining cycle obligation"
+      },
+      {
+        "asset_id": "ASSET-0017547",
+        "ledger_id": 34146,
+        "reference": "REF-REM-RMA-2026-000008-ASSET-0017547-DUP",
+        "reason": "Refund exceeds remaining cycle obligation"
+      },
+      {
+        "asset_id": "ASSET-0012109",
+        "ledger_id": 34143,
+        "reference": "REF-RMA-2026-000005-ASSET-0012109-DUP",
+        "reason": "Refund exceeds remaining cycle obligation"
+      },
+      {
+        "asset_id": "ASSET-0019921",
+        "ledger_id": 34145,
+        "reference": "REF-RMA-2026-000007-ASSET-0019921-DUP",
+        "reason": "Refund exceeds remaining cycle obligation"
+      },
+      {
+        "asset_id": "ASSET-0015485",
+        "ledger_id": 34142,
+        "reference": "REF-RMA-2026-000004-ASSET-0015485-DUP",
+        "reason": "Refund exceeds remaining cycle obligation"
+      },
+      {
+        "asset_id": "ASSET-0008229",
+        "ledger_id": 34141,
+        "reference": "REF-RMA-2026-000003-ASSET-0008229-DUP",
+        "reason": "Refund exceeds remaining cycle obligation"
+      }
+    ],
+    "invalid_refund_references": [],
+    "financial_exception_details": [],
+    "unresolved_financial_exceptions": 20,
+    "unreconciled_transactions": 20,
+    "is_reconciled": false
+  },
+  "anomaly_detection": {
+    "detection_duration_seconds": 1.8582,
+    "total_detected": 50,
+    "detected_by_type": {
+      "SIMULTANEOUS_LOCATIONS": 10,
+      "RETURN_BEFORE_DISPATCH": 10,
+      "DUPLICATE_REFUND": 10,
+      "REPAIR_WITHOUT_INSPECTION": 10,
+      "MISSING_CUSTODY_ACTOR": 10
+    },
+    "evaluation_metrics": {
+      "total_injected": 50,
+      "total_detected": 50,
+      "true_positives": 50,
+      "false_positives": 0,
+      "true_negatives": null,
+      "false_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "false_positive_rate": null,
+      "precision_pct": 100.0,
+      "recall_pct": 100.0,
+      "f1_score_pct": 100.0,
+      "false_positive_rate_pct": null,
+      "evaluation_note": "No labelled negative population; TN and false positive rate are unavailable.",
+      "detected_by_type": {
+        "SIMULTANEOUS_LOCATIONS": 10,
+        "RETURN_BEFORE_DISPATCH": 10,
+        "DUPLICATE_REFUND": 10,
+        "REPAIR_WITHOUT_INSPECTION": 10,
+        "MISSING_CUSTODY_ACTOR": 10
+      },
+      "injected_by_type": {
+        "SIMULTANEOUS_LOCATIONS": 10,
+        "RETURN_BEFORE_DISPATCH": 10,
+        "DUPLICATE_REFUND": 10,
+        "REPAIR_WITHOUT_INSPECTION": 10,
+        "MISSING_CUSTODY_ACTOR": 10
+      }
+    },
+    "detected_sample": [
+      {
+        "issue_type": "SIMULTANEOUS_LOCATIONS",
+        "severity": "CRITICAL",
+        "asset_id": "ASSET-0001164",
+        "record_id": "CUST-ASSET-0001164-000007",
+        "entity_name": "custody_events",
+        "expected_decision": "FLAG_FOR_INVESTIGATION",
+        "description": "Asset ASSET-0001164 detected in conflicting locations (Location 7 vs Location 15) at timestamp 2026-09-22 08:30:00"
+      },
+      {
+        "issue_type": "SIMULTANEOUS_LOCATIONS",
+        "severity": "CRITICAL",
+        "asset_id": "ASSET-0002385",
+        "record_id": "CUST-ASSET-0002385-000007",
+        "entity_name": "custody_events",
+        "expected_decision": "FLAG_FOR_INVESTIGATION",
+        "description": "Asset ASSET-0002385 detected in conflicting locations (Location 29 vs Location 22) at timestamp 2026-09-03 08:30:00"
+      },
+      {
+        "issue_type": "SIMULTANEOUS_LOCATIONS",
+        "severity": "CRITICAL",
+        "asset_id": "ASSET-0003777",
+        "record_id": "CUST-ASSET-0003777-000004",
+        "entity_name": "custody_events",
+        "expected_decision": "FLAG_FOR_INVESTIGATION",
+        "description": "Asset ASSET-0003777 detected in conflicting locations (Location 7 vs Location 25) at timestamp 2026-10-18 08:30:00"
+      },
+      {
+        "issue_type": "SIMULTANEOUS_LOCATIONS",
+        "severity": "CRITICAL",
+        "asset_id": "ASSET-0009861",
+        "record_id": "CUST-ASSET-0009861-000007",
+        "entity_name": "custody_events",
+        "expected_decision": "FLAG_FOR_INVESTIGATION",
+        "description": "Asset ASSET-0009861 detected in conflicting locations (Location 26 vs Location 29) at timestamp 2026-09-11 08:30:00"
+      },
+      {
+        "issue_type": "SIMULTANEOUS_LOCATIONS",
+        "severity": "CRITICAL",
+        "asset_id": "ASSET-0013685",
+        "record_id": "CUST-ASSET-0013685-000006",
+        "entity_name": "custody_events",
+        "expected_decision": "FLAG_FOR_INVESTIGATION",
+        "description": "Asset ASSET-0013685 detected in conflicting locations (Location 8 vs Location 23) at timestamp 2026-08-23 08:30:00"
+      },
+      {
+        "issue_type": "SIMULTANEOUS_LOCATIONS",
+        "severity": "CRITICAL",
+        "asset_id": "ASSET-0017015",
+        "record_id": "CUST-ASSET-0017015-000005",
+        "entity_name": "custody_events",
+        "expected_decision": "FLAG_FOR_INVESTIGATION",
+        "description": "Asset ASSET-0017015 detected in conflicting locations (Location 9 vs Location 14) at timestamp 2026-09-30 08:30:00"
+      },
+      {
+        "issue_type": "SIMULTANEOUS_LOCATIONS",
+        "severity": "CRITICAL",
+        "asset_id": "ASSET-0017375",
+        "record_id": "CUST-ASSET-0017375-000006",
+        "entity_name": "custody_events",
+        "expected_decision": "FLAG_FOR_INVESTIGATION",
+        "description": "Asset ASSET-0017375 detected in conflicting locations (Location 19 vs Location 11) at timestamp 2026-07-04 08:30:00"
+      },
+      {
+        "issue_type": "SIMULTANEOUS_LOCATIONS",
+        "severity": "CRITICAL",
+        "asset_id": "ASSET-0018432",
+        "record_id": "CUST-ASSET-0018432-000007",
+        "entity_name": "custody_events",
+        "expected_decision": "FLAG_FOR_INVESTIGATION",
+        "description": "Asset ASSET-0018432 detected in conflicting locations (Location 29 vs Location 8) at timestamp 2026-09-25 08:30:00"
+      },
+      {
+        "issue_type": "SIMULTANEOUS_LOCATIONS",
+        "severity": "CRITICAL",
+        "asset_id": "ASSET-0019134",
+        "record_id": "CUST-ASSET-0019134-000006",
+        "entity_name": "custody_events",
+        "expected_decision": "FLAG_FOR_INVESTIGATION",
+        "description": "Asset ASSET-0019134 detected in conflicting locations (Location 17 vs Location 16) at timestamp 2026-08-16 08:30:00"
+      },
+      {
+        "issue_type": "SIMULTANEOUS_LOCATIONS",
+        "severity": "CRITICAL",
+        "asset_id": "ASSET-0019354",
+        "record_id": "CUST-ASSET-0019354-000006",
+        "entity_name": "custody_events",
+        "expected_decision": "FLAG_FOR_INVESTIGATION",
+        "description": "Asset ASSET-0019354 detected in conflicting locations (Location 8 vs Location 22) at timestamp 2026-08-25 08:30:00"
+      }
+    ]
+  },
+  "overall_status": "DISCREPANCY_DETECTED"
+}

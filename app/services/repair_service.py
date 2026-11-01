@@ -1,3 +1,4 @@
+from app.services.lifecycle_service import atomic_operation, record_transition, utc_naive
 from typing import Dict, Any, Optional
 from decimal import Decimal
 from datetime import datetime, timezone
@@ -17,6 +18,7 @@ class RepairService:
     """
 
     @classmethod
+    @atomic_operation
     def initiate_repair(
         cls,
         db: Session,
@@ -27,7 +29,7 @@ class RepairService:
         start_date: Optional[datetime] = None,
         custom_id: Optional[str] = None
     ) -> Repair:
-        asset = db.query(ReusableAsset).filter(ReusableAsset.asset_id == asset_id).first()
+        asset = db.query(ReusableAsset).filter(ReusableAsset.asset_id == asset_id).with_for_update().populate_existing().first()
         if not asset:
             raise ValueError(f"Asset {asset_id} not found.")
 
@@ -40,13 +42,17 @@ class RepairService:
         if asset.asset_status == "AVAILABLE":
             raise ValueError(f"Asset {asset_id} is AVAILABLE and does not require repair.")
 
+        if asset.asset_status != "DAMAGED":
+            raise ValueError("Repair requires DAMAGED status")
+        if not inspection_id:
+            raise ValueError("Repair requires an originating inspection")
         # Check inspection
         if inspection_id:
             insp = db.query(Inspection).filter(Inspection.inspection_id == inspection_id).first()
-            if not insp:
+            if not insp or insp.asset_id != asset_id or not insp.requires_repair:
                 raise ValueError(f"Inspection {inspection_id} does not exist.")
 
-        st_dt = start_date or utc_now()
+        st_dt = utc_naive(start_date or utc_now())
         rep_id = custom_id or PersistentIDGenerator.next_repair_id(db, year=st_dt.year)
 
         repair = Repair(
@@ -60,16 +66,16 @@ class RepairService:
             repair_notes=notes or f"Repair commenced at facility {repair_location_id}"
         )
 
-        asset.asset_status = "UNDER_REPAIR"
-        asset.current_location_id = repair_location_id
-        asset.last_event_at = st_dt
-        asset.updated_at = utc_now()
+        record_transition(db, asset, "REPAIR_STARTED", st_dt, asset.current_custodian_owner_id or asset.owner_id,
+                          physical=True, location=repair_location_id,
+                          custodian=asset.current_custodian_owner_id, reference=rep_id)
 
         db.add(repair)
         db.flush()
         return repair
 
     @classmethod
+    @atomic_operation
     def complete_repair(
         cls,
         db: Session,
@@ -79,18 +85,20 @@ class RepairService:
         notes: Optional[str] = None,
         allow_without_inspection: bool = False
     ) -> Repair:
-        repair = db.query(Repair).filter(Repair.repair_id == repair_id).first()
+        repair = db.query(Repair).filter(Repair.repair_id == repair_id).with_for_update().populate_existing().first()
         if not repair:
             raise ValueError(f"Repair record {repair_id} not found.")
 
-        if not allow_without_inspection and not repair.inspection_id:
+        if repair.repair_status != "IN_PROGRESS":
+            raise ValueError("Repair is not in progress")
+        if not repair.inspection_id:
             raise ValueError(f"Repair {repair_id} cannot be completed without an originating inspection.")
 
         if cost < 0:
             raise ValueError("Repair cost cannot be negative.")
 
-        comp_dt = completion_date or utc_now()
-        if comp_dt < repair.repair_start_date:
+        comp_dt = utc_naive(completion_date or utc_now())
+        if comp_dt < utc_naive(repair.repair_start_date):
             raise ValueError("Repair completion date cannot precede start date.")
 
         repair.repair_status = "COMPLETED"
@@ -100,13 +108,12 @@ class RepairService:
             repair.repair_notes = f"{repair.repair_notes or ''} | {notes}".strip()
 
         # Update asset status -> post-repair INSPECTION_PENDING
-        asset = db.query(ReusableAsset).filter(ReusableAsset.asset_id == repair.asset_id).first()
+        asset = db.query(ReusableAsset).filter(ReusableAsset.asset_id == repair.asset_id).with_for_update().populate_existing().first()
         if asset:
             if asset.asset_status != "UNDER_REPAIR":
                 raise ValueError(f"Asset {asset.asset_id} is not UNDER_REPAIR (current status: {asset.asset_status}).")
-            asset.asset_status = "INSPECTION_PENDING"
-            asset.last_event_at = comp_dt
-            asset.updated_at = utc_now()
+            record_transition(db, asset, "REPAIR_COMPLETED", comp_dt,
+                              asset.current_custodian_owner_id or asset.owner_id, reference=repair_id)
 
         db.flush()
         return repair

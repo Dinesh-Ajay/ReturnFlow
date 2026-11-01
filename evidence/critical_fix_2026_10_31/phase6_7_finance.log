@@ -1,0 +1,43 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0 -- /home/user/rfvenv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/user/ReturnFlow
+plugins: Faker-40.44.0, anyio-4.15.1
+collecting ... collected 10 items
+
+tests/test_financial.py::test_financial_deposit_and_refund PASSED        [ 10%]
+tests/test_financial.py::test_portfolio_reconciliation FAILED            [ 20%]
+tests/test_anomalies.py::test_anomaly_scenario_1_simultaneous_locations PASSED [ 30%]
+tests/test_anomalies.py::test_anomaly_scenario_2_return_before_dispatch PASSED [ 40%]
+tests/test_anomalies.py::test_anomaly_scenario_3_duplicate_refund PASSED [ 50%]
+tests/test_anomalies.py::test_anomaly_scenario_4_repair_without_inspection PASSED [ 60%]
+tests/test_anomalies.py::test_anomaly_scenario_5_missing_custody_actor PASSED [ 70%]
+tests/test_anomalies.py::test_ground_truth_independent_evaluation PASSED [ 80%]
+tests/test_anomalies.py::test_evaluation_calculates_confusion_matrix_with_labelled_negatives PASSED [ 90%]
+tests/test_anomalies.py::test_evaluation_zero_denominators_are_safe PASSED [100%]
+
+=================================== FAILURES ===================================
+________________________ test_portfolio_reconciliation _________________________
+
+db_session = <sqlalchemy.orm.session.Session object at 0x7fe4828e5280>
+
+    def test_portfolio_reconciliation(db_session):
+        summary = DepositService.get_portfolio_financial_summary(db_session)
+        assert summary["total_deposits_collected"] > 0
+        assert summary["total_refunds_processed"] > 0
+>       assert summary["reconciliation_status"] == "RECONCILED"
+E       AssertionError: assert 'DISCREPANCY_DETECTED' == 'RECONCILED'
+E         
+E         - RECONCILED
+E         + DISCREPANCY_DETECTED
+
+tests/test_financial.py:50: AssertionError
+=============================== warnings summary ===============================
+../rfvenv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /home/user/rfvenv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_financial.py::test_portfolio_reconciliation - AssertionErro...
+==================== 1 failed, 9 passed, 1 warning in 4.61s ====================

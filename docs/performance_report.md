@@ -1,3 +1,21 @@
+# Current measured performance — 2026-10-31
+
+Python 3.12.3, Linux, MariaDB 10.11.14; preserved 20,000-asset baseline. These local measurements are not production SLAs or MySQL-server measurements. One warm-up and three runs; median reported.
+
+| Operation | Median |
+|---|---:|
+| database_validation | 0.692894 s |
+| custody_history | 0.000671 s |
+| asset_search | 0.124763 s |
+| anomaly_detection_and_evaluation | 1.518377 s |
+| analytics_overview | 1.178037 s |
+
+Full in-memory generation: 0.665464 s, 150,316.18 generated events/s. This is not insertion or detection throughput.
+
+The separately timed, one-off full constrained load into the blank disposable database took 16.622 s; it is not a repeated benchmark. Source: clean_full_load.log. Read-only benchmark output and exact environment are in evidence/performance_results.json. No production query-plan or load-test certification was performed.
+
+## Historical measurement (different machine and snapshot)
+
 # Performance Report
 
 Measured on 2026-10-30 with Python 3.13.9, Windows 11, and local MySQL 9.1.0. The actual dataset contained 20,009 assets, 10,000 shipments, 100,039 custody events, and 34,148 ledger entries.

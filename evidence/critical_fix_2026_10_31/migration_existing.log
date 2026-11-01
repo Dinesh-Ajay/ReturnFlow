@@ -1,0 +1,5 @@
+INFO  [alembic.runtime.migration] Context impl MySQLImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> 0025d1f7dd16, Initial schema
+INFO  [alembic.runtime.migration] Running upgrade 0025d1f7dd16 -> 0026_complete_schema, Install complete frozen schema; repair historical no-op initial revision.
+INFO  [alembic.runtime.migration] Running upgrade 0026_complete_schema -> 0027_ledger_idempotency, Enforce a durable financial transaction idempotency key.

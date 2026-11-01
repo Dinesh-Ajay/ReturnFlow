@@ -57,10 +57,12 @@ def create_test_asset(db_session, status="AVAILABLE"):
             "owner_id": owners[0].owner_id,
             "current_location_id": locations[0].location_id,
             "deposit_amount": 50.0,
-            "asset_status": status
+            "asset_status": "AVAILABLE"
         }
     )
     asset = db_session.query(ReusableAsset).filter(ReusableAsset.asset_id == res["asset_id"]).first()
+    asset.asset_status = status  # explicit fixture state, not public registration
+    db_session.flush()
     return asset, asset_type, owners, locations
 
 def test_valid_lifecycle_dispatch_records_custody_event(db_session):

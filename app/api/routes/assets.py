@@ -20,15 +20,18 @@ def create_asset(payload: AssetCreate, db: Session = Depends(get_db)):
     """
     try:
         new_asset = AssetService.create_asset(db, payload.model_dump())
+        db.commit()
         return {
             "status": "success",
             "message": f"Asset {new_asset['asset_id']} successfully registered.",
             "asset": new_asset
         }
     except ValueError as e:
+        db.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to register asset: {str(e)}")
+    except Exception:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to register asset")
 
 @router.get("", response_model=AssetListResponse)
 def list_assets(
@@ -85,12 +88,8 @@ def get_asset_status(asset_id: str, db: Session = Depends(get_db)):
     if not asset:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Asset {asset_id} not found.")
 
-    standing = LifecycleService.classify_asset_standing(
-        status=asset.asset_status,
-        dispatch_date=asset.last_event_at,
-        return_due_days=asset.asset_type.return_due_days if asset.asset_type else 30,
-        loss_threshold_days=asset.asset_type.loss_threshold_days if asset.asset_type else 60
-    )
+    standing = LifecycleService.standing_for_asset(db, asset)
+
     return {
         "asset_id": asset_id,
         "serial_number": asset.serial_number,

@@ -66,4 +66,5 @@ def record_refund(payload: DepositRefundRequest, db: Session = Depends(get_db)):
 
 @router.get("/reconciliation")
 def get_financial_reconciliation(db: Session = Depends(get_db)):
-    return DepositService.get_portfolio_financial_summary(db)
+    from app.validation.financial import FinancialValidator
+    return {**DepositService.get_portfolio_financial_summary(db), **FinancialValidator.reconcile_ledger_totals(db)}

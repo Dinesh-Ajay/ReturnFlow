@@ -1,3 +1,4 @@
+from app.services.lifecycle_service import atomic_operation, record_transition, utc_naive
 from typing import List, Optional
 from datetime import datetime, timezone, timedelta
 from sqlalchemy.orm import Session
@@ -17,6 +18,7 @@ class ShipmentService:
     """
 
     @classmethod
+    @atomic_operation
     def create_shipment(
         cls,
         db: Session,
@@ -29,10 +31,12 @@ class ShipmentService:
         tracking_reference: Optional[str] = None,
         custom_id: Optional[str] = None
     ) -> Shipment:
-        disp_dt = dispatch_date or utc_now()
-        exp_dt = expected_delivery_date or (disp_dt + timedelta(days=3))
+        disp_dt = utc_naive(dispatch_date or utc_now())
+        exp_dt = utc_naive(expected_delivery_date) or (disp_dt + timedelta(days=3))
         if disp_dt > exp_dt:
             raise ValueError("Dispatch date cannot be later than expected delivery date.")
+        if asset_ids and len(set(asset_ids)) != len(asset_ids):
+            raise ValueError("Duplicate asset in manifest")
         if not asset_ids:
             raise ValueError("Shipment must contain at least one asset.")
 
@@ -52,10 +56,13 @@ class ShipmentService:
         db.add(shipment)
         db.flush()
 
-        for a_id in asset_ids:
-            asset = db.query(ReusableAsset).filter(ReusableAsset.asset_id == a_id).first()
+        for a_id in sorted(set(asset_ids)):
+            asset = db.query(ReusableAsset).filter(ReusableAsset.asset_id == a_id).with_for_update().populate_existing().first()
             if not asset:
                 raise ValueError(f"Asset {a_id} does not exist.")
+
+            if asset.current_location_id != origin_location_id and asset.asset_status in ("AVAILABLE", "RESERVED"):
+                raise ValueError("Dispatch origin must match the current asset location")
 
             # Validate lifecycle eligibility
             if asset.asset_status == "RETIRED":
@@ -76,47 +83,29 @@ class ShipmentService:
             )
             db.add(link)
 
-            # Record immutable CustodyEvent for dispatch
-            ce_id = PersistentIDGenerator.next_custody_event_id(db, a_id)
-            cust_event = CustodyEvent(
-                custody_event_id=ce_id,
-                asset_id=a_id,
-                shipment_id=shipment_id,
-                from_owner_id=asset.current_custodian_owner_id or asset.owner_id,
-                to_owner_id=carrier_owner_id,
-                from_location_id=origin_location_id,
-                to_location_id=None,
-                actor_owner_id=carrier_owner_id,
-                event_type="DISPATCHED",
-                event_timestamp=disp_dt,
-                event_reference=f"DISPATCH-{shipment_id}",
-                notes=f"Dispatched via shipment {shipment_id} from location {origin_location_id} to carrier {carrier_owner_id}",
-                created_at=utc_now()
-            )
-            db.add(cust_event)
-
-            # Update asset status & location
-            asset.asset_status = "IN_TRANSIT"
-            asset.current_location_id = None
-            asset.current_custodian_owner_id = carrier_owner_id
-            asset.last_event_at = disp_dt
-            asset.updated_at = utc_now()
+            record_transition(db, asset, "DISPATCHED", disp_dt, carrier_owner_id,
+                              physical=True, location=None, custodian=carrier_owner_id,
+                              shipment_id=shipment_id, reference=shipment_id)
 
         db.flush()
         return shipment
 
     @classmethod
+    @atomic_operation
     def deliver_shipment(
         cls,
         db: Session,
         shipment_id: str,
-        actual_delivery_date: Optional[datetime] = None
+        actual_delivery_date: Optional[datetime] = None,
+        receiving_owner_id: Optional[int] = None
     ) -> Shipment:
-        shipment = db.query(Shipment).filter(Shipment.shipment_id == shipment_id).first()
+        shipment = db.query(Shipment).filter(Shipment.shipment_id == shipment_id).with_for_update().populate_existing().first()
         if not shipment:
             raise ValueError(f"Shipment {shipment_id} not found.")
 
-        deliv_dt = actual_delivery_date or utc_now()
+        if shipment.shipment_status == "DELIVERED":
+            raise ValueError("Shipment already delivered")
+        deliv_dt = utc_naive(actual_delivery_date or utc_now())
         if deliv_dt < shipment.dispatch_date:
             raise ValueError("Delivery date cannot precede dispatch date.")
 
@@ -125,7 +114,7 @@ class ShipmentService:
 
         # Update assets to IN_CUSTODY at destination and log arrival event
         for sa in shipment.shipment_assets:
-            asset = db.query(ReusableAsset).filter(ReusableAsset.asset_id == sa.asset_id).first()
+            asset = db.query(ReusableAsset).filter(ReusableAsset.asset_id == sa.asset_id).with_for_update().populate_existing().first()
             if asset:
                 if asset.asset_status == "RETIRED":
                     raise ValueError(f"Asset {asset.asset_id} is RETIRED.")
@@ -133,31 +122,10 @@ class ShipmentService:
                 if not valid and asset.asset_status != "IN_TRANSIT":
                     raise ValueError(f"Invalid transition for asset {asset.asset_id} to IN_CUSTODY: {err}")
 
-                # Record immutable CustodyEvent for delivery
-                ce_id = PersistentIDGenerator.next_custody_event_id(db, asset.asset_id)
-                dest_owner_id = asset.owner_id
-                cust_event = CustodyEvent(
-                    custody_event_id=ce_id,
-                    asset_id=asset.asset_id,
-                    shipment_id=shipment.shipment_id,
-                    from_owner_id=shipment.carrier_owner_id,
-                    to_owner_id=dest_owner_id,
-                    from_location_id=None,
-                    to_location_id=shipment.destination_location_id,
-                    actor_owner_id=dest_owner_id or shipment.carrier_owner_id,
-                    event_type="RECEIVED",
-                    event_timestamp=deliv_dt,
-                    event_reference=f"DELIVERY-{shipment.shipment_id}",
-                    notes=f"Delivered via shipment {shipment.shipment_id} to location {shipment.destination_location_id}",
-                    created_at=utc_now()
-                )
-                db.add(cust_event)
-
-                asset.asset_status = "IN_CUSTODY"
-                asset.current_location_id = shipment.destination_location_id
-                asset.current_custodian_owner_id = dest_owner_id
-                asset.last_event_at = deliv_dt
-                asset.updated_at = utc_now()
+                record_transition(db, asset, "RECEIVED", deliv_dt, receiving_owner_id or asset.owner_id,
+                                  physical=True, location=shipment.destination_location_id,
+                                  custodian=receiving_owner_id or asset.owner_id, shipment_id=shipment.shipment_id,
+                                  reference=shipment.shipment_id)
 
         db.flush()
         return shipment

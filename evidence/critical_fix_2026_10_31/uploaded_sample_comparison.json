@@ -1,0 +1,57 @@
+[
+  {
+    "uploaded_file": "config.py",
+    "repository_path": "app/config.py",
+    "text_matches_original_HEAD": true
+  },
+  {
+    "uploaded_file": "main.py",
+    "repository_path": "app/main.py",
+    "text_matches_original_HEAD": true
+  },
+  {
+    "uploaded_file": "id_generator.py",
+    "repository_path": "app/utils/id_generator.py",
+    "text_matches_original_HEAD": true
+  },
+  {
+    "uploaded_file": "unused.py",
+    "repository_path": "app/services/shipment_service.py",
+    "text_matches_original_HEAD": true
+  },
+  {
+    "uploaded_file": "asset_service.py",
+    "repository_path": "app/services/asset_service.py",
+    "text_matches_original_HEAD": true
+  },
+  {
+    "uploaded_file": "return_service.py",
+    "repository_path": "app/services/return_service.py",
+    "text_matches_original_HEAD": true
+  },
+  {
+    "uploaded_file": "inspection_service.py",
+    "repository_path": "app/services/inspection_service.py",
+    "text_matches_original_HEAD": true
+  },
+  {
+    "uploaded_file": "repair_service.py",
+    "repository_path": "app/services/repair_service.py",
+    "text_matches_original_HEAD": true
+  },
+  {
+    "uploaded_file": "custody_service.py",
+    "repository_path": "app/services/custody_service.py",
+    "text_matches_original_HEAD": true
+  },
+  {
+    "uploaded_file": "conftest.py",
+    "repository_path": "tests/conftest.py",
+    "text_matches_original_HEAD": true
+  },
+  {
+    "uploaded_file": "README.md",
+    "repository_path": "README.md",
+    "text_matches_original_HEAD": true
+  }
+]

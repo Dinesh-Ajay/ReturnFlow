@@ -32,7 +32,15 @@ def db_engine():
     engine = create_engine(settings.TEST_DATABASE_URL, pool_pre_ping=True)
     from app.models.id_sequence import IDSequence
     from app.models.user import User, PasswordResetOTP
+    from app.models.deposit_ledger import DepositLedger
+    from sqlalchemy import inspect, text
     Base.metadata.create_all(bind=engine, tables=[User.__table__, PasswordResetOTP.__table__, IDSequence.__table__])
+    insp = inspect(engine)
+    if "deposit_ledger" in insp.get_table_names():
+        uqs = {u["name"] for u in insp.get_unique_constraints("deposit_ledger")}
+        if "uq_deposit_reference" not in uqs:
+            with engine.begin() as conn:
+                conn.execute(text("ALTER TABLE deposit_ledger ADD CONSTRAINT uq_deposit_reference UNIQUE (transaction_reference)"))
     return engine
 
 @pytest.fixture(scope="function")
@@ -51,4 +59,13 @@ def db_session(db_engine):
 @pytest.fixture(scope="module")
 def api_client():
     with TestClient(app) as client:
+        from app.services.auth_service import AuthService
+        from app.database.session import SessionLocal
+        with SessionLocal() as db:
+            user = AuthService.bootstrap_admin_user(db)
+            user.password_hash = AuthService.hash_password(settings.INITIAL_ADMIN_PASSWORD)
+            db.commit()
+        response = client.post("/api/auth/login", json={"email": settings.INITIAL_ADMIN_EMAIL, "password": settings.INITIAL_ADMIN_PASSWORD})
+        assert response.status_code == 200
+        client.headers["Authorization"] = "Bearer " + response.json()["access_token"]
         yield client

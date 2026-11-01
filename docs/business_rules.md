@@ -84,3 +84,14 @@ Calculations are computed deterministically relative to `REFERENCE_DATE` (2026-1
    Any refund request exceeding the eligible balance is rejected with an exception.
 3. **Duplicate Refund Detection:**
    Duplicate refund transactions on the same return obligation or referencing the same RMA are flagged (`DUPLICATE_REFUND`).
+
+
+## Repair clarifications — 2026-10-31
+
+New assets are commissioned AVAILABLE. Dispatch requires AVAILABLE/RESERVED and the actual current origin. Delivery accepts an explicit receiving owner (custodian); legal ownership is unchanged. The legacy recipient default is the legal owner when none is supplied.
+
+Live RMA creation requires IN_CUSTODY and records RETURN_REQUESTED without moving the asset. Receipt records RETURNED and a compound transition to INSPECTION_PENDING at the receiving facility. GOOD inspection makes AVAILABLE; DAMAGED/CRITICAL makes DAMAGED; UNUSABLE retires. Repair requires a matching originating inspection; completion requires UNDER_REPAIR and leads to INSPECTION_PENDING, not automatic availability.
+
+Outstanding age is UTC calendar days from the latest dispatch in the still-active cycle. A return closes the cycle; later dispatch starts a new one. Checkpoints do not reset age. Missing dispatch yields age zero without invented history. Current snapshots consistently use REFERENCE_DATE; period activity filters do not rewrite current portfolio history.
+
+Deposit liability = charges + signed refunds - damage - loss + adjustments. Repair charges are separately billed. Both per-asset and per-cycle negative balances are exceptions. Identical partial refund amounts are valid while an obligation remains. Exhausted-obligation repeat refunds are findings irrespective of reference spelling. Financial references are opaque idempotency keys, not anomaly markers.

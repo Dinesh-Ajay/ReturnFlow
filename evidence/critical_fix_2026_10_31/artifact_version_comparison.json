@@ -1,0 +1,89 @@
+{
+  "note": "Fresh generated database requires its own independent labels; preserved files unchanged.",
+  "files": [
+    {
+      "file": "generated/asset_types.csv",
+      "preserved_sha256": "aa3bf96b17f71dae0319e8f85848edff4bd41b4381504c9a8a887e7d5edb89ba",
+      "fresh_sha256": "af5d33b3e36bf40ec0d38bfc68208ea2de66a74c27add4d84b5b6dfecb4d10c0",
+      "bytes_identical": false
+    },
+    {
+      "file": "generated/assets.csv",
+      "preserved_sha256": "89347b713e9e9d39b66529127b93d43bcb55fd244994581f8bb186d3d378cba6",
+      "fresh_sha256": "bc90d1aa2a9668eae4cb663aa44cb1a604ee31b8e897b851f7dea5f4d3520682",
+      "bytes_identical": false
+    },
+    {
+      "file": "generated/custody_events.csv",
+      "preserved_sha256": "744fb6d2737d8b93066cf59b50ea25141c000789fb75b8b3ff03e7d704f0772b",
+      "fresh_sha256": "dbeed9e713687e14ba822e1bcb8ab1c32cb4408c328aace6143a3aad4d3c7cdc",
+      "bytes_identical": false
+    },
+    {
+      "file": "generated/deposit_ledger.csv",
+      "preserved_sha256": "68e8039e6cad7058f03299480139e7a8f609665cf48584eb8338fc447b7f712c",
+      "fresh_sha256": "901fdb37d128a13d11042e004bf7f802b693c46384bb3e1a4d7ff3fcc9cd97f0",
+      "bytes_identical": false
+    },
+    {
+      "file": "generated/inspections.csv",
+      "preserved_sha256": "3f39dc9d05c9c701d2e3263fe9cc1dc56ec45bac0352d64ec07eddf067a4e685",
+      "fresh_sha256": "e4b64fd4c0fff92513382d3c3dfcd6234218a0ee9c7455994bd42cdd3717652e",
+      "bytes_identical": false
+    },
+    {
+      "file": "generated/locations.csv",
+      "preserved_sha256": "d7092eed10e32c7111302daa066f05ada948875c5a8781f49e73bd5ba93dfa83",
+      "fresh_sha256": "9ac9406e726986b3640da9dafe801aba809d84edcc3edf77d2f710a3da795c9a",
+      "bytes_identical": false
+    },
+    {
+      "file": "generated/owners.csv",
+      "preserved_sha256": "cb18ad5f23722ac7754f23ebc854d207fc60168d1a288c4a85ad8e8b093c5be9",
+      "fresh_sha256": "a11b7e48a6171d6733c31237cceee7bd71c71aeb0349cf24b4ef524cbde68b01",
+      "bytes_identical": false
+    },
+    {
+      "file": "generated/repairs.csv",
+      "preserved_sha256": "f2fb5fb74d91a391e7573fe6364a1a2a7c9d199652c0a982f6fbf43d9074ae0c",
+      "fresh_sha256": "32c9e6680486875993dd12280437f44ad9e31760afd211fca53c503748fc2b4c",
+      "bytes_identical": false
+    },
+    {
+      "file": "generated/return_authorizations.csv",
+      "preserved_sha256": "7e88a6c2ed17368c63924b599559ea000bc3bfafd615a456ff091d0e0ace5a50",
+      "fresh_sha256": "abe1e051ee016859611cb2363d3fac48c76e82f2fe60ee9893829b908fa3c388",
+      "bytes_identical": false
+    },
+    {
+      "file": "generated/rma_assets.csv",
+      "preserved_sha256": "17aa40c6b703eb5868bc253a6b27b4bc71895ac6ea7a27ba612ae5f0e1e3f7cf",
+      "fresh_sha256": "f50da8359d5dbdff549da45b0836ecae78bc4e4760600252a33caccaf0deead3",
+      "bytes_identical": false
+    },
+    {
+      "file": "generated/shipment_assets.csv",
+      "preserved_sha256": "d6ed88f3a31b7046f951e13fb16d6208172516885d49dd03c0cd721d22c1d699",
+      "fresh_sha256": "d921ff4bf34f15a11e548a52d814ce47b3c64a4e01260f37147bc54af5404c09",
+      "bytes_identical": false
+    },
+    {
+      "file": "generated/shipments.csv",
+      "preserved_sha256": "d37964167871eae6c48a108e05e64baab9b8a65486500925f0bb51259192a271",
+      "fresh_sha256": "d871a8daa92af384a23ea3d2e3a90d8de4f6de48ceece85452e729682a2f7bff",
+      "bytes_identical": false
+    },
+    {
+      "file": "ground_truth/ground_truth.csv",
+      "preserved_sha256": "f68cdead24e31ce25accd677af0c94966bb04423b8051e58836169bf84ac73c4",
+      "fresh_sha256": "536ae44d9724791d9cce3ded0f9ec16f788de28399b2cd56c172cfe3e67513b9",
+      "bytes_identical": false
+    },
+    {
+      "file": "ground_truth/ground_truth.json",
+      "preserved_sha256": "72f67f5a98130c095cdf1cd57833efdb068a1ff39c9f060a4b1df8362c6f2055",
+      "fresh_sha256": "0af2189b34c0b6a6bea3de6e30c0f9708b183de90fe099a6d38e8cfacd3b49e8",
+      "bytes_identical": false
+    }
+  ]
+}

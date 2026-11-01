@@ -1,0 +1,115 @@
+2026-10-31 16:07:32,729 [INFO] [returnflow]: Starting ReturnFlow Synthetic Data Generator with profile='full', seed=20261022
+2026-10-31 16:07:32,729 [INFO] [returnflow]: Generating Master records (AssetTypes, Owners, Locations, ReusableAssets)...
+2026-10-31 16:07:32,831 [INFO] [returnflow]: Generating Workflows (Shipments, CustodyEvents, RMAs, Inspections, Repairs, DepositLedger)...
+2026-10-31 16:07:33,259 [INFO] [returnflow]: Injecting 5 required anomaly scenarios (10 instances each)...
+2026-10-31 16:07:33,378 [INFO] [returnflow]: Data Generation completed in 0.65 seconds.
+2026-10-31 16:07:33,378 [INFO] [returnflow]: Skipping generated-file export for an in-memory run...
+2026-10-31 16:07:34,887 [INFO] [returnflow]: Summary of Generated Data:
+2026-10-31 16:07:34,887 [INFO] [returnflow]:   Asset Types:               8
+2026-10-31 16:07:34,887 [INFO] [returnflow]:   Owners:                    40
+2026-10-31 16:07:34,887 [INFO] [returnflow]:   Locations:                 30
+2026-10-31 16:07:34,887 [INFO] [returnflow]:   Reusable Assets:           20000
+2026-10-31 16:07:34,887 [INFO] [returnflow]:   Shipments:                 10000
+2026-10-31 16:07:34,887 [INFO] [returnflow]:   Custody Events:            100030
+2026-10-31 16:07:34,887 [INFO] [returnflow]:   Return Authorizations:     12400
+2026-10-31 16:07:34,887 [INFO] [returnflow]:   Inspections:               12400
+2026-10-31 16:07:34,887 [INFO] [returnflow]:   Repairs:                   1348
+2026-10-31 16:07:34,887 [INFO] [returnflow]:   Deposit Ledger Entries:    34148
+2026-10-31 16:07:34,887 [INFO] [returnflow]:   Injected Anomalies:        50
+2026-10-31 16:07:34,887 [INFO] [returnflow]:   Data Gen Time:             0.649s
+2026-10-31 16:07:34,887 [INFO] [returnflow]:   DB Load Time:              0.000s
+2026-10-31 16:07:34,944 [INFO] [returnflow]: Starting ReturnFlow Synthetic Data Generator with profile='full', seed=20261022
+2026-10-31 16:07:34,944 [INFO] [returnflow]: Generating Master records (AssetTypes, Owners, Locations, ReusableAssets)...
+2026-10-31 16:07:35,033 [INFO] [returnflow]: Generating Workflows (Shipments, CustodyEvents, RMAs, Inspections, Repairs, DepositLedger)...
+2026-10-31 16:07:35,430 [INFO] [returnflow]: Injecting 5 required anomaly scenarios (10 instances each)...
+2026-10-31 16:07:35,549 [INFO] [returnflow]: Data Generation completed in 0.60 seconds.
+2026-10-31 16:07:35,549 [INFO] [returnflow]: Skipping generated-file export for an in-memory run...
+2026-10-31 16:07:37,039 [INFO] [returnflow]: Summary of Generated Data:
+2026-10-31 16:07:37,039 [INFO] [returnflow]:   Asset Types:               8
+2026-10-31 16:07:37,039 [INFO] [returnflow]:   Owners:                    40
+2026-10-31 16:07:37,039 [INFO] [returnflow]:   Locations:                 30
+2026-10-31 16:07:37,039 [INFO] [returnflow]:   Reusable Assets:           20000
+2026-10-31 16:07:37,039 [INFO] [returnflow]:   Shipments:                 10000
+2026-10-31 16:07:37,039 [INFO] [returnflow]:   Custody Events:            100030
+2026-10-31 16:07:37,039 [INFO] [returnflow]:   Return Authorizations:     12400
+2026-10-31 16:07:37,039 [INFO] [returnflow]:   Inspections:               12400
+2026-10-31 16:07:37,039 [INFO] [returnflow]:   Repairs:                   1348
+2026-10-31 16:07:37,039 [INFO] [returnflow]:   Deposit Ledger Entries:    34148
+2026-10-31 16:07:37,039 [INFO] [returnflow]:   Injected Anomalies:        50
+2026-10-31 16:07:37,039 [INFO] [returnflow]:   Data Gen Time:             0.604s
+2026-10-31 16:07:37,039 [INFO] [returnflow]:   DB Load Time:              0.000s
+{
+  "verified_at": "2026-10-31T16:07:37.096724+00:00",
+  "profile": "full",
+  "seed": 20261022,
+  "environment": {
+    "python": "3.12.3",
+    "platform": "Linux-6.18.15-x86_64-with-glibc2.39"
+  },
+  "pass_1_counts": {
+    "asset_types": 8,
+    "owners": 40,
+    "locations": 30,
+    "assets": 20000,
+    "shipments": 10000,
+    "shipment_assets": 20000,
+    "custody_events": 100030,
+    "return_authorizations": 12400,
+    "rma_assets": 12400,
+    "inspections": 12400,
+    "repairs": 1348,
+    "deposit_ledger": 34148
+  },
+  "pass_2_counts": {
+    "asset_types": 8,
+    "owners": 40,
+    "locations": 30,
+    "assets": 20000,
+    "shipments": 10000,
+    "shipment_assets": 20000,
+    "custody_events": 100030,
+    "return_authorizations": 12400,
+    "rma_assets": 12400,
+    "inspections": 12400,
+    "repairs": 1348,
+    "deposit_ledger": 34148
+  },
+  "ground_truth_count": 50,
+  "pass_1_checksums": {
+    "asset_types": "21f41215a0bba72be4b48ac6c11eb5ad534e195483e904afde6b6eb165bdb77f",
+    "owners": "4b983ee18c0b0c589237ef0c86b346d0a2a4d685cb7bff30b65811cf411ab76a",
+    "locations": "ea9d7e07634c181f44e146e6332e768864313ebab502217af91f629af4ba26d4",
+    "assets": "5599d56af4a0b43dfcf7423fec5eb17dd493223d9bda8968609eeeab489d47c6",
+    "shipments": "27c1ea4a608de65780ef875eb853bb672226d86eb72ee57fb3a752e6553b91d9",
+    "shipment_assets": "f1503e5ba3ed015b06ba9614ad9f890f464ce7706a5e691f4e084c1c28d1e295",
+    "custody_events": "a4e8ee27d97c8bdab3466f90930300edb516c300b194d18931d22211c6a2558e",
+    "return_authorizations": "f1c987ea6e4106b3765d6ab4fbe6c7bdd922d911198590fcb1c7dba8ec231e47",
+    "rma_assets": "3ef7f1cf3dba03812b7b6432bc75d5c073d1e1f316303bf1743b9fdea1c805b6",
+    "inspections": "7bd104365a8f72e751b4de580a13fbfc26422fdf260d99131686a7fbef82d5e3",
+    "repairs": "8260f53e2ba64a99925c3dc03bbab7e6b1c0969242fc543b05a36f7334799b57",
+    "deposit_ledger": "f92c8f356ffd8d5d2f469c8dab9523b2ebcee00fa9b2c6061cc581f2a551faf6",
+    "ground_truth": "e18215a4039078ad584e5667bd3d339ad8376c524d862f44efb5c3e1d5407bf7"
+  },
+  "pass_2_checksums": {
+    "asset_types": "21f41215a0bba72be4b48ac6c11eb5ad534e195483e904afde6b6eb165bdb77f",
+    "owners": "4b983ee18c0b0c589237ef0c86b346d0a2a4d685cb7bff30b65811cf411ab76a",
+    "locations": "ea9d7e07634c181f44e146e6332e768864313ebab502217af91f629af4ba26d4",
+    "assets": "5599d56af4a0b43dfcf7423fec5eb17dd493223d9bda8968609eeeab489d47c6",
+    "shipments": "27c1ea4a608de65780ef875eb853bb672226d86eb72ee57fb3a752e6553b91d9",
+    "shipment_assets": "f1503e5ba3ed015b06ba9614ad9f890f464ce7706a5e691f4e084c1c28d1e295",
+    "custody_events": "a4e8ee27d97c8bdab3466f90930300edb516c300b194d18931d22211c6a2558e",
+    "return_authorizations": "f1c987ea6e4106b3765d6ab4fbe6c7bdd922d911198590fcb1c7dba8ec231e47",
+    "rma_assets": "3ef7f1cf3dba03812b7b6432bc75d5c073d1e1f316303bf1743b9fdea1c805b6",
+    "inspections": "7bd104365a8f72e751b4de580a13fbfc26422fdf260d99131686a7fbef82d5e3",
+    "repairs": "8260f53e2ba64a99925c3dc03bbab7e6b1c0969242fc543b05a36f7334799b57",
+    "deposit_ledger": "f92c8f356ffd8d5d2f469c8dab9523b2ebcee00fa9b2c6061cc581f2a551faf6",
+    "ground_truth": "e18215a4039078ad584e5667bd3d339ad8376c524d862f44efb5c3e1d5407bf7"
+  },
+  "counts_match": true,
+  "checksums_match": true,
+  "reproducible": true,
+  "excluded_metadata": [
+    "created_at",
+    "updated_at"
+  ]
+}

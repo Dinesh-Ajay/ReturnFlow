@@ -1,3 +1,9 @@
+# Current repair status — 2026-10-31
+
+**PARTIAL overall.** This file's prior audit is historical, not proof of current acceptance. The controlling repair report is FINAL_CRITICAL_FIX_REPORT.md; the original company requirement matrix remains NOT VERIFIED until the original problem statement/instructions are provided. Final automated result: 116 passed. Preserved historical replay has 4,956 exceptions. No commit/push or owner database modification occurred.
+
+---
+
 # ReturnFlow Final Requirements Audit
 
 Audit date: 2026-10-30. Evidence below comes from repository inspection, read-only queries against the configured working MySQL database, isolated full-profile generation, and the test results recorded in this file. No working-database replacement load or schema migration was performed.

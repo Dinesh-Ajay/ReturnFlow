@@ -1,3 +1,13 @@
+# Repair reproducibility update — 2026-10-31
+
+Full profile, seed 20261022: both generation passes matched counts and logical SHA-256 digests. Evidence/reproducibility_results.json records the current Python/Linux environment and all digests. Counts remain unchanged.
+
+The preserved committed artifact set is NOT asserted identical to a fresh generator run. A clean-load regression initially paired fresh data with the old committed labels and produced 40% precision; pairing it with its own generated independent labels resolved the mismatch and the full suite passed. No detector was given those labels as input and no committed dataset was altered to make tests pass.
+
+For a fresh generated test database, point RETURN_FLOW_TEST_GROUND_TRUTH_DIR to the matching generated ground-truth directory. For the preserved seed, use its committed paired labels. The source manifest records file-level hashes and unknown historical producer commit. Fresh export manifests include current generator source hashes.
+
+## Earlier reproducibility report
+
 # Reproducibility Report
 
 Verification executed on 2026-10-30 with Python 3.13.9, full profile, and seed **20261022**.
@@ -16,7 +26,7 @@ To generate one full dataset and export it to the configured destinations:
 python -m app.generator --profile full --seed 20261022 --no-db
 ```
 
-To load data into MySQL, first configure `DATABASE_URL` to a dedicated empty database. The loader refuses populated target tables by default. `--replace-existing` explicitly enables truncation for a disposable database after backup; do not point that command at data that needs to be preserved.
+To load data into MySQL, first configure `DATABASE_URL` to a dedicated empty database. The loader refuses populated target tables by default. `--replace-existing` permits dependency-ordered transactional deletion only in a disposable test database after backup; do not point that command at data that needs to be preserved.
 
 ## Result
 

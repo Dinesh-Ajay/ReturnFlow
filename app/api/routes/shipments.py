@@ -116,3 +116,25 @@ def get_shipment_detail(shipment_id: str, db: Session = Depends(get_db)):
         "asset_count": len(assets),
         "manifest_assets": assets
     }
+
+
+from datetime import datetime
+from pydantic import BaseModel
+
+class ShipmentDelivery(BaseModel):
+    actual_delivery_date: Optional[datetime] = None
+    receiving_owner_id: Optional[int] = None
+
+@router.post("/{shipment_id}/deliver")
+def deliver_shipment(shipment_id: str, payload: ShipmentDelivery, db: Session = Depends(get_db)):
+    try:
+        if payload.receiving_owner_id is not None and not db.query(Owner).filter_by(owner_id=payload.receiving_owner_id, active=True).first():
+            raise ValueError("Receiving owner does not exist or is inactive")
+        shipment = ShipmentService.deliver_shipment(db, shipment_id,
+            actual_delivery_date=payload.actual_delivery_date,
+            receiving_owner_id=payload.receiving_owner_id)
+        db.commit()
+        return {"shipment_id": shipment.shipment_id, "status": shipment.shipment_status}
+    except ValueError as exc:
+        db.rollback()
+        raise HTTPException(400, str(exc))

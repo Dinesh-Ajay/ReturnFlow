@@ -28,7 +28,7 @@ class CustodyService:
         # 1. Custody Events ordered chronologically
         events = db.query(CustodyEvent).filter(
             CustodyEvent.asset_id == asset_id
-        ).order_by(CustodyEvent.event_timestamp.asc()).all()
+        ).order_by(CustodyEvent.event_timestamp.asc(), CustodyEvent.custody_event_id.asc()).all()
 
         # 2. Shipments associated with this asset
         shipment_links = db.query(ShipmentAsset).filter(ShipmentAsset.asset_id == asset_id).all()
@@ -59,19 +59,7 @@ class CustodyService:
             DepositLedger.asset_id == asset_id
         ).order_by(DepositLedger.transaction_date.asc()).all()
 
-        # Find latest dispatch date for active cycle
-        latest_dispatch_date = None
-        for evt in reversed(events):
-            if evt.event_type == "DISPATCHED":
-                latest_dispatch_date = evt.event_timestamp
-                break
-
-        standing = LifecycleService.classify_asset_standing(
-            status=asset.asset_status,
-            dispatch_date=latest_dispatch_date,
-            return_due_days=asset.asset_type.return_due_days if asset.asset_type else 30,
-            loss_threshold_days=asset.asset_type.loss_threshold_days if asset.asset_type else 60
-        )
+        standing = LifecycleService.standing_for_asset(db, asset)
 
         return {
             "asset_id": asset.asset_id,
@@ -198,39 +186,8 @@ class CustodyService:
         current_custodian_owner_id, asset_status, last_event_at)
         from raw immutable custody events.
         """
-        events = db.query(CustodyEvent).filter(
-            CustodyEvent.asset_id == asset_id
-        ).order_by(CustodyEvent.event_timestamp.asc()).all()
-
-        current_location_id = None
-        current_custodian_id = None
-        asset_status = "AVAILABLE"
-        last_event_at = None
-
-        for evt in events:
-            last_event_at = evt.event_timestamp
-            if evt.to_location_id is not None:
-                current_location_id = evt.to_location_id
-            if evt.to_owner_id is not None:
-                current_custodian_id = evt.to_owner_id
-
-            if evt.event_type == "DISPATCHED":
-                asset_status = "DISPATCHED"
-            elif evt.event_type in ("PICKED_UP", "IN_TRANSIT"):
-                asset_status = "IN_TRANSIT"
-            elif evt.event_type in ("RECEIVED", "TRANSFERRED"):
-                asset_status = "IN_CUSTODY"
-            elif evt.event_type == "RETURNED":
-                asset_status = "RETURNED"
-            elif evt.event_type == "LOST_REPORTED":
-                asset_status = "LOST"
-            elif evt.event_type == "RECOVERED":
-                asset_status = "AVAILABLE"
-
-        return {
-            "asset_id": asset_id,
-            "projected_location_id": current_location_id,
-            "projected_custodian_owner_id": current_custodian_id,
-            "projected_status": asset_status,
-            "projected_last_event_at": last_event_at,
-        }
+        from app.services.projection_service import replay
+        events = db.query(CustodyEvent).filter_by(asset_id=asset_id).all()
+        inspections = db.query(Inspection).filter_by(asset_id=asset_id).all()
+        repairs = db.query(Repair).filter_by(asset_id=asset_id).all()
+        return replay(asset_id, events, inspections, repairs)

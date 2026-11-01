@@ -178,8 +178,8 @@ class AnomalyDetectionEngine:
                     AnomalyRecord.detected_at: now,
                 }, synchronize_session=False)
             else:
-                new_id = f"DET-{counter:06d}"
-                counter += 1
+                from app.utils.id_generator import PersistentIDGenerator
+                new_id = PersistentIDGenerator.next_anomaly_id(db)
                 new_rec = AnomalyRecord(
                     issue_id=new_id,
                     affected_asset_id=d.get("asset_id"),
